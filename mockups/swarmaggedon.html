@@ -1,0 +1,1148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SWARMAGGEDON</title>
+  <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --paper: #f4f0e8;
+      --paper2: #ede8dc;
+      --paper3: #e6e0d2;
+      --ink: #2a2318;
+      --ink-mid: #5a5040;
+      --ink-faint: #a89880;
+      --red: #c0392b;
+      --blue: #2471a3;
+      --pencil: #7a6e5f;
+      --line: #c8bfad;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: 'Patrick Hand';
+      font-size: 16px;
+      line-height: 1.5;
+      min-height: 100vh;
+      background-image:
+        repeating-linear-gradient(180deg,
+          transparent,
+          transparent 27px,
+          rgba(180, 168, 148, 0.18) 27px,
+          rgba(180, 168, 148, 0.18) 28px);
+    }
+
+    .svg-filters {
+      position: absolute;
+      width: 0;
+      height: 0;
+      overflow: hidden;
+    }
+
+    /* ============ HEADER ============ */
+    header {
+      background: var(--paper2);
+      border-bottom: 2.5px solid var(--ink);
+      box-shadow: 0 2px 0 var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+      height: 62px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      position: sticky;
+    }
+
+    .logo {
+      font-family: 'Patrick Hand';
+      font-size: 26px;
+      color: var(--ink);
+      letter-spacing: 1px;
+      transform: rotate(-0.8deg);
+      display: inline-block;
+      position: relative;
+    }
+
+    .logo::after {
+      content: '';
+      position: absolute;
+      bottom: 2px;
+      left: 0;
+      right: 0;
+      height: 2.5px;
+      background: var(--red);
+      transform: rotate(-0.3deg) scaleX(0.95);
+      transform-origin: left;
+    }
+
+    .logo-sub {
+      font-family: 'Patrick Hand';
+      font-size: 12px;
+      color: var(--ink-faint);
+      display: block;
+      transform: rotate(0.4deg);
+      margin-top: -4px;
+    }
+
+    nav {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    nav button {
+      background: none;
+      border: none;
+      font-family: 'Patrick Hand';
+      font-size: 17px;
+      color: var(--ink-mid);
+      cursor: pointer;
+      padding: 4px 14px;
+      position: relative;
+      transition: color 0.12s;
+    }
+
+    nav button::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 8px;
+      right: 8px;
+      height: 2px;
+      background: var(--ink);
+      transform: scaleX(0) rotate(-0.5deg);
+      transform-origin: left;
+      transition: transform 0.15s;
+    }
+
+    nav button:hover {
+      color: var(--ink);
+    }
+
+    nav button:hover::after,
+    nav button.active::after {
+      transform: scaleX(1);
+    }
+
+    nav button.active {
+      color: var(--ink);
+      font-weight: 700;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .status-badge {
+      font-family: 'Patrick Hand';
+      font-size: 13px;
+      padding: 2px 10px;
+      border: 1.5px solid var(--line);
+      color: var(--ink-faint);
+      transform: rotate(0.3deg);
+      display: inline-block;
+    }
+
+    .status-badge.online {
+      border-color: var(--blue);
+      color: var(--blue);
+      border-style: solid;
+    }
+
+    /* ============ LAYOUT ============ */
+    .main {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 28px 32px;
+      display: grid;
+      grid-template-columns: 300px 1fr 260px;
+      gap: 20px;
+    }
+
+    /* ============ PANELS ============ */
+    .panel {
+      background: #faf7f1;
+      border: 2px solid var(--ink);
+      border-radius: 2px;
+      box-shadow: 3px 3px 0 var(--ink);
+      position: relative;
+    }
+
+    .panel-header {
+      background: var(--paper3);
+      border-bottom: 2px solid var(--ink);
+      padding: 9px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .panel-title {
+      font-family: 'Patrick Hand';
+      font-size: 15px;
+      color: var(--ink);
+    }
+
+    .panel-body {
+      padding: 16px;
+    }
+
+    /* ============ LABELS ============ */
+    .label {
+      font-family: 'Patrick Hand';
+      font-size: 12px;
+      color: var(--ink-faint);
+      margin-bottom: 5px;
+      text-transform: lowercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* ============ INPUTS ============ */
+    input,
+    select {
+      width: 100%;
+      background: transparent;
+      border: none;
+      border-bottom: 1.5px solid var(--ink-mid);
+      color: var(--ink);
+      font-family: 'Patrick Hand';
+      font-size: 16px;
+      padding: 5px 4px;
+      outline: none;
+      transition: border-color 0.15s;
+      border-radius: 0;
+      -webkit-appearance: none;
+    }
+
+    input:focus,
+    select:focus {
+      border-bottom-color: var(--blue);
+    }
+
+    input::placeholder {
+      color: var(--ink-faint);
+      font-style: italic;
+    }
+
+    select option {
+      background: var(--paper);
+    }
+
+    .form-row {
+      margin-bottom: 14px;
+    }
+
+    /* ============ BUTTONS ============ */
+    .btn {
+      display: inline-block;
+      font-family: 'Patrick Hand';
+      font-size: 16px;
+      cursor: pointer;
+      padding: 6px 16px;
+      transition: all 0.1s;
+      border-radius: 1px;
+      position: relative;
+    }
+
+    .btn-primary {
+      background: var(--ink);
+      color: var(--paper);
+      border: 2px solid var(--ink);
+      box-shadow: 2px 2px 0 var(--ink-mid);
+    }
+
+    .btn-primary:hover {
+      transform: translate(-1px, -1px);
+      box-shadow: 3px 3px 0 var(--ink-mid);
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1.5px solid var(--ink-mid);
+      color: var(--ink-mid);
+      box-shadow: 2px 2px 0 var(--line);
+    }
+
+    .btn-outline:hover {
+      border-color: var(--ink);
+      color: var(--ink);
+    }
+
+    .btn-danger {
+      background: transparent;
+      border: 1.5px solid var(--red);
+      color: var(--red);
+      box-shadow: 2px 2px 0 rgba(192, 57, 43, 0.2);
+    }
+
+    .btn-danger:hover {
+      background: var(--red);
+      color: #fff;
+    }
+
+    .btn-sm {
+      padding: 3px 10px;
+      font-size: 14px;
+    }
+
+    .btn-block {
+      width: 100%;
+      text-align: center;
+    }
+
+    /* ============ DIVIDER ============ */
+    .divider {
+      border: none;
+      border-top: 1.5px dashed var(--line);
+      margin: 14px 0;
+    }
+
+    /* ============ UTILITY ============ */
+    .text-center {
+      text-align: center;
+    }
+
+    .text-muted {
+      color: var(--ink-faint);
+      font-size: 13px;
+    }
+
+    .flex {
+      display: flex;
+    }
+
+    .flex-between {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .gap-8 {
+      gap: 8px;
+    }
+
+    .mt-8 {
+      margin-top: 8px;
+    }
+
+    /* ============ TABS ============ */
+    .tabs {
+      display: flex;
+      border-bottom: 1.5px solid var(--line);
+      margin-bottom: 16px;
+    }
+
+    .tab {
+      font-family: 'Patrick Hand';
+      font-size: 15px;
+      padding: 6px 14px;
+      cursor: pointer;
+      color: var(--ink-faint);
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      transition: all 0.12s;
+    }
+
+    .tab.active {
+      color: var(--ink);
+      border-bottom-color: var(--ink);
+      font-weight: 700;
+    }
+
+    /* ============ TAG ============ */
+    .tag {
+      display: inline-block;
+      font-family: 'Patrick Hand';
+      font-size: 12px;
+      padding: 1px 8px;
+      border: 1.5px solid var(--line);
+      color: var(--ink-faint);
+      transform: rotate(0.5deg);
+    }
+
+    .tag-accent {
+      border-color: var(--blue);
+      color: var(--blue);
+    }
+
+    /* ============ NOTIF ============ */
+    .notif {
+      background: rgba(36, 113, 163, 0.07);
+      border-left: 3px solid var(--blue);
+      padding: 7px 12px;
+      font-size: 14px;
+      color: var(--blue);
+      margin-bottom: 12px;
+      font-style: italic;
+    }
+
+    /* ============ GLOBAL BAR ============ */
+    .global-bar {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      border: 2px solid var(--ink);
+      box-shadow: 3px 3px 0 var(--ink);
+      background: #faf7f1;
+    }
+
+    .global-stat {
+      padding: 14px 18px;
+      border-right: 1.5px dashed var(--line);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .global-stat:last-child {
+      border-right: none;
+    }
+
+    .global-stat-value {
+      font-family: 'Patrick Hand';
+      font-size: 28px;
+      color: var(--ink);
+      line-height: 1;
+    }
+
+    .global-stat-title {
+      font-size: 13px;
+      color: var(--ink-faint);
+    }
+
+    .global-stat-sub {
+      font-size: 12px;
+      color: var(--ink-mid);
+      margin-top: 1px;
+    }
+
+    /* ============ STATS GRID ============ */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .stat-box {
+      background: var(--paper2);
+      border: 1.5px solid var(--line);
+      padding: 10px 12px;
+      position: relative;
+    }
+
+    .stat-value {
+      font-family: 'Patrick Hand';
+      font-size: 24px;
+      color: var(--ink);
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--ink-faint);
+      margin-top: 1px;
+    }
+
+    /* ============ LEADERBOARD ============ */
+    .lb-row {
+      display: grid;
+      grid-template-columns: 30px 1fr auto;
+      gap: 8px;
+      align-items: center;
+      padding: 6px 0;
+      border-bottom: 1px dashed var(--line);
+      font-size: 15px;
+    }
+
+    .lb-row:last-child {
+      border-bottom: none;
+    }
+
+    .lb-rank {
+      font-size: 12px;
+      color: var(--ink-faint);
+      text-align: right;
+    }
+
+    .lb-rank.top {
+      color: var(--red);
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    .lb-name {
+      font-weight: 600;
+    }
+
+    .lb-score {
+      font-size: 13px;
+      color: var(--blue);
+      font-family: 'Patrick Hand';
+    }
+
+    .lb-row.highlight {
+      background: rgba(36, 113, 163, 0.06);
+      border-radius: 2px;
+      border-bottom-color: var(--blue);
+    }
+
+    .scroll-y {
+      overflow-y: auto;
+    }
+
+    /* ============ AVATAR ============ */
+    .avatar {
+      width: 34px;
+      height: 34px;
+      border: 2px solid var(--ink);
+      background: var(--paper3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--ink);
+      flex-shrink: 0;
+      border-radius: 50% 48% 52% 50% / 50% 52% 48% 50%;
+    }
+
+    /* ============ DOT STATUS ============ */
+    .dot {
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      margin-right: 4px;
+    }
+
+    .dot-online {
+      background: #27ae60;
+    }
+
+    .dot-offline {
+      background: var(--line);
+    }
+
+    #section-friends .main {
+      align-items: start;
+    }
+
+    #section-friends .friend-list {
+      max-height: 50vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    #section-friends .friend-list .panel-body {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    #section-friends .friend-list .scroll-y {
+      overflow-y: auto;
+    }
+
+    /* =========== FRIEND LIST ============ */
+    .friend-list {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .friend-list .panel-body {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .friend-list .scroll-y {
+      overflow-y: auto;
+    }
+
+    /* ============ FRIEND ROW ============ */
+    .friend-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px dashed var(--line);
+    }
+
+    .friend-row:last-child {
+      border-bottom: none;
+    }
+
+    .friend-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* ============ PLAY SECTION ============ */
+    .play-section {
+      grid-column: 1 / -1;
+      background: var(--ink);
+      color: var(--paper);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 28px;
+      box-shadow: 4px 4px 0 var(--ink-mid);
+      position: relative;
+      transform: rotate(-0.2deg);
+    }
+
+    .play-title {
+      font-family: 'Patrick Hand';
+      font-size: 22px;
+      letter-spacing: 1px;
+    }
+
+    .play-sub {
+      font-size: 13px;
+      color: rgba(244, 240, 232, 0.6);
+      margin-top: 2px;
+    }
+
+    .btn-play {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: 'Patrick Hand';
+      font-size: 18px;
+      border: 2px solid var(--paper);
+      padding: 10px 36px;
+      cursor: pointer;
+      box-shadow: 3px 3px 0 rgba(255, 255, 255, 0.25);
+      transition: all 0.12s;
+    }
+
+    .btn-play:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 5px 5px 0 rgba(255, 255, 255, 0.25);
+    }
+
+    /* ============ ACCOUNT ============ */
+    .account-field {
+      margin-bottom: 14px;
+    }
+
+    .account-field-row {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+    }
+
+    .account-field-row input {
+      flex: 1;
+    }
+
+    /* ============ SECTION TOGGLE ============ */
+    .section-content {
+      display: none;
+    }
+
+    .section-content.active {
+      display: block;
+    }
+
+    /* ============ SCROLLBAR STYLE ============ */
+    ::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--paper2);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--line);
+      border-radius: 2px;
+    }
+
+    /* ============ PENCIL ANNOTATION STYLE ============ */
+    .annotation {
+      font-family: 'Patrick Hand';
+      font-size: 12px;
+      color: var(--pencil);
+      font-style: italic;
+      transform: rotate(-1deg);
+      display: inline-block;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Header -->
+  <header>
+    <div>
+      <span class="logo">Swarmaggedon</span>
+      <span class="logo-sub">Survivor game — v0.0.0</span>
+    </div>
+    <nav>
+      <button class="active" onclick="showSection('dashboard', this)">Dashboard</button>
+      <button onclick="showSection('account', this)">Account</button>
+      <button onclick="showSection('friends', this)">Friends</button>
+    </nav>
+    <div class="header-right">
+      <span class="status-badge online">● connected</span>
+      <span class="status-badge">ghost_451</span>
+    </div>
+  </header>
+
+  <!-- ==================== DASHBOARD ==================== -->
+  <div id="section-dashboard" class="section-content active">
+    <div class="main">
+
+      <!-- Global stats bar -->
+      <div class="global-bar">
+        <div class="global-stat">
+          <div class="global-stat-value">14,882</div>
+          <div>
+            <div class="global-stat-title">Players online</div>
+            <div class="global-stat-sub">peak: 21,340 today</div>
+          </div>
+        </div>
+        <div class="global-stat">
+          <div class="global-stat-value">2.4M</div>
+          <div>
+            <div class="global-stat-title">Games played</div>
+            <div class="global-stat-sub">+8,221 today</div>
+          </div>
+        </div>
+        <div class="global-stat">
+          <div class="global-stat-value">847B</div>
+          <div>
+            <div class="global-stat-title">Enemies killed</div>
+            <div class="global-stat-sub">all time</div>
+          </div>
+        </div>
+        <div class="global-stat">
+          <div class="global-stat-value">38:12</div>
+          <div>
+            <div class="global-stat-title">Avg survival time</div>
+            <div class="global-stat-sub">global average</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LEFT: Auth -->
+      <div>
+        <div class="panel">
+          <div class="panel-header">
+            <span class="panel-title">Sign in</span>
+            <span class="tag tag-accent">signed in ✓</span>
+          </div>
+          <div class="panel-body">
+            <div class="notif">Logged in as <strong>ghost_451</strong></div>
+
+            <div class="tabs">
+              <div class="tab active" onclick="switchAuthTab('login', this)">Login</div>
+              <div class="tab" onclick="switchAuthTab('register', this)">Register</div>
+            </div>
+
+            <div id="auth-login">
+              <div class="form-row">
+                <div class="label">username</div>
+                <input type="text" placeholder="your_username" value="ghost_451">
+              </div>
+              <div class="form-row">
+                <div class="label">password</div>
+                <input type="password" placeholder="••••••••" value="password">
+              </div>
+              <button class="btn btn-primary btn-block">Login →</button>
+              <div class="text-muted text-center mt-8"><em>forgot password?</em></div>
+            </div>
+
+            <div id="auth-register" style="display:none">
+              <div class="form-row">
+                <div class="label">choose a handle</div>
+                <input type="text" placeholder="coolname_42">
+              </div>
+              <div class="form-row">
+                <div class="label">email</div>
+                <input type="email" placeholder="you@example.com">
+              </div>
+              <div class="form-row">
+                <div class="label">password</div>
+                <input type="password" placeholder="min. 8 chars">
+              </div>
+              <div class="form-row">
+                <div class="label">confirm password</div>
+                <input type="password" placeholder="again...">
+              </div>
+              <button class="btn btn-primary btn-block">Create account →</button>
+            </div>
+
+            <hr class="divider">
+            <button class="btn btn-outline btn-block btn-sm">Continue as guest</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- CENTER: Personal + Friends stats -->
+      <div style="display:flex; flex-direction:column; gap:18px;">
+
+        <!-- Personal stats -->
+        <div class="panel">
+          <div class="panel-header">
+            <span class="panel-title">My stats — ghost_451</span>
+            <span class="tag">Rank #142</span>
+          </div>
+          <div class="panel-body">
+            <div class="stats-grid">
+              <div class="stat-box" style="transform:rotate(-0.4deg)">
+                <div class="stat-value">1,204</div>
+                <div class="stat-label">Games played</div>
+              </div>
+              <div class="stat-box" style="transform:rotate(0.3deg)">
+                <div class="stat-value">68%</div>
+                <div class="stat-label">Win rate</div>
+              </div>
+              <div class="stat-box" style="transform:rotate(0.5deg)">
+                <div class="stat-value">04:21:08</div>
+                <div class="stat-label">Best run</div>
+              </div>
+              <div class="stat-box" style="transform:rotate(-0.3deg)">
+                <div class="stat-value">3.2M</div>
+                <div class="stat-label">Enemies killed</div>
+              </div>
+              <div class="stat-box" style="transform:rotate(0.4deg)">
+                <div class="stat-value">98,430</div>
+                <div class="stat-label">High score</div>
+              </div>
+              <div class="stat-box" style="transform:rotate(-0.5deg)">
+                <div class="stat-value">47:32</div>
+                <div class="stat-label">Avg survival</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Friends stats -->
+        <div class="panel">
+          <div class="panel-header">
+            <span class="panel-title">Friends stats</span>
+            <span class="tag">5 friends</span>
+          </div>
+          <div class="panel-body">
+            <div
+              style="display:grid; grid-template-columns:34px 1fr auto auto auto; gap:8px; align-items:center; padding-bottom:6px; border-bottom:1px solid var(--line);">
+              <span></span>
+              <span class="label" style="margin:0">player</span>
+              <span class="label" style="margin:0">score</span>
+              <span class="label" style="margin:0">win%</span>
+              <span class="label" style="margin:0">status</span>
+            </div>
+            <div class="scroll-y">
+              <div
+                style="display:grid;grid-template-columns:34px 1fr auto auto auto;gap:8px;align-items:center;padding:7px 0;border-bottom:1px dashed var(--line)">
+                <div class="avatar">VX</div><span style="font-weight:700">vortex_99</span>
+                <span style="color:var(--blue);font-size:13px">112,340</span>
+                <span class="text-muted">72%</span>
+                <span style="font-size:12px"><span class="dot dot-online"></span><span style="color:#27ae60">in
+                    game</span></span>
+              </div>
+              <div
+                style="display:grid;grid-template-columns:34px 1fr auto auto auto;gap:8px;align-items:center;padding:7px 0;border-bottom:1px dashed var(--line)">
+                <div class="avatar">NK</div><span style="font-weight:700">null_kick</span>
+                <span style="color:var(--blue);font-size:13px">89,120</span>
+                <span class="text-muted">61%</span>
+                <span style="font-size:12px"><span class="dot dot-online"></span><span
+                    style="color:#27ae60">online</span></span>
+              </div>
+              <div
+                style="display:grid;grid-template-columns:34px 1fr auto auto auto;gap:8px;align-items:center;padding:7px 0;border-bottom:1px dashed var(--line)">
+                <div class="avatar">R7</div><span style="font-weight:700">r4g3_q7</span>
+                <span style="color:var(--blue);font-size:13px">77,890</span>
+                <span class="text-muted">58%</span>
+                <span style="font-size:12px"><span class="dot dot-offline"></span><span
+                    class="text-muted">offline</span></span>
+              </div>
+              <div
+                style="display:grid;grid-template-columns:34px 1fr auto auto auto;gap:8px;align-items:center;padding:7px 0;border-bottom:1px dashed var(--line)">
+                <div class="avatar">ZR</div><span style="font-weight:700">zero_rush</span>
+                <span style="color:var(--blue);font-size:13px">65,400</span>
+                <span class="text-muted">54%</span>
+                <span style="font-size:12px"><span class="dot dot-offline"></span><span
+                    class="text-muted">offline</span></span>
+              </div>
+              <div
+                style="display:grid;grid-template-columns:34px 1fr auto auto auto;gap:8px;align-items:center;padding:7px 0;">
+                <div class="avatar">PL</div><span style="font-weight:700">pl4gue</span>
+                <span style="color:var(--blue);font-size:13px">42,100</span>
+                <span class="text-muted">49%</span>
+                <span style="font-size:12px"><span class="dot dot-online"></span><span
+                    style="color:#27ae60">online</span></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: Leaderboard -->
+      <div>
+        <div class="panel">
+          <div class="panel-header">
+            <span class="panel-title">Global leaderboard</span>
+            <span class="tag">all time</span>
+          </div>
+          <div class="panel-body">
+            <div class="scroll-y">
+              <div class="lb-row"><span class="lb-rank top">#1</span><span class="lb-name">apex_swarm</span><span
+                  class="lb-score">2,841,220</span></div>
+              <div class="lb-row"><span class="lb-rank top">#2</span><span class="lb-name">kr0nos</span><span
+                  class="lb-score">2,103,440</span></div>
+              <div class="lb-row"><span class="lb-rank top">#3</span><span class="lb-name">d4rkm4tt3r</span><span
+                  class="lb-score">1,984,100</span></div>
+              <div class="lb-row"><span class="lb-rank">#4</span><span class="lb-name">vortex_99</span><span
+                  class="lb-score">1,763,800</span></div>
+              <div class="lb-row"><span class="lb-rank">#5</span><span class="lb-name">nyx_1</span><span
+                  class="lb-score">1,521,000</span></div>
+              <div class="lb-row"><span class="lb-rank">#6</span><span class="lb-name">sl4yer</span><span
+                  class="lb-score">1,388,200</span></div>
+              <div class="lb-row"><span class="lb-rank">#7</span><span class="lb-name">wraith_7</span><span
+                  class="lb-score">1,210,440</span></div>
+              <div class="lb-row"><span class="lb-rank">#8</span><span class="lb-name">null_kick</span><span
+                  class="lb-score">1,102,900</span></div>
+              <div class="lb-row"><span class="lb-rank">#9</span><span class="lb-name">ph4ntom_x</span><span
+                  class="lb-score">989,330</span></div>
+              <div class="lb-row"><span class="lb-rank">#10</span><span class="lb-name">c0ld_snap</span><span
+                  class="lb-score">870,120</span></div>
+              <hr class="divider">
+              <div class="lb-row highlight">
+                <span class="lb-rank">#142</span>
+                <span class="lb-name" style="color:var(--blue)">ghost_451 ← you</span>
+                <span class="lb-score">98,430</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PLAY BUTTON -->
+      <div class="play-section">
+        <div>
+          <div class="play-title">Ready to survive? ✦</div>
+          <div class="play-sub">Last run: 28 min ago · best: 04:21:08 · rank #142</div>
+        </div>
+        <a href="game.html" style="text-decoration:none">
+          <button class="btn-play">▶ Start game</button>
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==================== ACCOUNT ==================== -->
+  <div id="section-account" class="section-content">
+    <div class="main" style="grid-template-columns:1fr 1fr; max-width:900px;">
+      <div class="panel" style="grid-column:1/-1;">
+        <div class="panel-header">
+          <span class="panel-title">Account details</span>
+          <span class="tag tag-accent">ghost_451</span>
+        </div>
+        <div class="panel-body" style="display:grid;grid-template-columns:1fr 1fr;gap:28px;">
+          <div>
+            <div class="label" style="font-size:14px;color:var(--ink-mid);margin-bottom:12px;">— profile —</div>
+            <div class="account-field">
+              <div class="label">username</div>
+              <div class="account-field-row">
+                <input type="text" value="ghost_451">
+                <button class="btn btn-outline btn-sm">update</button>
+              </div>
+            </div>
+            <div class="account-field">
+              <div class="label">email</div>
+              <div class="account-field-row">
+                <input type="email" value="ghost451@example.com">
+                <button class="btn btn-outline btn-sm">update</button>
+              </div>
+            </div>
+            <div class="account-field">
+              <div class="label">display name</div>
+              <div class="account-field-row">
+                <input type="text" value="Ghost">
+                <button class="btn btn-outline btn-sm">update</button>
+              </div>
+            </div>
+            <div class="account-field">
+              <div class="label">country</div>
+              <select>
+                <option>Switzerland</option>
+                <option>France</option>
+                <option>Germany</option>
+                <option>United States</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <div class="label" style="font-size:14px;color:var(--ink-mid);margin-bottom:12px;">— security —</div>
+            <div class="account-field">
+              <div class="label">current password</div>
+              <input type="password" placeholder="••••••••">
+            </div>
+            <div class="account-field">
+              <div class="label">new password</div>
+              <input type="password" placeholder="••••••••">
+            </div>
+            <div class="account-field">
+              <div class="label">confirm new password</div>
+              <input type="password" placeholder="••••••••">
+            </div>
+            <button class="btn btn-primary btn-sm mt-8">Change password</button>
+            <hr class="divider">
+            <div class="label" style="font-size:14px;color:var(--red);">— danger zone —</div>
+            <div style="margin-top:8px;display:flex;gap:8px;">
+              <button class="btn btn-danger btn-sm">Delete account</button>
+              <button class="btn btn-outline btn-sm">Log out</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== FRIENDS ==================== -->
+  <div id="section-friends" class="section-content">
+    <div class="main" style="grid-template-columns:1fr 1fr; max-width:900px;">
+
+      <!-- Add friend -->
+      <div class="panel">
+        <div class="panel-header"><span class="panel-title">Add a friend</span></div>
+        <div class="panel-body">
+          <div class="label">search by username</div>
+          <div class="flex gap-8 mt-8">
+            <input type="text" placeholder="enter a username...">
+            <button class="btn btn-primary btn-sm" style="white-space:nowrap">Search</button>
+          </div>
+          <hr class="divider">
+          <div class="label">results</div>
+          <div style="padding:10px 0;border-bottom:1px dashed var(--line);" class="flex-between">
+            <div class="friend-info">
+              <div class="avatar">AX</div>
+              <div>
+                <div style="font-weight:700">ax_wr4ith</div>
+                <div class="text-muted">Rank #88</div>
+              </div>
+            </div>
+            <button class="btn btn-outline btn-sm">+ Add</button>
+          </div>
+          <div style="padding:10px 0;" class="flex-between">
+            <div class="friend-info">
+              <div class="avatar">AX</div>
+              <div>
+                <div style="font-weight:700">ax_hunter</div>
+                <div class="text-muted">Rank #204</div>
+              </div>
+            </div>
+            <button class="btn btn-outline btn-sm">+ Add</button>
+          </div>
+          <hr class="divider">
+          <div class="label">pending requests</div>
+          <div style="padding:10px 0;" class="flex-between">
+            <div class="friend-info">
+              <div class="avatar">ZZ</div>
+              <div>
+                <div style="font-weight:700">zer0_z0ne</div>
+                <div class="text-muted">wants to be friends</div>
+              </div>
+            </div>
+            <div class="flex gap-8">
+              <button class="btn btn-primary btn-sm">Accept</button>
+              <button class="btn btn-outline btn-sm">Decline</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Friend list -->
+      <div class="panel friend-list">
+        <div class="panel-header">
+          <span class="panel-title">Friend list</span>
+          <span class="tag">5 friends</span>
+        </div>
+        <div class="panel-body">
+          <div class="scroll-y">
+            <div class="friend-row">
+              <div class="friend-info">
+                <div class="avatar">VX</div>
+                <div>
+                  <div style="font-weight:700">vortex_99</div>
+                  <div><span class="dot dot-online"></span><span style="font-size:12px;color:#27ae60">In game</span>
+                  </div>
+                </div>
+              </div>
+              <button class="btn btn-danger btn-sm">Remove</button>
+            </div>
+            <div class="friend-row">
+              <div class="friend-info">
+                <div class="avatar">NK</div>
+                <div>
+                  <div style="font-weight:700">null_kick</div>
+                  <div><span class="dot dot-online"></span><span style="font-size:12px;color:#27ae60">Online</span>
+                  </div>
+                </div>
+              </div>
+              <button class="btn btn-danger btn-sm">Remove</button>
+            </div>
+            <div class="friend-row">
+              <div class="friend-info">
+                <div class="avatar">R7</div>
+                <div>
+                  <div style="font-weight:700">r4g3_q7</div>
+                  <div><span class="dot dot-offline"></span><span
+                      style="font-size:12px;color:var(--ink-faint)">Offline</span></div>
+                </div>
+              </div>
+              <button class="btn btn-danger btn-sm">Remove</button>
+            </div>
+            <div class="friend-row">
+              <div class="friend-info">
+                <div class="avatar">ZR</div>
+                <div>
+                  <div style="font-weight:700">zero_rush</div>
+                  <div><span class="dot dot-offline"></span><span style="font-size:12px;color:var(--ink-faint)">Offline
+                      — 2d ago</span></div>
+                </div>
+              </div>
+              <button class="btn btn-danger btn-sm">Remove</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    function showSection(name, btn) {
+      document.querySelectorAll('.section-content').forEach(s => s.classList.remove('active'));
+      document.getElementById('section-' + name).classList.add('active');
+      document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+    function switchAuthTab(tab, el) {
+      document.getElementById('auth-login').style.display = tab === 'login' ? 'block' : 'none';
+      document.getElementById('auth-register').style.display = tab === 'register' ? 'block' : 'none';
+      el.parentElement.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+    }
+  </script>
+</body>
+
+</html>
