@@ -1,0 +1,269 @@
+/* ============ LAYOUT ============ */
+.main {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 28px 32px;
+  display: grid;
+  grid-template-columns: 300px 1fr 260px;
+  gap: 20px;
+}
+
+/* ============ PANELS ============ */
+.panel {
+  background: #faf7f1;
+  border: 2px solid var(--ink);
+  border-radius: 2px;
+  box-shadow: 3px 3px 0 var(--ink);
+  position: relative;
+}
+
+.panel-header {
+  background: var(--paper3);
+  border-bottom: 2px solid var(--ink);
+  padding: 9px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.panel-title {
+  font-family: 'Patrick Hand';
+  font-size: 15px;
+  color: var(--ink);
+}
+
+.panel-body {
+  padding: 16px;
+}
+
+/* ============ LABELS ============ */
+.label {
+  font-family: 'Patrick Hand';
+  font-size: 12px;
+  color: var(--ink-faint);
+  margin-bottom: 5px;
+  text-transform: lowercase;
+  letter-spacing: 0.5px;
+}
+
+/* ============ INPUTS ============ */
+input,
+select {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1.5px solid var(--ink-mid);
+  color: var(--ink);
+  font-family: 'Patrick Hand';
+  font-size: 16px;
+  padding: 5px 4px;
+  outline: none;
+  transition: border-color 0.15s;
+  border-radius: 0;
+  -webkit-appearance: none;
+}
+
+input:focus,
+select:focus {
+  border-bottom-color: var(--blue);
+}
+
+input::placeholder {
+  color: var(--ink-faint);
+  font-style: italic;
+}
+
+select option {
+  background: var(--paper);
+}
+
+.form-row {
+  margin-bottom: 14px;
+}
+
+/* ============ BUTTONS ============ */
+.btn {
+  display: inline-block;
+  font-family: 'Patrick Hand';
+  font-size: 16px;
+  cursor: pointer;
+  padding: 6px 16px;
+  transition: all 0.1s;
+  border-radius: 1px;
+  position: relative;
+}
+
+.btn-primary {
+  background: var(--ink);
+  color: var(--paper);
+  border: 2px solid var(--ink);
+  box-shadow: 2px 2px 0 var(--ink-mid);
+}
+
+.btn-primary:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 var(--ink-mid);
+}
+
+.btn-outline {
+  background: transparent;
+  border: 1.5px solid var(--ink-mid);
+  color: var(--ink-mid);
+  box-shadow: 2px 2px 0 var(--line);
+}
+
+.btn-outline:hover {
+  border-color: var(--ink);
+  color: var(--ink);
+}
+
+.btn-danger {
+  background: transparent;
+  border: 1.5px solid var(--red);
+  color: var(--red);
+  box-shadow: 2px 2px 0 rgba(192, 57, 43, 0.2);
+}
+
+.btn-danger:hover {
+  background: var(--red);
+  color: #fff;
+}
+
+.btn-sm {
+  padding: 3px 10px;
+  font-size: 14px;
+}
+
+.btn-block {
+  width: 100%;
+  text-align: center;
+}
+
+/* ============ DIVIDER ============ */
+.divider {
+  border: none;
+  border-top: 1.5px dashed var(--line);
+  margin: 14px 0;
+}
+
+/* ============ UTILITY ============ */
+.text-center {
+  text-align: center;
+}
+
+.text-muted {
+  color: var(--ink-faint);
+  font-size: 13px;
+}
+
+.flex {
+  display: flex;
+}
+
+.flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.gap-8 {
+  gap: 8px;
+}
+
+.mt-8 {
+  margin-top: 8px;
+}
+
+/* ============ TABS ============ */
+.tabs {
+  display: flex;
+  border-bottom: 1.5px solid var(--line);
+  margin-bottom: 16px;
+}
+
+.tab {
+  font-family: 'Patrick Hand';
+  font-size: 15px;
+  padding: 6px 14px;
+  cursor: pointer;
+  color: var(--ink-faint);
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  transition: all 0.12s;
+}
+
+.tab.active {
+  color: var(--ink);
+  border-bottom-color: var(--ink);
+  font-weight: 700;
+}
+
+/* ============ TAG ============ */
+.tag {
+  display: inline-block;
+  font-family: 'Patrick Hand';
+  font-size: 12px;
+  padding: 1px 8px;
+  border: 1.5px solid var(--line);
+  color: var(--ink-faint);
+  transform: rotate(0.5deg);
+}
+
+.tag-accent {
+  border-color: var(--blue);
+  color: var(--blue);
+}
+
+/* ============ NOTIF ============ */
+.notif {
+  background: rgba(36, 113, 163, 0.07);
+  border-left: 3px solid var(--blue);
+  padding: 7px 12px;
+  font-size: 14px;
+  color: var(--blue);
+  margin-bottom: 12px;
+  font-style: italic;
+}
+
+/* ============ AVATAR ============ */
+.avatar {
+  width: 34px;
+  height: 34px;
+  border: 2px solid var(--ink);
+  background: var(--paper3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink);
+  flex-shrink: 0;
+  border-radius: 50% 48% 52% 50% / 50% 52% 48% 50%;
+}
+
+/* ============ DOT STATUS ============ */
+.dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  margin-right: 4px;
+}
+
+.dot-online {
+  background: #27ae60;
+}
+
+.dot-offline {
+  background: var(--line);
+}
+
+/* ============ PENCIL ANNOTATION STYLE ============ */
+.annotation {
+  font-family: 'Patrick Hand';
+  font-size: 12px;
+  color: var(--pencil);
+  font-style: italic;
+  transform: rotate(-1deg);
+  display: inline-block;
+}

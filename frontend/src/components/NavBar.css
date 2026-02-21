@@ -1,0 +1,120 @@
+/* ============ HEADER ============ */
+header {
+  background: var(--paper2);
+  border-bottom: 2.5px solid var(--ink);
+  box-shadow: 0 2px 0 var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+  height: 62px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.logo {
+  font-family: 'Patrick Hand';
+  font-size: 26px;
+  color: var(--ink);
+  letter-spacing: 1px;
+  transform: rotate(-0.8deg);
+  display: inline-block;
+  position: relative;
+}
+
+.logo::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  left: 0;
+  right: 0;
+  height: 2.5px;
+  background: var(--red);
+  transform: rotate(-0.3deg) scaleX(0.95);
+  transform-origin: left;
+}
+
+.logo-sub {
+  font-family: 'Patrick Hand';
+  font-size: 12px;
+  color: var(--ink-faint);
+  display: block;
+  transform: rotate(0.4deg);
+  margin-top: -4px;
+}
+
+nav {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+nav button,
+.nav-link {
+  background: none;
+  border: none;
+  font-family: 'Patrick Hand';
+  font-size: 17px;
+  color: var(--ink-mid);
+  cursor: pointer;
+  padding: 4px 14px;
+  position: relative;
+  transition: color 0.12s;
+  text-decoration: none;
+  display: inline-block;
+}
+
+nav button::after,
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 8px;
+  right: 8px;
+  height: 2px;
+  background: var(--ink);
+  transform: scaleX(0) rotate(-0.5deg);
+  transform-origin: left;
+  transition: transform 0.15s;
+}
+
+nav button:hover,
+.nav-link:hover {
+  color: var(--ink);
+}
+
+nav button:hover::after,
+nav button.active::after,
+.nav-link:hover::after,
+.nav-link.active::after {
+  transform: scaleX(1);
+}
+
+nav button.active,
+.nav-link.active {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.status-badge {
+  font-family: 'Patrick Hand';
+  font-size: 13px;
+  padding: 2px 10px;
+  border: 1.5px solid var(--line);
+  color: var(--ink-faint);
+  transform: rotate(0.3deg);
+  display: inline-block;
+}
+
+.status-badge.online {
+  border-color: var(--blue);
+  color: var(--blue);
+  border-style: solid;
+}

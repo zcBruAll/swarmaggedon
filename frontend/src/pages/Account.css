@@ -1,0 +1,14 @@
+/* ============ ACCOUNT ============ */
+.account-field {
+  margin-bottom: 14px;
+}
+
+.account-field-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.account-field-row input {
+  flex: 1;
+}

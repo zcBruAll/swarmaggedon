@@ -1,0 +1,34 @@
+/* =========== FRIEND LIST ============ */
+.friend-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.friend-list .panel-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.friend-list .scroll-y {
+  overflow-y: auto;
+}
+
+/* ============ FRIEND ROW ============ */
+.friend-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px dashed var(--line);
+}
+
+.friend-row:last-child {
+  border-bottom: none;
+}
+
+.friend-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
