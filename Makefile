@@ -4,8 +4,14 @@ start:
 	docker compose up -d --build --remove-orphans
 	docker image prune -f
 
+delete:
+	docker compose down -v --rmi all --remove-orphans
+
 dev:
 	docker compose -f docker-compose.yml -f dev-compose.yml up -d --build --remove-orphans
 
-delete:
-	docker compose down -v --rmi all --remove-orphans
+dev-db:
+	docker compose -f docker-compose.yml -f dev-compose.yml up -d --build --remove-orphans mongo
+
+dev-backend:
+	docker compose -f docker-compose.yml -f dev-compose.yml up -d --build --remove-orphans backend

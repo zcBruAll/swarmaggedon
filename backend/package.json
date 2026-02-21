@@ -7,10 +7,13 @@
   "type": "module",
   "main": "src/app.js",
   "scripts": {
-    "start": "node .",
+    "start": "MONGO_HOST=mongo node .",
+    "dev": "MONGO_HOST=localhost node .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "express": "^5.2.1"
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "mongodb": "^7.1.0"
   }
 }
