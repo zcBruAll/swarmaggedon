@@ -6,3 +6,6 @@ start:
 
 dev:
 	docker compose -f docker-compose.yml -f dev-compose.yml up -d --build --remove-orphans
+
+delete:
+	docker compose down -v --rmi all --remove-orphans
