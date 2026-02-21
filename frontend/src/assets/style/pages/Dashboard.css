@@ -26,18 +26,18 @@
 
 .global-stat-value {
   font-family: 'Patrick Hand';
-  font-size: 28px;
+  font-size: 42px;
   color: var(--ink);
   line-height: 1;
 }
 
 .global-stat-title {
-  font-size: 13px;
+  font-size: 20px;
   color: var(--ink-faint);
 }
 
 .global-stat-sub {
-  font-size: 12px;
+  font-size: 18px;
   color: var(--ink-mid);
   margin-top: 1px;
 }
@@ -58,12 +58,12 @@
 
 .stat-value {
   font-family: 'Patrick Hand';
-  font-size: 24px;
+  font-size: 32px;
   color: var(--ink);
 }
 
 .stat-label {
-  font-size: 12px;
+  font-size: 18px;
   color: var(--ink-faint);
   margin-top: 1px;
 }
@@ -76,7 +76,7 @@
   align-items: center;
   padding: 6px 0;
   border-bottom: 1px dashed var(--line);
-  font-size: 15px;
+  font-size: 18px;
 }
 
 .lb-row:last-child {
@@ -84,7 +84,7 @@
 }
 
 .lb-rank {
-  font-size: 12px;
+  font-size: 18px;
   color: var(--ink-faint);
   text-align: right;
 }
@@ -92,7 +92,7 @@
 .lb-rank.top {
   color: var(--red);
   font-weight: 700;
-  font-size: 13px;
+  font-size: 19px;
 }
 
 .lb-name {
@@ -100,7 +100,7 @@
 }
 
 .lb-score {
-  font-size: 13px;
+  font-size: 19px;
   color: var(--blue);
   font-family: 'Patrick Hand';
 }
@@ -142,12 +142,12 @@
 
 .play-title {
   font-family: 'Patrick Hand';
-  font-size: 22px;
+  font-size: 32px;
   letter-spacing: 1px;
 }
 
 .play-sub {
-  font-size: 13px;
+  font-size: 19px;
   color: rgba(244, 240, 232, 0.6);
   margin-top: 2px;
 }
@@ -156,7 +156,7 @@
   background: var(--paper);
   color: var(--ink);
   font-family: 'Patrick Hand';
-  font-size: 18px;
+  font-size: 24px;
   border: 2px solid var(--paper);
   padding: 10px 36px;
   cursor: pointer;

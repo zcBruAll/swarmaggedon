@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import './NavBar.css';
+import '../assets/style/components/NavBar.css';
 
 // Placeholder for auth
 const isLoggedIn = () => false;

@@ -1,0 +1,38 @@
+.friend-stat-row-title {
+    display: grid; 
+    grid-template-columns: 34px 1fr auto auto auto;
+    gap: 8px; 
+    align-items: center;
+    padding: 6px;
+    border-bottom: 1px solid var(--line);
+}
+
+.friend-stat-row {
+    display: grid; 
+    grid-template-columns: 34px 1fr auto auto auto;
+    gap: 8px; 
+    align-items: center;
+    padding: 7px 0;
+    border-bottom: 1px dashed var(--line);
+}
+
+.friend-stat-row:last-child {
+  border-bottom: none;
+}
+
+.avatar + span {
+    font-weight: 700;
+}
+
+.score {
+    color: var(--blue);
+    font-size: 18px;
+}
+
+.game-state {
+    font-size: 18px;
+}
+
+.state-active {
+    color: #27ae60;
+}

@@ -1,4 +1,4 @@
-import './Friends.css'
+import '../assets/style/pages/Friends.css'
 
 const Friends = () => (
   <div id="section-friends" className="section-content active">

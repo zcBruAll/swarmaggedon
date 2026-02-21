@@ -21,15 +21,15 @@ body {
   background: var(--paper);
   color: var(--ink);
   font-family: 'Patrick Hand', cursive;
-  font-size: 16px;
-  line-height: 1.5;
+  font-size: 20px;
+  line-height: 1.6;
   min-height: 100vh;
   background-image:
     repeating-linear-gradient(180deg,
       transparent,
-      transparent 27px,
-      rgba(180, 168, 148, 0.18) 27px,
-      rgba(180, 168, 148, 0.18) 28px);
+      transparent 33px,
+      rgba(180, 168, 148, 0.18) 33px,
+      rgba(180, 168, 148, 0.18) 34px);
 }
 
 /* ============ SCROLLBAR STYLE ============ */

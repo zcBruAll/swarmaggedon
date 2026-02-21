@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './Game.css';
+import '../assets/style/pages/Game.css';
 
 function Game() {
   const canvasRef = useRef(null);

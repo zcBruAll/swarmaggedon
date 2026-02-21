@@ -3,7 +3,7 @@ import GlobalStats from '../components/GlobalStats'
 import AccountStats from '../components/AccountStats'
 import FriendsStats from '../components/FriendsStats'
 import GlobalLeaderboard from '../components/GlobalLeaderboard'
-import './Dashboard.css'
+import '../assets/style/pages/Dashboard.css'
 
 const Dashboard = () => {
   const navigate = useNavigate();

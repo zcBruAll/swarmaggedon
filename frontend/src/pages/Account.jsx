@@ -1,4 +1,4 @@
-import './Account.css'
+import '../assets/style/pages/Account.css'
 
 const Account = () => (
   <div id="section-account" className="section-content active">

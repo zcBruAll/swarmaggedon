@@ -1,3 +1,5 @@
+import '../assets/style/components/FriendsStats.css';
+
 function FriendsStats() {
     return <div className="panel">
               <div className="panel-header">
@@ -5,7 +7,7 @@ function FriendsStats() {
                 <span className="tag">5 friends</span>
               </div>
               <div className="panel-body">
-                <div style={{ display: 'grid', gridTemplateColumns: '34px 1fr auto auto auto', gap: '8px', alignItems: 'center', paddingBottom: '6px', borderBottom: '1px solid var(--line)' }}>
+                <div className="friend-stat-row-title">
                   <span></span>
                   <span className="label" style={{ margin: 0 }}>player</span>
                   <span className="label" style={{ margin: 0 }}>score</span>
@@ -13,35 +15,35 @@ function FriendsStats() {
                   <span className="label" style={{ margin: 0 }}>status</span>
                 </div>
                 <div className="scroll-y">
-                  <div style={{ display: 'grid', gridTemplateColumns: '34px 1fr auto auto auto', gap: '8px', alignItems: 'center', padding: '7px 0', borderBottom: '1px dashed var(--line)' }}>
-                    <div className="avatar">VX</div><span style={{ fontWeight: 700 }}>vortex_99</span>
-                    <span style={{ color: 'var(--blue)', fontSize: '13px' }}>112,340</span>
+                  <div className="friend-stat-row">
+                    <div className="avatar">VX</div><span>vortex_99</span>
+                    <span className="score">112,340</span>
                     <span className="text-muted">72%</span>
-                    <span style={{ fontSize: '12px' }}><span className="dot dot-online"></span><span style={{ color: '#27ae60' }}>in game</span></span>
+                    <span className="game-state"><span className="dot dot-online"></span><span className="state-active">in game</span></span>
                   </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '34px 1fr auto auto auto', gap: '8px', alignItems: 'center', padding: '7px 0', borderBottom: '1px dashed var(--line)' }}>
-                    <div className="avatar">NK</div><span style={{ fontWeight: 700 }}>null_kick</span>
-                    <span style={{ color: 'var(--blue)', fontSize: '13px' }}>89,120</span>
+                  <div className="friend-stat-row">
+                    <div className="avatar">NK</div><span>null_kick</span>
+                    <span className="score">89,120</span>
                     <span className="text-muted">61%</span>
-                    <span style={{ fontSize: '12px' }}><span className="dot dot-online"></span><span style={{ color: '#27ae60' }}>online</span></span>
+                    <span className="game-state"><span className="dot dot-online"></span><span className="state-active">online</span></span>
                   </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '34px 1fr auto auto auto', gap: '8px', alignItems: 'center', padding: '7px 0', borderBottom: '1px dashed var(--line)' }}>
-                    <div className="avatar">R7</div><span style={{ fontWeight: 700 }}>r4g3_q7</span>
-                    <span style={{ color: 'var(--blue)', fontSize: '13px' }}>77,890</span>
+                  <div className="friend-stat-row">
+                    <div className="avatar">R7</div><span>r4g3_q7</span>
+                    <span className="score">77,890</span>
                     <span className="text-muted">58%</span>
-                    <span style={{ fontSize: '12px' }}><span className="dot dot-offline"></span><span className="text-muted">offline</span></span>
+                    <span className="game-state"><span className="dot dot-offline"></span><span className="text-muted">offline</span></span>
                   </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '34px 1fr auto auto auto', gap: '8px', alignItems: 'center', padding: '7px 0', borderBottom: '1px dashed var(--line)' }}>
-                    <div className="avatar">ZR</div><span style={{ fontWeight: 700 }}>zero_rush</span>
-                    <span style={{ color: 'var(--blue)', fontSize: '13px' }}>65,400</span>
+                  <div className="friend-stat-row">
+                    <div className="avatar">ZR</div><span>zero_rush</span>
+                    <span className="score">65,400</span>
                     <span className="text-muted">54%</span>
-                    <span style={{ fontSize: '12px' }}><span className="dot dot-offline"></span><span className="text-muted">offline</span></span>
+                    <span className="game-state"><span className="dot dot-offline"></span><span className="text-muted">offline</span></span>
                   </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '34px 1fr auto auto auto', gap: '8px', alignItems: 'center', padding: '7px 0' }}>
-                    <div className="avatar">PL</div><span style={{ fontWeight: 700 }}>pl4gue</span>
-                    <span style={{ color: 'var(--blue)', fontSize: '13px' }}>42,100</span>
+                  <div className="friend-stat-row">
+                    <div className="avatar">PL</div><span>pl4gue</span>
+                    <span className="score">42,100</span>
                     <span className="text-muted">49%</span>
-                    <span style={{ fontSize: '12px' }}><span className="dot dot-online"></span><span style={{ color: '#27ae60' }}>online</span></span>
+                    <span className="game-state"><span className="dot dot-online"></span><span className="state-active">online</span></span>
                   </div>
                 </div>
               </div>

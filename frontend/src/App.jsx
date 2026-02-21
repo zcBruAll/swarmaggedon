@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import './index.css'
-import './components/Common.css'
+import './assets/style/index.css'
+import './assets/style/Common.css'
 import Game from './pages/Game'
 import NavBar from './components/NavBar'
 import Dashboard from './pages/Dashboard'

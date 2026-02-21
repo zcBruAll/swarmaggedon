@@ -1,10 +1,10 @@
 /* ============ LAYOUT ============ */
 .main {
-  max-width: 1280px;
+  max-width: 90%;
   margin: 0 auto;
   padding: 28px 32px;
   display: grid;
-  grid-template-columns: 300px 1fr 260px;
+  grid-template-columns: 25% 1fr 22%;
   gap: 20px;
 }
 
@@ -28,7 +28,7 @@
 
 .panel-title {
   font-family: 'Patrick Hand';
-  font-size: 15px;
+  font-size: 32px;
   color: var(--ink);
 }
 
@@ -39,7 +39,7 @@
 /* ============ LABELS ============ */
 .label {
   font-family: 'Patrick Hand';
-  font-size: 12px;
+  font-size: 18px;
   color: var(--ink-faint);
   margin-bottom: 5px;
   text-transform: lowercase;
@@ -55,7 +55,7 @@ select {
   border-bottom: 1.5px solid var(--ink-mid);
   color: var(--ink);
   font-family: 'Patrick Hand';
-  font-size: 16px;
+  font-size: 20px;
   padding: 5px 4px;
   outline: none;
   transition: border-color 0.15s;
@@ -85,7 +85,7 @@ select option {
 .btn {
   display: inline-block;
   font-family: 'Patrick Hand';
-  font-size: 16px;
+  font-size: 20px;
   cursor: pointer;
   padding: 6px 16px;
   transition: all 0.1s;
@@ -131,7 +131,7 @@ select option {
 
 .btn-sm {
   padding: 3px 10px;
-  font-size: 14px;
+  font-size: 19px;
 }
 
 .btn-block {
@@ -153,7 +153,7 @@ select option {
 
 .text-muted {
   color: var(--ink-faint);
-  font-size: 13px;
+  font-size: 18px;
 }
 
 .flex {
@@ -183,7 +183,7 @@ select option {
 
 .tab {
   font-family: 'Patrick Hand';
-  font-size: 15px;
+  font-size: 22px;
   padding: 6px 14px;
   cursor: pointer;
   color: var(--ink-faint);
@@ -202,7 +202,7 @@ select option {
 .tag {
   display: inline-block;
   font-family: 'Patrick Hand';
-  font-size: 12px;
+  font-size: 18px;
   padding: 1px 8px;
   border: 1.5px solid var(--line);
   color: var(--ink-faint);
@@ -234,7 +234,7 @@ select option {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
+  font-size: 18px;
   font-weight: 700;
   color: var(--ink);
   flex-shrink: 0;
@@ -261,7 +261,7 @@ select option {
 /* ============ PENCIL ANNOTATION STYLE ============ */
 .annotation {
   font-family: 'Patrick Hand';
-  font-size: 12px;
+  font-size: 18px;
   color: var(--pencil);
   font-style: italic;
   transform: rotate(-1deg);
