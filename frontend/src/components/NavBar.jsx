@@ -36,19 +36,17 @@ function NavBar() {
       
       <div className="header-right">
         {isLoggedIn() ? (
-          <>
+            <>
             <span className="status-badge online">● connected</span>
             <span className="status-badge">ghost_451</span>
-          </>
+            </>
         ) : (
-          <>
             <Link 
-              to="/auth" 
-              className={`nav-link ${location.pathname === '/auth' ? 'active' : ''}`}
+                to="/auth" 
+                className={`nav-link ${location.pathname === '/auth' ? 'active' : ''}`}
             >
-              Login / Register
+                Login / Register
             </Link>
-          </>
         )}
       </div>
     </header>
