@@ -25,13 +25,6 @@ const Account = () => (
               </div>
             </div>
             <div className="account-field">
-              <div className="label">display name</div>
-              <div className="account-field-row">
-                <input type="text" defaultValue="Ghost" />
-                <button className="btn btn-outline btn-sm">update</button>
-              </div>
-            </div>
-            <div className="account-field">
               <div className="label">country</div>
               <select defaultValue="Switzerland">
                 <option>Switzerland</option>

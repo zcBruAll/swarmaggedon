@@ -1,6 +1,6 @@
 function AccountLogin() {
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '28px' }}>
+    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '28px', alignItems: 'start'}}>
       <div className="panel">
         <div className="panel-header">
           <span className="panel-title">Login</span>

@@ -2,7 +2,7 @@ import './Friends.css'
 
 const Friends = () => (
   <div id="section-friends" className="section-content active">
-    <div className="main" style={{ gridTemplateColumns: '1fr 1fr', maxWidth: '900px' }}>
+    <div className="main" style={{ gridTemplateColumns: '1fr 1fr', maxWidth: '900px', alignItems: 'start' }}>
       {/* Add friend */}
       <div className="panel">
         <div className="panel-header"><span className="panel-title">Add a friend</span></div>

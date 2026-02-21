@@ -43,16 +43,10 @@ function NavBar() {
         ) : (
           <>
             <Link 
-              to="/login" 
-              className={`nav-link ${location.pathname === '/login' ? 'active' : ''}`}
+              to="/auth" 
+              className={`nav-link ${location.pathname === '/auth' ? 'active' : ''}`}
             >
-              Login
-            </Link>
-            <Link 
-              to="/register" 
-              className={`nav-link ${location.pathname === '/register' ? 'active' : ''}`}
-            >
-              Register
+              Login / Register
             </Link>
           </>
         )}

@@ -19,8 +19,7 @@ function App() {
           <Route path="/account" element={<Account />} />
           <Route path="/friends" element={<Friends />} />
           <Route path="/game" element={<Game />} />
-          <Route path="/login" element={<Auth />} />
-          <Route path="/register" element={<Auth />} />
+          <Route path="/auth" element={<Auth />} />
         </Routes>
       </div>
     </Router>
