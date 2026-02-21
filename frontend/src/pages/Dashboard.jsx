@@ -9,20 +9,19 @@ const Dashboard = () => {
   const navigate = useNavigate();
   return (
     <div id="section-dashboard" className="section-content active">
-      <div className="main">
-        {/* Global stats bar */}
+      <div className="main" style={{ alignItems: 'stretch' }}>
+        {/* Global stats bar : top */}
         <GlobalStats />
 
-        {/* LEFT: account stats */}
+        {/* Global leaderboard*/}
+        <div style={{ gridRow: 'span 2' }}>
+          <GlobalLeaderboard />
+        </div>
+
         { true ? <AccountStats /> : "Login to see your stats and friends' activity !"}
 
-        {/* CENTER: Friends stats */}
         <FriendsStats />
 
-        {/* RIGHT: Leaderboard */}
-        <GlobalLeaderboard />
-
-        {/* PLAY BUTTON */}
         <div className="play-section">
           <div>
             <div className="play-title">Ready to survive? ✦</div>
