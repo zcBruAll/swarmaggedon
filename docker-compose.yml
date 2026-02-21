@@ -1,0 +1,40 @@
+services:
+  mongo:
+    image: mongo:latest
+    container_name: swarm-mongo
+    restart: always
+    expose:
+    - "27017"
+    volumes:
+      - mongodb_data:/data/swarm-db
+    networks:
+      - swarm-network
+  backend:
+    build:
+      context: ./backend/
+    container_name: swarm-backend
+    depends_on:
+      - mongo
+    ports:
+      - "2877:2877"
+    env_file: ".env"
+    networks:
+      - swarm-network
+  frontend:
+    build: 
+      context: ./frontend/
+    container_name: swarm-frontend
+    depends_on:
+      - backend
+    ports:
+      - "7782:80"
+    env_file: ".env"
+    networks:
+      - swarm-network
+
+networks:
+  swarm-network:
+    driver: bridge
+
+volumes:
+  mongodb_data:
