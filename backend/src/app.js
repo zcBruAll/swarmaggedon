@@ -4,6 +4,7 @@ import cors from 'cors'
 import dotenv from 'dotenv'
 import path from 'path'
 import { fileURLToPath } from 'url'
+import cookieparser from 'cookie-parser'
 
 // setup dotenv
 const __filename = fileURLToPath(import.meta.url)
@@ -16,6 +17,7 @@ const port = 2877
 
 app.use(express.json())
 app.use(cors())
+app.use(cookieparser())
 
 app.listen(port, async () => {
     await connectDB()
@@ -24,5 +26,7 @@ app.listen(port, async () => {
 
 // routes
 import authRoute from './routes/auth.route.js'
+import userRoute from './routes/user.route.js'
 
 app.use("/auth", authRoute)
+app.use("/user", userRoute)
