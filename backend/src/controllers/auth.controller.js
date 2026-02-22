@@ -17,8 +17,7 @@ const postLogin = async (req, res) => {
 
     if (!user) return res.status(400).send("Wrong username or password")
     if (!bcrypt.compareSync(password, user.password)) return res.status(400).send("Wrong username or password")
-    
-    const token = jwt.sign({email: user.email}, process.env.JWT_SECRET, {expiresIn: JWT_EXPIRATION})
+    const token = jwt.sign({id: user._id.toString(), email: user.email}, process.env.JWT_SECRET, {expiresIn: JWT_EXPIRATION})
     
     res.cookie('auth_token', token, {
         httpOnly: true,
