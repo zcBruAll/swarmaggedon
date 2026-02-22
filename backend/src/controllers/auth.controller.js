@@ -28,6 +28,11 @@ const postLogin = async (req, res) => {
     res.status(200).send("Logged in successfully")
 }
 
+const deleteLogout = async (req, res) => {
+    res.clearCookie('auth_token')
+    res.status(200).send("Logged out successfully")
+}
+
 // /auth/register
 // requires "username", "email", "password" (sha-256 hashed) on request body
 const postRegister = async (req, res) => {
@@ -61,5 +66,6 @@ const postRegister = async (req, res) => {
 
 export {
     postLogin,
-    postRegister
+    postRegister,
+    deleteLogout
 }

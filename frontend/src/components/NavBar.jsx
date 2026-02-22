@@ -1,12 +1,12 @@
 import { Link, useLocation } from 'react-router-dom';
 import '../assets/style/components/NavBar.css';
-
-// Placeholder for auth
-const isLoggedIn = () => false;
+import { useAuth } from '../context/AuthContext';
 
 function NavBar() {
   const location = useLocation();
+  const { isLoggedIn, user } = useAuth();
   
+  console.log(isLoggedIn)
   return (
     <header>
       <div>
@@ -35,10 +35,10 @@ function NavBar() {
       </nav>
       
       <div className="header-right">
-        {isLoggedIn() ? (
+        {isLoggedIn ? (
             <>
-            <span className="status-badge online">● connected</span>
-            <span className="status-badge">ghost_451</span>
+              <span className="status-badge online">● connected</span>
+              <span className="status-badge">{user?.username || 'User'}</span>
             </>
         ) : (
             <Link 

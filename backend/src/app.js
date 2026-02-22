@@ -16,7 +16,9 @@ const app = express()
 const port = 2877
 
 app.use(express.json())
-app.use(cors())
+app.use(cors({
+    credentials: true
+}))
 app.use(cookieparser())
 
 app.listen(port, async () => {
