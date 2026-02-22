@@ -7,13 +7,17 @@
   "type": "module",
   "main": "src/app.js",
   "scripts": {
-    "start": "MONGO_HOST=mongo node .",
-    "dev": "MONGO_HOST=localhost node .",
+    "start": "NODE_ENV=production node .",
+    "dev": "NODE_ENV=dev node .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cors": "^2.8.6",
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
-    "mongodb": "^7.1.0"
+    "jsonwebtoken": "^9.0.3",
+    "mongodb": "^7.1.0",
+    "path": "^0.12.7"
   }
 }

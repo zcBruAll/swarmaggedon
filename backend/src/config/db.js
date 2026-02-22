@@ -1,6 +1,6 @@
 import { MongoClient } from 'mongodb';
 
-const url = `mongodb://${process.env.MONGO_HOST}:27017`;
+const url = `mongodb://${process.env.NODE_ENV === 'production' ? 'mongo' : 'localhost'}:27017`;
 const client = new MongoClient(url);
 
 let db;
