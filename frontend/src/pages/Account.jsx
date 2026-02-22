@@ -24,14 +24,11 @@ const Account = () => (
                 <input type="email" defaultValue="ghost451@example.com" />
               </div>
             </div>
-            <div className="account-field">
-              <div className="label">country</div>
-              <select defaultValue="Switzerland">
-                <option>Switzerland</option>
-                <option>France</option>
-                <option>Germany</option>
-                <option>United States</option>
-              </select>
+            <hr className="divider" />
+            <div className="label" style={{ fontSize: '14px', color: 'var(--red)',  }}>— danger zone —</div>
+            <div style={{ marginTop: '8px', display: 'flex', gap: '8px' }}>
+              <button className="btn btn-danger btn-sm">Delete account</button>
+              <button className="btn btn-outline btn-sm" onSubmit="">Log out</button>
             </div>
           </div>
           <div>
@@ -49,12 +46,6 @@ const Account = () => (
               <input type="password" placeholder="••••••••" />
             </div>
             <button className="btn btn-primary btn-sm mt-8">Change password</button>
-            <hr className="divider" />
-            <div className="label" style={{ fontSize: '14px', color: 'var(--red)' }}>— danger zone —</div>
-            <div style={{ marginTop: '8px', display: 'flex', gap: '8px' }}>
-              <button className="btn btn-danger btn-sm">Delete account</button>
-              <button className="btn btn-outline btn-sm">Log out</button>
-            </div>
           </div>
         </div>
       </div>
