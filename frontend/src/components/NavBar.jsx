@@ -6,7 +6,6 @@ function NavBar() {
   const location = useLocation();
   const { isLoggedIn, user } = useAuth();
   
-  console.log(isLoggedIn)
   return (
     <header>
       <div>
@@ -20,18 +19,23 @@ function NavBar() {
         >
           Dashboard
         </Link>
-        <Link 
-          to="/account" 
-          className={`nav-link ${location.pathname === '/account' ? 'active' : ''}`}
-        >
-          Account
-        </Link>
-        <Link 
-          to="/friends" 
-          className={`nav-link ${location.pathname === '/friends' ? 'active' : ''}`}
-        >
-          Friends
-        </Link>
+        {
+          isLoggedIn && 
+          <>
+            <Link 
+              to="/account" 
+              className={`nav-link ${location.pathname === '/account' ? 'active' : ''}`}
+            >
+              Account
+            </Link>
+            <Link 
+              to="/friends" 
+              className={`nav-link ${location.pathname === '/friends' ? 'active' : ''}`}
+            >
+              Friends
+            </Link>
+          </>
+        }
       </nav>
       
       <div className="header-right">
