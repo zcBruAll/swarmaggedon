@@ -5,7 +5,7 @@ start:
 	docker image prune -f
 
 delete:
-	docker compose down -v --rmi all --remove-orphans
+	docker compose down -v --remove-orphans
 
 dev:
 	docker compose -f docker-compose.yml -f dev-compose.yml up -d --build --remove-orphans
