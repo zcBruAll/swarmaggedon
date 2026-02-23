@@ -26,12 +26,15 @@ export function updatePlayer(player, input, dt, canvasWidth, canvasHeight) {
     const dirX = input.keys.left ? -1 : input.keys.right ? 1 : 0;
     player.x += playerSpeed * dt * dirX;
     player.y += playerSpeed * dt * dirY;
+    player.invicibleTimer -= Math.min(dt, player.invicibleTimer);
 }
 
 export function damagePlayer(player, amount) {
-    // TODO: Reduce hp, check for alive, increase totalDamageTaken
+    if (player.invicibleTimer > 0) return;
+    player.invicibleTimer = playerInvicibilityDuration;
+    player.hp -= Math.min(amount, player.hp);
 }
 
 export function healPlayer(player, amount) {
-    // TODO: Increase hp up to max hp
+    player.hp += Math.min(amount, player.maxHp - player.hp);
 }

@@ -91,7 +91,14 @@ export function createEngine(canvas, onHUDUpdate) {
     }
 
     function resolveEnemiesPlayer() {
-        // TODO: check for collision between ennemies and player
+        for (const enemy of enemies) {
+            const dx = enemy.x - player.x;
+            const dy = enemy.y - player.y;
+            const d = Math.sqrt(dx * dx + dy * dy);
+            if (d <= enemy.radius + player.radius) {
+                damagePlayer(player, enemy.damage);
+            }
+        }
     }
 
     function render() {
