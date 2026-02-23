@@ -11,7 +11,7 @@ const GuestWelcome = () => {
         <span className="panel-title">Survival Records</span>
       </div>
       <div className="panel-body guest-body">
-        <h3 className="guest-title">🔒 Records are locked</h3>
+        <h3 className="guest-title">Records are locked</h3>
         <p className="guest-text">
           Connect your account to track your best runs, compete with friends, and unlock exclusive rewards.
         </p>

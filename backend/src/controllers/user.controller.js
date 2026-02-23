@@ -15,7 +15,9 @@ const getStatsFromUser = async (user) => {
                 total_games: { $sum: 1 },
                 total_kills: { $sum: "$kills" },
                 best_time: { $max: "$duration" },
-                wins: { $sum: { $cond: [{ $eq: ["$win", true] }, 1, 0] } } // Counts wins
+                wins: { $sum: { $cond: [{ $eq: ["$win", true] }, 1, 0] } },
+                high_score: { $max: "$score" },
+                avg_duration: { $avg: "$duration" }
             }
         },
         {
@@ -30,12 +32,14 @@ const getStatsFromUser = async (user) => {
                         0,
                         { $divide: ["$wins", "$total_games"] }
                     ]
-                }
+                },
+                high_score: 1,
+                avg_duration: 1
             }
         }
     ]).toArray()
 
-    return run_data[0] || { total_games: 0, total_kills: 0, win_rate: 0, best_time: 0 }
+    return run_data[0] || { total_games: 0, total_kills: 0, win_rate: 0, best_time: 0, high_score: 0, avg_duration: 0 }
 }
 
 // /user/
