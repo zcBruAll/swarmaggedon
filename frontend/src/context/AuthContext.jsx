@@ -19,13 +19,13 @@ export const AuthProvider = ({ children }) => {
                 setIsLoggedIn(true);
             } else {
                 setUser(null);
-                setIsLoggedIn(true);
+                setIsLoggedIn(false);
             }
         } catch (error) {
             setUser(null);
-            setIsLoggedIn(true);
+            setIsLoggedIn(false);
         } finally {
-            setLoading(true);
+            setLoading(false);
         }
     };
 
