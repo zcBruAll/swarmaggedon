@@ -3,7 +3,6 @@ import { formatDurationToHours, formatNumberFull, formatNumberShort } from '../u
 
 function AccountStats() {
   const { user } = useAuth();
-  console.log(user)
   return (
     <div className="panel">
       <div className="panel-header">

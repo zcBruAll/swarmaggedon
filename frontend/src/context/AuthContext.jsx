@@ -12,7 +12,6 @@ export const AuthProvider = ({ children }) => {
             const response = await fetch('/api/user', {
                 credentials: 'include'
             });
-            console.log("authcontext", response)
             if (response.ok) {
                 const userData = await response.json();
                 setUser(userData);
