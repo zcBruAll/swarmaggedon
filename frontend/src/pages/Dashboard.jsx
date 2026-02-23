@@ -6,10 +6,11 @@ import GlobalLeaderboard from '../components/GlobalLeaderboard'
 import '../assets/style/pages/Dashboard.css'
 import GuestWelcome from '../components/GuestWelcome'
 import { useAuth } from '../context/AuthContext'
+import { formatDurationToHours } from '../utils/Utils'
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const { isLoggedIn, loading } = useAuth();
+  const { isLoggedIn, user, loading } = useAuth();
 
   return (
     <div id="section-dashboard" className="section-content active">
@@ -32,7 +33,7 @@ const Dashboard = () => {
         <div className="play-section">
           <div>
             <div className="play-title">Ready to survive? ✦</div>
-            <div className="play-sub">Last run: 28 min ago · best: 04:21:08 · rank #142</div>
+            <div className="play-sub">{isLoggedIn ? `Last run: todo · best: ${formatDurationToHours(user.stats.best_time)} · rank #todo` : "Create and account to see your stats !"}</div>
           </div>
           <button 
             className="btn-play" 

@@ -1,4 +1,5 @@
 import { useAuth } from '../context/AuthContext';
+import { formatNumberFull } from '../utils/Utils';
 
 function GlobalLeaderboard() {
   const {user, isLoggedIn} = useAuth()
@@ -24,7 +25,7 @@ function GlobalLeaderboard() {
           <div className="lb-row highlight">
             <span className="lb-rank">#todo</span>
             <span className="lb-name" style={{ color: 'var(--blue)' }}>{user?.username} ← you</span>
-            <span className="lb-score">{user?.stats.high_score}</span>
+            <span className="lb-score">{formatNumberFull(user?.stats.high_score)}</span>
           </div></>}
         </div>
       </div>
