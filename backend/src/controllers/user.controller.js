@@ -1,10 +1,6 @@
 import { ObjectId } from "mongodb";
-import { getDB } from "../config/db.js";
+import { COLLECTION_FRIENDS, COLLECTION_RUNS, COLLECTION_USERS, getDB } from "../config/db.js";
 import jwt from 'jsonwebtoken'
-
-const COLLECTION_USERS = 'users'
-const COLLECTION_FRIENDS = 'friends'
-const COLLECTION_RUNS = 'runs'
 
 const getStatsFromUser = async (user) => {
         const run_data = await getDB().collection(COLLECTION_RUNS).aggregate([
@@ -57,7 +53,11 @@ const getLoggedInUser = async (req, res) => {
 
     // retrieve basic data from mongodb
     const db = getDB()
-    const user = await db.collection(COLLECTION_USERS).findOne({ _id: new ObjectId(decoded.id) })
+    const user = await db.collection(COLLECTION_USERS).findOneAndUpdate(
+        { _id: new ObjectId(decoded.id) },
+        { $set: { last_online: Date.now() } },
+        { returnDocument: 'after' }
+    )
 
     if (!user) return res.status(404).send("User not found")
     

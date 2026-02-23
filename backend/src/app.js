@@ -29,6 +29,8 @@ app.listen(port, async () => {
 // routes
 import authRoute from './routes/auth.route.js'
 import userRoute from './routes/user.route.js'
+import globalRoute from './routes/global.route.js'
 
 app.use("/auth", authRoute)
 app.use("/user", userRoute)
+app.use("/global", globalRoute)

@@ -17,3 +17,7 @@ export const connectDB = async () => {
 };
 
 export const getDB = () => db;
+
+export const COLLECTION_USERS = 'users'
+export const COLLECTION_FRIENDS = 'friends'
+export const COLLECTION_RUNS = 'runs'

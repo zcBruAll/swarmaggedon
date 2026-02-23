@@ -1,9 +1,8 @@
-import { getDB } from "../config/db.js";
+import { COLLECTION_USERS, getDB,  } from "../config/db.js";
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
 
 const JWT_EXPIRATION = "1h"
-const COLLECTION_NAME = "users"
 const SALT_ROUNDS = 10
 
 // /auth/login
@@ -13,7 +12,7 @@ const postLogin = async (req, res) => {
     if (!username || !password) return res.status(400).send("Bad usage")
     
     const db = getDB()
-    const user = await db.collection(COLLECTION_NAME).findOne({username})
+    const user = await db.collection(COLLECTION_USERS).findOne({username})
 
     if (!user) return res.status(400).send("Wrong username or password")
     if (!bcrypt.compareSync(password, user.password)) return res.status(400).send("Wrong username or password")
@@ -41,10 +40,10 @@ const postRegister = async (req, res) => {
     
     const db = getDB()
 
-    const existingUsername = await db.collection(COLLECTION_NAME).findOne({username})
+    const existingUsername = await db.collection(COLLECTION_USERS).findOne({username})
     if (existingUsername) return res.status(400).send("Username already taken")
     
-    const existingEmail = await db.collection(COLLECTION_NAME).findOne({ email })
+    const existingEmail = await db.collection(COLLECTION_USERS).findOne({ email })
     if (existingEmail) return res.status(400).send("Email already taken")
 
     const newUser = {
@@ -56,7 +55,7 @@ const postRegister = async (req, res) => {
         date_created: Date.now()
     }
     try {
-        await db.collection(COLLECTION_NAME).insertOne(newUser)
+        await db.collection(COLLECTION_USERS).insertOne(newUser)
     } catch (error) {
         console.log("Registration error", error)
         return res.status(500).send("Internal server error")
