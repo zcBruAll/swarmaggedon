@@ -8,6 +8,21 @@
   gap: 20px;
 }
 
+@media (max-width: 1100px) {
+  .main {
+    grid-template-columns: 1fr 1fr;
+    padding: 20px 24px;
+  }
+}
+
+@media (max-width: 700px) {
+  .main {
+    grid-template-columns: 1fr;
+    padding: 14px 12px;
+    max-width: 100%;
+  }
+}
+
 /* ============ PANELS ============ */
 .panel {
   background: #faf7f1;
@@ -24,12 +39,20 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px;
 }
 
 .panel-title {
   font-family: 'Patrick Hand';
   font-size: 32px;
   color: var(--ink);
+}
+
+@media (max-width: 700px) {
+  .panel-title {
+    font-size: 26px;
+  }
 }
 
 .panel-body {
@@ -164,6 +187,8 @@ select option {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .gap-8 {
@@ -207,6 +232,7 @@ select option {
   border: 1.5px solid var(--line);
   color: var(--ink-faint);
   transform: rotate(0.5deg);
+  white-space: nowrap;
 }
 
 .tag-accent {

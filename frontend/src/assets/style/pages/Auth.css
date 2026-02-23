@@ -1,0 +1,14 @@
+/* ============ AUTH LAYOUT ============ */
+.auth-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+    align-items: start;
+}
+
+@media (max-width: 700px) {
+    .auth-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+}

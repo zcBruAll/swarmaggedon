@@ -1,4 +1,5 @@
 import AccountLogin from '../components/AccountLogin'
+import '../assets/style/pages/Auth.css'
 
 const Auth = () => {
   return (

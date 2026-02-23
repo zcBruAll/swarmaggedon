@@ -1,26 +1,55 @@
 .friend-stat-row-title {
-    display: grid; 
+    display: grid;
     grid-template-columns: 34px 1fr auto auto auto;
-    gap: 8px; 
+    gap: 8px;
     align-items: center;
     padding: 6px;
     border-bottom: 1px solid var(--line);
 }
 
 .friend-stat-row {
-    display: grid; 
+    display: grid;
     grid-template-columns: 34px 1fr auto auto auto;
-    gap: 8px; 
+    gap: 8px;
     align-items: center;
     padding: 7px 0;
     border-bottom: 1px dashed var(--line);
 }
 
 .friend-stat-row:last-child {
-  border-bottom: none;
+    border-bottom: none;
 }
 
-.avatar + span {
+/* On small screens, hide win% column and simplify */
+@media (max-width: 700px) {
+
+    .friend-stat-row-title,
+    .friend-stat-row {
+        grid-template-columns: 34px 1fr auto auto;
+    }
+
+    /* Hide win% (4th column) */
+    .friend-stat-row-title> :nth-child(4),
+    .friend-stat-row> :nth-child(4) {
+        display: none;
+    }
+}
+
+@media (max-width: 420px) {
+
+    .friend-stat-row-title,
+    .friend-stat-row {
+        grid-template-columns: 34px 1fr auto;
+    }
+
+    /* Hide status (5th column) too on very small screens */
+    .friend-stat-row-title> :nth-child(5),
+    .friend-stat-row> :nth-child(5) {
+        display: none;
+    }
+}
+
+.avatar+span {
     font-weight: 700;
 }
 
@@ -31,6 +60,7 @@
 
 .game-state {
     font-size: 18px;
+    white-space: nowrap;
 }
 
 .state-active {

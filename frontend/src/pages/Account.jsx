@@ -43,12 +43,33 @@ const Account = () => {
                 <input type="text" defaultValue={user.username} />
                 <button className="btn btn-outline btn-sm">update</button>
               </div>
+              <div className="account-field">
+                <div className="label">email</div>
+                <div className="account-field-row">
+                  <input type="email" defaultValue={user.email} readOnly />
+                </div>
+              </div>
+              <hr className="divider" />
+              <div className="label" style={{ fontSize: '14px', color: 'var(--red)', }}>— danger zone —</div>
+              <div style={{ marginTop: '8px', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                <button className="btn btn-danger btn-sm">Delete account</button>
+                <button className="btn btn-outline btn-sm" onClick={logout}>Log out</button>
+              </div>
             </div>
             <div className="account-field">
               <div className="label">email</div>
               <div className="account-field-row">
                 <input type="email" defaultValue={user.email} readOnly />
               </div>
+              <div className="account-field">
+                <div className="label">new password</div>
+                <input type="password" placeholder="••••••••" />
+              </div>
+              <div className="account-field">
+                <div className="label">confirm new password</div>
+                <input type="password" placeholder="••••••••" />
+              </div>
+              <button className="btn btn-primary btn-sm mt-8">Change password</button>
             </div>
             <hr className="divider" />
             <div className="label" style={{ fontSize: '14px', color: 'var(--red)',  }}>— danger zone —</div>

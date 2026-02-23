@@ -5,6 +5,7 @@ import LoadingSpinner from './LoadingSpinner';
 
 function AccountLogin() {
   const [loginData, setLoginData] = useState({ username: '', password: '' });
+  const [loginData, setLoginData] = useState({ username: '', password: '' });
   const [registerData, setRegisterData] = useState({ 
     username: '', 
     email: '', 
@@ -96,7 +97,7 @@ function AccountLogin() {
   );
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '28px', alignItems: 'start'}}>
+    <div className="auth-grid">
       <div className="panel">
         <div className="panel-header">
           <span className="panel-title">Login</span>
@@ -132,7 +133,7 @@ function AccountLogin() {
           </form>
         </div>
       </div>
-      
+
       <div className="panel">
         <div className="panel-header">
           <span className="panel-title">Register</span>
