@@ -4,9 +4,13 @@ import AccountStats from '../components/AccountStats'
 import FriendsStats from '../components/FriendsStats'
 import GlobalLeaderboard from '../components/GlobalLeaderboard'
 import '../assets/style/pages/Dashboard.css'
+import GuestWelcome from '../components/GuestWelcome'
+import { useAuth } from '../context/AuthContext'
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const { isLoggedIn, loading } = useAuth();
+
   return (
     <div id="section-dashboard" className="section-content active">
       <div className="main" style={{ alignItems: 'stretch' }}>
@@ -18,9 +22,12 @@ const Dashboard = () => {
           <GlobalLeaderboard />
         </div>
 
-        { true ? <AccountStats /> : "Login to see your stats and friends' activity !"}
+        { isLoggedIn ? 
+          <>
+            <AccountStats />
+            <FriendsStats />
+          </> : <GuestWelcome />}
 
-        <FriendsStats />
 
         <div className="play-section">
           <div>
