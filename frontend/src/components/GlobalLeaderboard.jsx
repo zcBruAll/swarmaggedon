@@ -25,6 +25,7 @@ function GlobalLeaderboard() {
     fetchLeaderboard();
   }, []);
 
+
   const userRank = leaderboard.findIndex(lb => lb.username === user?.username) + 1;
 
   return <div>
@@ -51,7 +52,7 @@ function GlobalLeaderboard() {
                 <>
                   <hr className="divider" />
                   <div className="lb-row highlight">
-                    <span className="lb-rank">#?</span>
+                    <span className="lb-rank">#{user.rank}</span>
                     <span className="lb-name" style={{ color: 'var(--blue)' }}>{user?.username} ← you</span>
                     <span className="lb-score">{formatNumberFull(user?.stats.high_score)}</span>
                   </div>

@@ -91,12 +91,37 @@ const getLoggedInUser = async (req, res) => {
     
     // retrive run data from mongodb (games played, win rate, etc.)
     const run_data = await getStatsFromUser(user)
+    let rank = 0
+    
+    try {
+        const userBest = await db.collection(COLLECTION_RUNS).aggregate([
+            { $match: { user_id: user._id.toString() } },
+            { $group: { _id: null, maxScore: { $max: "$score" } } }
+        ]).toArray()
+
+        if (userBest.length === 0) {
+            return res.status(200).json({ rank: null, score: 0 })
+        }
+
+        const currentBest = userBest[0].maxScore
+
+        const betterPlayersCount = await db.collection(COLLECTION_RUNS).aggregate([
+            { $group: { _id: "$user_id", maxScore: { $max: "$score" } } },
+            { $match: { maxScore: { $gt: currentBest } } },
+            { $count: "count" }
+        ]).toArray()
+
+        rank = (betterPlayersCount[0]?.count || 0) + 1
+    } catch (err) {
+        return res.status(500).send("unknown error")
+    }
 
     return res.status(200).json({
         id: user._id,
         username: user.username,
         email: user.email,
         date_created: user.date_created,
+        rank: rank,
         stats: run_data
     })
 }

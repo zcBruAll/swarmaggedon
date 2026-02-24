@@ -7,7 +7,7 @@ function AccountStats() {
     <div className="panel">
       <div className="panel-header">
         <span className="panel-title">My stats — {user.username}</span>
-        <span className="tag">Rank #todo</span>
+        <span className="tag">Rank #{user.rank}</span>
       </div>
       <div className="panel-body">
         <div className="stats-grid">
