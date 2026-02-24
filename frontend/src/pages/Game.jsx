@@ -85,7 +85,10 @@ function Game() {
       {hudRawRef.current.gameState === GAME_STATE.GAME_OVER &&
         <div className='overlay game-over'>
           <span className='game-title'>GAME OVER</span>
-          <button className='menu-btn' onClick={onNewRun}>Start a new run</button>
+          <div className='menu'>
+            <button className='menu-btn' onClick={onNewRun}>Start a new run</button>
+            <button className='menu-btn' onClick={onBack}>← menu</button>
+          </div>
         </div>
       }
       {hudRawRef.current.gameState === GAME_STATE.PAUSED &&

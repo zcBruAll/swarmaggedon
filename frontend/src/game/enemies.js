@@ -19,10 +19,15 @@ export function updateEnemies(enemies, player, dt) {
 }
 
 function updateEnemy(enemy, player, dt) {
-    const dirX = player.x > enemy.x ? 1 : -1;
-    const dirY = player.y > enemy.y ? 1 : -1;
-    enemy.x += dirX * enemy.speed * dt;
-    enemy.y += dirY * enemy.speed * dt;
+    const dx = player.x - enemy.x;
+    const dy = player.y - enemy.y;
+
+    const distance = Math.hypot(dx, dy);
+
+    if (distance > 0) {
+        enemy.x += (dx / distance) * enemy.speed * dt;
+        enemy.y += (dy / distance) * enemy.speed * dt;
+    }
 }
 
 export function spawnWave(wave, canvasWidth, canvasHeight) {
