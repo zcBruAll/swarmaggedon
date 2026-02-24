@@ -2,7 +2,7 @@ import { createPlayer, updatePlayer, damagePlayer } from './player.js';
 import { spawnWave, updateEnemies, damageEnemy } from './enemies.js';
 import { initInput, destroyInput, flushInput, input } from './input.js';
 import {
-    drawBackground, drawPlayer, drawEnemies, drawGameOver, drawPause,
+    drawBackground, drawPlayer, drawEnemies,
 } from './renderer.js';
 
 export const GAME_STATE = {
@@ -78,7 +78,7 @@ export function createEngine(canvas, onHUDUpdate) {
         }
 
         // Check game over
-        if (!player.isAlive) {
+        if (!player.hp > 0) {
             state = GAME_STATE.GAME_OVER;
         }
 
@@ -87,6 +87,7 @@ export function createEngine(canvas, onHUDUpdate) {
             elapsed,
             wave,
             hp: player.hp,
+            gameState: state,
         });
     }
 
@@ -108,9 +109,6 @@ export function createEngine(canvas, onHUDUpdate) {
         drawBackground(ctx, w, h);
         drawEnemies(ctx, enemies);
         drawPlayer(ctx, player);
-
-        if (state === GAME_STATE.PAUSED) drawPause(ctx, w, h);
-        if (state === GAME_STATE.GAME_OVER) drawGameOver(ctx, w, h, score, elapsed);
     }
 
     return {
@@ -139,6 +137,13 @@ export function createEngine(canvas, onHUDUpdate) {
         togglePause() {
             if (state === GAME_STATE.RUNNING) state = GAME_STATE.PAUSED;
             else if (state === GAME_STATE.PAUSED) state = GAME_STATE.RUNNING;
+            onHUDUpdate?.({
+                score,
+                elapsed,
+                wave,
+                hp: player.hp,
+                gameState: state,
+            })
         },
     };
 }

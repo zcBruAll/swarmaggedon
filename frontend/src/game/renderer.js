@@ -1,10 +1,8 @@
 export function drawBackground(ctx, width, height) {
     ctx.clearRect(0, 0, width, height);
-    //ctx.fillRect(0, 0, width, height);
 }
 
 export function drawPlayer(ctx, player) {
-    // TODO: Draw player
     let playerRegion = new Path2D();
     playerRegion.ellipse(player.x, player.y, 15, 30, 0, 0, 2 * Math.PI);
     playerRegion.closePath();
@@ -25,12 +23,4 @@ export function drawEnemy(ctx, enemy) {
     enemyRegion.closePath();
     ctx.fillStyle = "#ff0000";
     ctx.fill(enemyRegion);
-}
-
-export function drawGameOver(ctx, width, height, score, elapsed) {
-    // TODO: Game over text
-}
-
-export function drawPause(ctx, width, height) {
-    // TODO: Draw pause menu
 }

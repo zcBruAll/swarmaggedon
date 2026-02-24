@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { createEngine } from '../game/engine';
+import { createEngine, GAME_STATE } from '../game/engine';
 import '../assets/style/pages/Game.css';
 
 const DEFAULT_HUD = {
@@ -8,6 +8,7 @@ const DEFAULT_HUD = {
   elapsed: 0,
   wave: 1,
   hp: 100,
+  gameState: GAME_STATE.RUNNING,
 };
 
 function formatTime(seconds) {
@@ -41,6 +42,14 @@ function Game() {
     navigate('/');
   };
 
+  const onPause = () => {
+    engineRef.current.togglePause();
+  }
+
+  const onNewRun = () => {
+    engineRef.current.restart();
+  }
+
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -73,14 +82,30 @@ function Game() {
 
   return (
     <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', zIndex: 1000, background: '#f4f0e8' }}>
+      {hudRawRef.current.gameState === GAME_STATE.GAME_OVER &&
+        <div className='overlay game-over'>
+          <span className='game-title'>GAME OVER</span>
+          <button className='menu-btn' onClick={onNewRun}>Start a new run</button>
+        </div>
+      }
+      {hudRawRef.current.gameState === GAME_STATE.PAUSED &&
+        <div className='overlay pause'>
+          <span className='game-title'>GAME PAUSED</span>
+          <div className='menu'>
+            <button className='menu-btn' onClick={onPause}>Return to game</button>
+            <button className='menu-btn' onClick={onBack}>← menu</button>
+          </div>
+        </div>
+      }
+      {hudRawRef.current.gameState === GAME_STATE.RUNNING &&
+        <div className="hud">
+          <span>score: <strong>{hudRawRef.current.score}</strong></span>
+          <span>time: <strong>{formatTime(hudRawRef.current.elapsed)}</strong></span>
+          <span>wave: <strong>{hudRawRef.current.wave}</strong></span>
+          <span>hp: <strong>{hudRawRef.current.hp}</strong></span>
+        </div>
+      }
       <canvas ref={canvasRef} className="game-canvas"></canvas>
-      <button onClick={onBack} className="back-btn">← menu</button>
-      <div className="hud">
-        <span>score: <strong>{hudRawRef.current.score}</strong></span>
-        <span>time: <strong>{formatTime(hudRawRef.current.elapsed)}</strong></span>
-        <span>wave: <strong>{hudRawRef.current.wave}</strong></span>
-        <span>hp: <strong>{hudRawRef.current.hp}</strong></span>
-      </div>
     </div>
   );
 }
