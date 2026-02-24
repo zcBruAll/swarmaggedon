@@ -38,6 +38,33 @@ const getStatsFromUser = async (user) => {
     return run_data[0] || { total_games: 0, total_kills: 0, win_rate: 0, best_time: 0, high_score: 0, avg_duration: 0 }
 }
 
+const getUserInfo = async (loggedin_id, user_id) => {    
+    // retrieve specified user basic data
+    const db = getDB()
+    const user = await db.collection(COLLECTION_USERS).findOne({
+        _id: new ObjectId(user_id)
+    })
+
+    if (!user) return res.status(404).send("User not found")
+
+    // retrieve friend status
+    const friend_status = await db.collection(COLLECTION_FRIENDS).findOne({
+        $or: [
+            { requester_id: loggedin_id, accepter_id: user._id.toString() },
+            { requester_id: user._id.toString(), accepter_id: loggedin_id }
+        ],
+        pending: false
+    })
+    const user_data = {
+        username: user.username,
+        is_friend: !!friend_status,
+        last_online: user.last_online,
+        in_game: user.in_game,
+        date_created: user.date_created
+    }
+    return {...user_data, stats: await getStatsFromUser(user)}
+}
+
 // /user/
 // Get current user info from token
 const getLoggedInUser = async (req, res) => {
@@ -90,35 +117,76 @@ const getUser = async (req, res) => {
 
     // if id is of logged in user, return "/user" response
     if (id == loggedin_info.id) return getLoggedInUser(req, res)
-    
-    // retrieve specified user basic data
-    const db = getDB()
-    const user = await db.collection(COLLECTION_USERS).findOne({
-        _id: new ObjectId(id)
-    })
 
-    if (!user) return res.status(404).send("User not found")
+    return res.status(200).json(await getUserInfo(loggedin_info.id, id))
+}
 
-    // retrieve friend status
-    const friend_status = await db.collection(COLLECTION_FRIENDS).findOne({
-        $or: [
-            { requester_id: new ObjectId(loggedin_info.id), accepter_id: user._id },
-            { requester_id: user._id, accepter_id: new ObjectId(loggedin_info.id) }
-        ],
-        pending: false
-    })
-    const user_data = {
-        username: user.username,
-        is_friend: !!friend_status,
-        last_online: user.last_online,
-        in_game: user.in_game,
-        date_created: user.date_created
+const getLoggedInUserFriends = async (req, res) => {
+    const token = req.cookies.auth_token
+    if (!token) return res.status(401).send("Not logged in")
+
+    let loggedin_info
+    try {
+        loggedin_info = jwt.verify(token, process.env.JWT_SECRET)
+    } catch(err) {
+        return res.status(401).send("Unauthorized")
     }
 
-    return res.status(200).json({...user_data, stats: await getStatsFromUser(user)})
+    const db = getDB()
+
+    try {
+        const friends = await db.collection(COLLECTION_FRIENDS).aggregate([
+            {
+                $match: {
+                    $or: [
+                        { requester_id: loggedin_info.id },
+                        { accepter_id: loggedin_info.id }
+                    ]
+                }
+            },
+            {
+                $addFields: {
+                    friend_id: {
+                        $cond: {
+                            if: { $eq: ["$requester_id", loggedin_info.id] },
+                            then: "$accepter_id",
+                            else: "$requester_id"
+                        }
+                    }
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    id: "$friend_id",
+                    pending: "$pending"
+                }
+            }
+        ]).toArray()
+
+        const ret = []
+
+        for (const f of friends) {
+            if (f.pending) {
+                ret.push(f)
+                continue
+            }
+
+            // already friends
+            const fdata = await getUserInfo(loggedin_info.id, f.id)
+            const {is_friend, ...rest} = fdata
+            ret.push({...f, ...rest})
+        }
+
+        return res.status(200).json(ret)
+    } catch (error) {
+        console.error("Error fetching friends:", error)
+        return res.status(500).send("Internal server error")
+    }
 }
 
 export {
     getLoggedInUser,
-    getUser
+    getUser,
+    getLoggedInUserFriends
 }
