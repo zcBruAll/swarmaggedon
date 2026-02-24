@@ -14,14 +14,13 @@ export function drawWeapon(ctx, player) {
     if (!player.weapon) return;
     ctx.beginPath();
     const weaponRadius = player.radius + player.weapon.radius;
-    console.log(player.weapon.cooldown / player.weapon.cooldownTime * 50);
     ctx.ellipse(player.x, player.y, weaponRadius, weaponRadius, 0, player.weapon.cooldown / player.weapon.cooldownTime * 2 * Math.PI, 2 * Math.PI);
-    let scrollStyle = "#00000000";
+    let strokeStyle = "#c9570b";
     if (player.weapon.cooldown <= 0) {
-        scrollStyle = "#169116";
+        strokeStyle = "#169116";
     }
 
-    ctx.strokeStyle = scrollStyle;
+    ctx.strokeStyle = strokeStyle;
     ctx.stroke();
 }
 
