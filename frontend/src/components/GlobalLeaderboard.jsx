@@ -14,7 +14,6 @@ function GlobalLeaderboard() {
         if (response.ok) {
           const data = await response.json();
           setLeaderboard(data);
-          console.log(data)
         }
       } catch (error) {
         console.error("Failed to fetch leaderboard:", error);

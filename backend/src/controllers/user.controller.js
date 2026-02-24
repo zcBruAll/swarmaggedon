@@ -38,7 +38,7 @@ const getStatsFromUser = async (user) => {
     return run_data[0] || { total_games: 0, total_kills: 0, win_rate: 0, best_time: 0, high_score: 0, avg_duration: 0 }
 }
 
-const getUserInfo = async (loggedin_id, user_id) => {    
+const getUserInfo = async (loggedin_id, user_id, stats=true) => {    
     // retrieve specified user basic data
     const db = getDB()
     const user = await db.collection(COLLECTION_USERS).findOne({
@@ -62,6 +62,7 @@ const getUserInfo = async (loggedin_id, user_id) => {
         in_game: user.in_game,
         date_created: user.date_created
     }
+    if (!stats) return user_data
     return {...user_data, stats: await getStatsFromUser(user)}
 }
 
@@ -167,13 +168,7 @@ const getLoggedInUserFriends = async (req, res) => {
         const ret = []
 
         for (const f of friends) {
-            if (f.pending) {
-                ret.push(f)
-                continue
-            }
-
-            // already friends
-            const fdata = await getUserInfo(loggedin_info.id, f.id)
+            const fdata = await getUserInfo(loggedin_info.id, f.id, !f.pending)
             const {is_friend, ...rest} = fdata
             ret.push({...f, ...rest})
         }

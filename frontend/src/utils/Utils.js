@@ -39,3 +39,13 @@ export const formatNumberShort = (num) => {
 export const formatNumberFull = (num) => {
     return new Intl.NumberFormat().format(num);
 };
+
+/**
+ * Checks if specified date is in the last 5 minutes.
+ * @param {number} last_online
+ * @returns {boolean}
+ */
+export const isUserOnline = (last_online) => {
+    const fiveMinutesAgo = Date.now() - 5 * 60 * 1000
+    return last_online > fiveMinutesAgo
+}
