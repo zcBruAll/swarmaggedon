@@ -180,8 +180,104 @@ const getLoggedInUserFriends = async (req, res) => {
     }
 }
 
+const postAddFriend = async (req, res) => {
+    const token = req.cookies.auth_token
+    if (!token) return res.status(401).send("Not logged in")
+
+    let loggedin_info
+    try {
+        loggedin_info = jwt.verify(token, process.env.JWT_SECRET)
+    } catch(err) {
+        return res.status(401).send("Unauthorized")
+    }
+    
+    const { id } = req.params
+    if (!id) return res.status(400).send("Bad usage")
+
+    const db = getDB()
+
+    /// Get current friend status (friend collection)
+    // if there already is a document, pending -> false
+    const current_friend_status = await db.collection(COLLECTION_FRIENDS).findOne({
+        $or: [
+            { requester_id: loggedin_info.id, accepter_id: id },
+            { requester_id: id, accepter_id: loggedin_info.id }
+        ]
+    })
+
+    if (!!current_friend_status) {
+        // friend status found
+        if (current_friend_status.pending && current_friend_status.requester_id == loggedin_info.id) {
+            // pending, if current user is accepter, pending => false
+            const result = await db.collection(COLLECTION_FRIENDS).findOneAndUpdate(
+                {
+                    $or: [
+                        { requester_id: loggedin_info.id, accepter_id: id },
+                        { requester_id: id, accepter_id: loggedin_info.id }
+                    ]
+                },
+                {
+                    $set: { pending: false }
+                }
+            )
+            return res.status(200).json(result)
+        } else {
+            // nothing to do
+            return res.status(200).send("")
+        }
+    }
+    // currently no friend status
+
+    /// Create new document in friend collection
+    const user_exists = await db.collection(COLLECTION_USERS).findOne({
+        _id: new ObjectId(id)
+    })
+
+    if (!user_exists) return res.status(404).send("User does not exist")
+
+    const data = await db.collection(COLLECTION_FRIENDS).insertOne({
+        requester_id: loggedin_info.id,
+        accepter_id: id,
+        pending: true
+    })
+
+    return res.status(200).json(data)
+}
+
+const postRemoveFriend = async (req, res) => {
+    const token = req.cookies.auth_token
+    if (!token) return res.status(401).send("Not logged in")
+
+    let loggedin_info
+    try {
+        loggedin_info = jwt.verify(token, process.env.JWT_SECRET)
+    } catch(err) {
+        return res.status(401).send("Unauthorized")
+    }
+    
+    const { id } = req.params
+    if (!id) return res.status(400).send("Bad usage")
+
+    const db = getDB()
+
+    const removed = await db.collection(COLLECTION_FRIENDS).findOneAndDelete(
+        {
+            $or: [
+                { requester_id: loggedin_info.id, accepter_id: id },
+                { requester_id: id, accepter_id: loggedin_info.id }
+            ]
+        }
+    )
+
+    if (!!removed) return res.status(204).send("No friend status found")
+
+    res.status(200).send("Successfully removed friend")
+}
+
 export {
     getLoggedInUser,
     getUser,
-    getLoggedInUserFriends
+    getLoggedInUserFriends,
+    postAddFriend,
+    postRemoveFriend
 }
