@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createEngine, GAME_STATE } from '../game/engine';
 import '../assets/style/pages/Game.css';
+import { formatDurationToHours } from '../utils/Utils';
 
 const DEFAULT_HUD = {
   score: 0,
@@ -10,12 +11,6 @@ const DEFAULT_HUD = {
   hp: 100,
   gameState: GAME_STATE.RUNNING,
 };
-
-function formatTime(seconds) {
-  const m = Math.floor(seconds / 60).toString().padStart(2, '0');
-  const s = Math.floor(seconds % 60).toString().padStart(2, '0');
-  return `${m}:${s}`;
-}
 
 function Game() {
   const canvasRef = useRef(null);
@@ -103,7 +98,7 @@ function Game() {
       {hudRawRef.current.gameState === GAME_STATE.RUNNING &&
         <div className="hud">
           <span>score: <strong>{hudRawRef.current.score}</strong></span>
-          <span>time: <strong>{formatTime(hudRawRef.current.elapsed)}</strong></span>
+          <span>time: <strong>{formatDurationToHours(hudRawRef.current.elapsed)}</strong></span>
           <span>wave: <strong>{hudRawRef.current.wave}</strong></span>
           <span>hp: <strong>{hudRawRef.current.hp}</strong></span>
         </div>

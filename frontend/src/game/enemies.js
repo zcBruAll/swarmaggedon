@@ -9,6 +9,7 @@ export function createEnemy(canvasWidth, canvasHeight) {
         cooldown: 0,
         interval: 15,
         damage: 25,
+        score: 10,
     };
 }
 

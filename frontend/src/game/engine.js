@@ -68,13 +68,14 @@ export function createEngine(canvas, onHUDUpdate) {
         // Collision (Enemies & player)
         resolveEnemiesPlayer();
 
-        // Clear dead enemies
-        enemies = enemies?.filter(e => !e.dead);
+        cleanupEnemies();
 
         // Wave progression
         waveTimer -= dt;
         if (waveTimer <= 0 || enemies?.length === 0) {
-            // TODO: advance to next wave
+            wave += 1;
+            waveTimer = WAVE_INTERVAL;
+            enemies = spawnWave(wave, canvas.width, canvas.height);
         }
 
         // Check game over
@@ -97,9 +98,29 @@ export function createEngine(canvas, onHUDUpdate) {
             const dy = enemy.y - player.y;
             const d = Math.sqrt(dx * dx + dy * dy);
             if (d <= enemy.radius + player.radius) {
-                damagePlayer(player, enemy.damage);
+                damageEnemy(enemy, enemy.damage);
             }
         }
+    }
+
+    function cleanupEnemies() {
+        let writeIndex = 0;
+        let gainedScore = 0;
+
+        for (let readIndex = 0; readIndex < enemies.length; readIndex++) {
+            const enemy = enemies[readIndex];
+
+            if (enemy.hp <= 0) {
+                gainedScore += enemy.score;
+            } else {
+                enemies[writeIndex] = enemy;
+                writeIndex++;
+            }
+        }
+
+        score += gainedScore;
+
+        enemies.length = writeIndex;
     }
 
     function render() {
