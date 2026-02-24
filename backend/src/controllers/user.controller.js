@@ -245,7 +245,7 @@ const postAddFriend = async (req, res) => {
     return res.status(200).json(data)
 }
 
-const postRemoveFriend = async (req, res) => {
+const deleteRemoveFriend = async (req, res) => {
     const token = req.cookies.auth_token
     if (!token) return res.status(401).send("Not logged in")
 
@@ -280,5 +280,5 @@ export {
     getUser,
     getLoggedInUserFriends,
     postAddFriend,
-    postRemoveFriend
+    deleteRemoveFriend
 }
