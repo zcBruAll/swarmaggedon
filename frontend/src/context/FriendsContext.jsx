@@ -4,7 +4,7 @@ import { useAuth } from './AuthContext';
 const FriendsContext = createContext();
 
 export const FriendsProvider = ({ children }) => {
-    const { isLoggedIn } = useAuth();
+    const { user, isLoggedIn } = useAuth();
     const [friends, setFriends] = useState([]);
     const [pending_requests, setPendingRequests] = useState([]);
     const [loading, setLoading] = useState(false);

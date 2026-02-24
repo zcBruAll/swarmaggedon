@@ -26,7 +26,7 @@ const LoadingSpinner = ({ size = '16px', color = 'currentColor', className = '' 
         stroke={color} 
         strokeWidth="5" 
         strokeDasharray="90,150" 
-        strokeDashcap="round" 
+        strokeLinecap="round" 
       />
     </svg>
   </>

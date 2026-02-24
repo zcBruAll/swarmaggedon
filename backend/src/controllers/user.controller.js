@@ -45,7 +45,7 @@ const getUserInfo = async (loggedin_id, user_id, stats=true) => {
         _id: new ObjectId(user_id)
     })
 
-    if (!user) return res.status(404).send("User not found")
+    if (!user) return {}
 
     // retrieve friend status
     const friend_status = await db.collection(COLLECTION_FRIENDS).findOne({
@@ -93,6 +93,7 @@ const getLoggedInUser = async (req, res) => {
     const run_data = await getStatsFromUser(user)
 
     return res.status(200).json({
+        id: user._id,
         username: user.username,
         email: user.email,
         date_created: user.date_created,
@@ -146,20 +147,10 @@ const getLoggedInUserFriends = async (req, res) => {
                 }
             },
             {
-                $addFields: {
-                    friend_id: {
-                        $cond: {
-                            if: { $eq: ["$requester_id", loggedin_info.id] },
-                            then: "$accepter_id",
-                            else: "$requester_id"
-                        }
-                    }
-                }
-            },
-            {
                 $project: {
                     _id: 0,
-                    id: "$friend_id",
+                    requester_id: 1,
+                    accepter_id: 1,
                     pending: "$pending"
                 }
             }
@@ -168,9 +159,10 @@ const getLoggedInUserFriends = async (req, res) => {
         const ret = []
 
         for (const f of friends) {
-            const fdata = await getUserInfo(loggedin_info.id, f.id, !f.pending)
+            const fid = f.requester_id == loggedin_info.id ? f.accepter_id : f.requester_id
+            const fdata = await getUserInfo(loggedin_info.id, fid, !f.pending)
             const {is_friend, ...rest} = fdata
-            ret.push({...f, ...rest})
+            ret.push({id:fid, ...f, ...rest})
         }
 
         return res.status(200).json(ret)
@@ -207,7 +199,7 @@ const postAddFriend = async (req, res) => {
 
     if (!!current_friend_status) {
         // friend status found
-        if (current_friend_status.pending && current_friend_status.requester_id == loggedin_info.id) {
+        if (current_friend_status.pending && current_friend_status.accepter_id == loggedin_info.id) {
             // pending, if current user is accepter, pending => false
             const result = await db.collection(COLLECTION_FRIENDS).findOneAndUpdate(
                 {
@@ -220,7 +212,7 @@ const postAddFriend = async (req, res) => {
                     $set: { pending: false }
                 }
             )
-            if (result.acknowledged) return res.status(200).send("Success")
+            if (!!result) return res.status(200).send("Success")
             else return res.status(500).send("Please try again later")
         } else {
             // nothing to do
@@ -275,10 +267,44 @@ const deleteRemoveFriend = async (req, res) => {
     res.status(200).send("Successfully removed friend")
 }
 
+const getUserSearch = async (req,res) => {
+    const token = req.cookies.auth_token
+    if (!token) return res.status(401).send("Not logged in")
+
+    let loggedin_info
+    try {
+        loggedin_info = jwt.verify(token, process.env.JWT_SECRET)
+    } catch(err) {
+        return res.status(401).send("Unauthorized")
+    }
+    
+    const { username } = req.params
+    if (!username) return res.status(400).send("Bad usage")
+    
+    const db = getDB()
+    const results = await db.collection(COLLECTION_USERS).find({
+        "username": { $regex: username, $options: 'i' },
+        _id: { $ne: new ObjectId(loggedin_info.id) }
+    }, {
+        projection: {
+            _id: 1,
+            username: 1
+        }
+    }).limit(10).toArray()
+
+    const formattedResults = results.map(user => ({
+        id: user._id,
+        username: user.username
+    }))
+
+    return res.status(200).json(formattedResults)
+}
+
 export {
     getLoggedInUser,
     getUser,
     getLoggedInUserFriends,
     postAddFriend,
-    deleteRemoveFriend
+    deleteRemoveFriend,
+    getUserSearch
 }
