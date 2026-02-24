@@ -325,11 +325,59 @@ const getUserSearch = async (req,res) => {
     return res.status(200).json(formattedResults)
 }
 
+const getUserRuns = async (req, res) => {
+    const token = req.cookies.auth_token
+    if (!token) return res.status(401).send("Not logged in")
+
+    let loggedin_info
+    try {
+        loggedin_info = jwt.verify(token, process.env.JWT_SECRET)
+    } catch(err) {
+        return res.status(401).send("Unauthorized")
+    }
+
+    const db = getDB()
+    try {
+        const results = await db.collection(COLLECTION_RUNS).find().toArray()
+        return res.status(200).json(results)
+    } catch(err) {
+        console.log(err)
+        return res.status(500).send("unknown error")
+    }
+}
+
+const getUserLastRun = async (req, res) => {
+    const token = req.cookies.auth_token
+    if (!token) return res.status(401).send("Not logged in")
+
+    let loggedin_info
+    try {
+        loggedin_info = jwt.verify(token, process.env.JWT_SECRET)
+    } catch(err) {
+        return res.status(401).send("Unauthorized")
+    }
+
+    const db = getDB()
+    try {
+        const lastRun = await db.collection(COLLECTION_RUNS).findOne(
+            { user_id: loggedin_info.id },
+            { sort: { date: -1 } }
+        )
+        
+        return res.status(200).json(lastRun || null)
+    } catch (err) {
+        console.error("Error fetching last run:", err)
+        return res.status(500).send("Internal server error")
+    }
+}
+
 export {
     getLoggedInUser,
     getUser,
     getLoggedInUserFriends,
     postAddFriend,
     deleteRemoveFriend,
-    getUserSearch
+    getUserSearch,
+    getUserRuns,
+    getUserLastRun
 }
