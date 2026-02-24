@@ -44,7 +44,6 @@ function onKeyUp(e) {
         case "ArrowUp":
         case "w":
             input.keys.up = false;
-            console.log("UP");
             e.preventDefault();
             break;
         case "ArrowDown":
