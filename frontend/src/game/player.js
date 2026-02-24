@@ -1,7 +1,8 @@
+import { createWeapon } from "./weapon.js";
+
 export let playerSpeed = 200;
 export let playerMaxHp = 100;
 export let playerRadius = 16;
-export let playerCooldown = 0.3;
 export let playerInvicibilityDuration = 0.6;
 
 export function createPlayer(canvasWidth, canvasHeight) {
@@ -12,12 +13,10 @@ export function createPlayer(canvasWidth, canvasHeight) {
         hp: playerMaxHp,
         maxHp: playerMaxHp,
         speed: playerSpeed,
-        cooldown: 0,
-        interval: playerCooldown,
         invicibleTimer: 0,
-        isAlive: true,
         totalDamageDealt: 0,
         totalDamageTaken: 0,
+        weapon: createWeapon(),
     };
 }
 

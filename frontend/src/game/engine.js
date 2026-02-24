@@ -3,6 +3,7 @@ import { spawnWave, updateEnemies, damageEnemy } from './enemies.js';
 import { initInput, destroyInput, flushInput, input } from './input.js';
 import {
     drawBackground, drawPlayer, drawEnemies,
+    drawWeapon,
 } from './renderer.js';
 
 export const GAME_STATE = {
@@ -65,10 +66,11 @@ export function createEngine(canvas, onHUDUpdate) {
         // Enemies movement
         updateEnemies(enemies, player, dt);
 
-        // Collision (Enemies & player)
-        resolveEnemiesPlayer();
+        PlayerAttackEnemies(dt);
 
         cleanupEnemies();
+
+        EnemiesAttackPlayer();
 
         // Wave progression
         waveTimer -= dt;
@@ -92,13 +94,29 @@ export function createEngine(canvas, onHUDUpdate) {
         });
     }
 
-    function resolveEnemiesPlayer() {
+    function PlayerAttackEnemies(dt) {
+        if (!player?.weapon) return;
+        player.weapon.cooldown -= Math.min(dt, player.weapon.cooldown);
+        if (player.weapon.cooldown > dt) return;
+
+        for (const enemy of enemies) {
+            const dx = enemy.x - player.x;
+            const dy = enemy.y - player.y;
+            const d = Math.hypot(dx, dy);
+            if (d <= enemy.radius + player.radius + player.weapon.radius) {
+                player.weapon.cooldown = player.weapon.cooldownTime;
+                damageEnemy(enemy, player.weapon.damage);
+            }
+        }
+    }
+
+    function EnemiesAttackPlayer() {
         for (const enemy of enemies) {
             const dx = enemy.x - player.x;
             const dy = enemy.y - player.y;
             const d = Math.sqrt(dx * dx + dy * dy);
             if (d <= enemy.radius + player.radius) {
-                damageEnemy(enemy, enemy.damage);
+                damagePlayer(player, enemy.damage);
             }
         }
     }
@@ -130,6 +148,7 @@ export function createEngine(canvas, onHUDUpdate) {
         drawBackground(ctx, w, h);
         drawEnemies(ctx, enemies);
         drawPlayer(ctx, player);
+        drawWeapon(ctx, player);
     }
 
     return {
