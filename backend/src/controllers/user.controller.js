@@ -192,7 +192,7 @@ const postAddFriend = async (req, res) => {
     }
     
     const { id } = req.params
-    if (!id) return res.status(400).send("Bad usage")
+    if (!id || loggedin_info == id) return res.status(400).send("Bad usage")
 
     const db = getDB()
 
@@ -220,7 +220,8 @@ const postAddFriend = async (req, res) => {
                     $set: { pending: false }
                 }
             )
-            return res.status(200).json(result)
+            if (result.acknowledged) return res.status(200).send("Success")
+            else return res.status(500).send("Please try again later")
         } else {
             // nothing to do
             return res.status(200).send("")
@@ -256,7 +257,7 @@ const postRemoveFriend = async (req, res) => {
     }
     
     const { id } = req.params
-    if (!id) return res.status(400).send("Bad usage")
+    if (!id || loggedin_info == id) return res.status(400).send("Bad usage")
 
     const db = getDB()
 
@@ -269,7 +270,7 @@ const postRemoveFriend = async (req, res) => {
         }
     )
 
-    if (!!removed) return res.status(204).send("No friend status found")
+    if (!removed) return res.status(204).send("No friend status found")
 
     res.status(200).send("Successfully removed friend")
 }
