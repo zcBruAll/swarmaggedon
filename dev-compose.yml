@@ -2,3 +2,8 @@ services:
   mongo:
     ports:
       - "27017:27017"
+    restart: "no"
+  backend:
+    restart: "no"
+  frontend:
+    restart: "no"
