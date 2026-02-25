@@ -3,7 +3,7 @@ import { COLLECTION_FRIENDS, COLLECTION_RUNS, COLLECTION_USERS, getDB } from "..
 import jwt from 'jsonwebtoken'
 
 const getStatsFromUser = async (user) => {
-        const run_data = await getDB().collection(COLLECTION_RUNS).aggregate([
+    const run_data = await getDB().collection(COLLECTION_RUNS).aggregate([
         { $match: { user_id: user._id.toString() } },  // filter for specified user
         {
             $group: {
@@ -99,19 +99,17 @@ const getLoggedInUser = async (req, res) => {
             { $group: { _id: null, maxScore: { $max: "$score" } } }
         ]).toArray()
 
-        if (userBest.length === 0) {
-            return res.status(200).json({ rank: null, score: 0 })
-        }
+        if (userBest.length !== 0) {
+            const currentBest = userBest[0].maxScore
 
-        const currentBest = userBest[0].maxScore
+            const betterPlayersCount = await db.collection(COLLECTION_RUNS).aggregate([
+                { $group: { _id: "$user_id", maxScore: { $max: "$score" } } },
+                { $match: { maxScore: { $gt: currentBest } } },
+                { $count: "count" }
+            ]).toArray()
 
-        const betterPlayersCount = await db.collection(COLLECTION_RUNS).aggregate([
-            { $group: { _id: "$user_id", maxScore: { $max: "$score" } } },
-            { $match: { maxScore: { $gt: currentBest } } },
-            { $count: "count" }
-        ]).toArray()
-
-        rank = (betterPlayersCount[0]?.count || 0) + 1
+            rank = (betterPlayersCount[0]?.count || 0) + 1
+        } else rank = null
     } catch (err) {
         return res.status(500).send("unknown error")
     }
