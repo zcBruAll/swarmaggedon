@@ -128,7 +128,7 @@ const Friends = () => {
                         <div className="text-muted p-8">No survivors found.</div>
                       ) : (
                         search.map(x => (
-                          <div key={x.id} className="flex-between p-8">
+                          <div key={x.id} className="flex-between search-result">
                             <span>{x.username}</span>
                             <button
                               type="button"
