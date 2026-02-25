@@ -1,0 +1,21 @@
+name: Update VPS G
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Deploy using SSH
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.G_HOST }}
+        username: ${{ secrets.G_USERNAME }}
+        key: ${{ secrets.G_PRIVATE_KEY }}
+        port: 22
+        script: |
+          cd ~/dev/swarmaggedon
+          make
