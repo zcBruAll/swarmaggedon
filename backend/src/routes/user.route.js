@@ -1,5 +1,5 @@
 import {Router} from 'express'
-import {getUser, getLoggedInUser, getLoggedInUserFriends, postAddFriend, deleteRemoveFriend, getUserSearch, getUserRuns, getUserLastRun } from '../controllers/user.controller.js'
+import {getUser, getLoggedInUser, getLoggedInUserFriends, postAddFriend, deleteRemoveFriend, getUserSearch, getUserRuns, getUserLastRun, postNewRun } from '../controllers/user.controller.js'
 
 const router = Router()
 
@@ -7,6 +7,7 @@ router.route("/").get(getLoggedInUser)
 router.route("/friends").get(getLoggedInUserFriends)
 router.route("/search/:username").get(getUserSearch)
 router.route("/runs").get(getUserRuns)
+router.route("/runs").post(postNewRun)
 router.route("/last_run").get(getUserLastRun)
 
 router.route("/:id").get(getUser)

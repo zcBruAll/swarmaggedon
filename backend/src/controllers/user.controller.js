@@ -369,6 +369,42 @@ const getUserLastRun = async (req, res) => {
     }
 }
 
+// create new run for logged in user
+// body: {score:int, duration: int (seconds), win: boolean, kills: int}
+const postNewRun = async (req, res) => {
+    const token = req.cookies.auth_token
+    if (!token) return res.status(401).send("Not logged in")
+
+    let loggedin_info
+    try {
+        loggedin_info = jwt.verify(token, process.env.JWT_SECRET)
+    } catch(err) {
+        return res.status(401).send("Unauthorized")
+    }
+
+    const {score, duration, win, kills} = req.body
+
+    if (!score || !duration || win == null || !kills) return res.status(400).send("Bad usage")
+
+    const db = getDB()
+    try {
+        const result = await db.collection(COLLECTION_RUNS).insertOne({
+            user_id: loggedin_info.id,
+            date: new Date(),
+            score,
+            duration,
+            win,
+            kills
+        })
+
+        if (!result) return res.status(500).send("Unknown error while inserting")
+        return res.status(200).send("Inserted new run")
+    } catch(err) {
+        console.error("Error while inserting new run for user " + loggedin_info.username, err)
+        return res.status(500).send("Unknown error")
+    }
+}
+
 export {
     getLoggedInUser,
     getUser,
@@ -377,5 +413,6 @@ export {
     deleteRemoveFriend,
     getUserSearch,
     getUserRuns,
-    getUserLastRun
+    getUserLastRun,
+    postNewRun
 }
