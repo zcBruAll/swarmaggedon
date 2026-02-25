@@ -16,8 +16,8 @@ function AccountStats() {
             <div className="stat-label">Game{user.stats.total_games === 1 ? "" : "s"} played</div>
           </div>
           <div className="stat-box" style={{ transform: 'rotate(0.3deg)' }}>
-            <div className="stat-value">{(user.stats.win_rate * 100).toFixed(1)}%</div>
-            <div className="stat-label">Win rate</div>
+            <div className="stat-value">{(user.stats.avg_wave).toFixed(1)}</div>
+            <div className="stat-label">Avg wave</div>
           </div>
           <div className="stat-box" style={{ transform: 'rotate(0.5deg)' }}>
             <div className="stat-value">{formatDurationToHours(user.stats.best_time)}</div>

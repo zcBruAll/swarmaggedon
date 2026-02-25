@@ -11,7 +11,7 @@ const getStatsFromUser = async (user) => {
                 total_games: { $sum: 1 },
                 total_kills: { $sum: "$kills" },
                 best_time: { $max: "$duration" },
-                wins: { $sum: { $cond: [{ $eq: ["$win", true] }, 1, 0] } },
+                avg_wave: { $avg: "$wave" },
                 high_score: { $max: "$score" },
                 avg_duration: { $avg: "$duration" }
             }
@@ -22,20 +22,14 @@ const getStatsFromUser = async (user) => {
                 total_games: 1,
                 total_kills: 1,
                 best_time: 1,
-                win_rate: {
-                    $cond: [
-                        { $eq: ["$total_games", 0] },
-                        0,
-                        { $divide: ["$wins", "$total_games"] }
-                    ]
-                },
+                avg_wave: 1,
                 high_score: 1,
                 avg_duration: 1
             }
         }
     ]).toArray()
 
-    return run_data[0] || { total_games: 0, total_kills: 0, win_rate: 0, best_time: 0, high_score: 0, avg_duration: 0 }
+    return run_data[0] || { total_games: 0, total_kills: 0, avg_wave: 0, best_time: 0, high_score: 0, avg_duration: 0 }
 }
 
 const getUserInfo = async (loggedin_id, user_id, stats=true) => {    
@@ -336,7 +330,9 @@ const getUserRuns = async (req, res) => {
 
     const db = getDB()
     try {
-        const results = await db.collection(COLLECTION_RUNS).find().toArray()
+        const results = await db.collection(COLLECTION_RUNS).find({
+            user_id: loggedin_info.id
+        }).toArray()
         return res.status(200).json(results)
     } catch(err) {
         console.log(err)
@@ -370,7 +366,7 @@ const getUserLastRun = async (req, res) => {
 }
 
 // create new run for logged in user
-// body: {score:int, duration: int (seconds), win: boolean, kills: int}
+// body: {score:int, duration: int (seconds), wave: int, kills: int}
 const postNewRun = async (req, res) => {
     const token = req.cookies.auth_token
     if (!token) return res.status(401).send("Not logged in")
@@ -382,9 +378,9 @@ const postNewRun = async (req, res) => {
         return res.status(401).send("Unauthorized")
     }
 
-    const {score, duration, win, kills} = req.body
+    const {score, duration, wave, kills} = req.body
 
-    if (!score || !duration || win == null || !kills) return res.status(400).send("Bad usage")
+    if (!score || !duration || !wave || !kills) return res.status(400).send("Bad usage")
 
     const db = getDB()
     try {
@@ -393,7 +389,7 @@ const postNewRun = async (req, res) => {
             date: new Date(),
             score,
             duration,
-            win,
+            wave,
             kills
         })
 

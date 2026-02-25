@@ -18,7 +18,7 @@ function FriendsStats() {
           <span></span>
           <span className="label" style={{ margin: 0 }}>player</span>
           <span className="label" style={{ margin: 0 }}>score</span>
-          <span className="label" style={{ margin: 0 }}>win%</span>
+          <span className="label" style={{ margin: 0 }}>avg wave</span>
           <span className="label" style={{ margin: 0 }}>status</span>
         </div>
         <div className="scroll-y">
@@ -33,7 +33,7 @@ function FriendsStats() {
                 <div className="avatar">{friend.username?.substring(0, 2).toUpperCase()}</div>
                 <span>{friend.username}</span>
                 <span className="score">{friend.stats?.score?.toLocaleString() || 0}</span>
-                <span className="text-muted">{(friend.stats.win_rate * 100).toFixed(1)}%</span>
+                <span className="text-muted">{(friend.stats.avg_wave).toFixed(1)}</span>
                 <span className="game-state">
                   <span className={`dot ${isUserOnline(friend.last_online) || friend.in_game ? 'dot-online' : 'dot-offline'}`}></span>
                   <span className={isUserOnline(friend.last_online) || friend.in_game ? 'state-active' : 'text-muted'}>

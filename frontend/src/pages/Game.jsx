@@ -23,8 +23,27 @@ function Game() {
   const [hud, setHud] = useState(DEFAULT_HUD);
 
   // Called by the engine every frame
-  const onHUDUpdate = useCallback((data) => {
+  const onHUDUpdate = useCallback(async (data) => {
     hudRawRef.current = data;
+    
+    if (data.gameState == "game_over") {
+      try {
+        const result = await fetch('/api/user/runs', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            score: data.score,
+            duration: Math.round(data.elapsed),
+            wave: data.wave,
+            kills: 111 //placeholder
+          })
+        })
+      } catch (err) {
+        console.error("Error while sending data", err)
+      }
+    } 
   }, []);
 
   // Flush raw HUD values into React state at ~15fps
