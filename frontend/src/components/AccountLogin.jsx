@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import LoadingSpinner from './LoadingSpinner';
+import { sha256 } from 'js-sha256'
 
 function AccountLogin() {
   const [loginData, setLoginData] = useState({ username: '', password: '' });
@@ -25,9 +26,10 @@ function AccountLogin() {
     setIsLoadingLogin(true);
     setLoginError('');
     try {
+      const data = {...loginData, password: sha256(loginData.password)}
       const response = await fetch('/api/auth/login', {
         method: "POST",
-        body: JSON.stringify(loginData),
+        body: JSON.stringify(data),
         headers: {
           "Content-Type": "application/json"
         }
@@ -59,9 +61,11 @@ function AccountLogin() {
     
     setIsLoadingRegister(true);
     try {
+      const {confirmPassword, ...rest} = registerData
+      rest.password = sha256(rest.password)
       const response = await fetch('/api/auth/register', {
         method: "POST",
-        body: JSON.stringify(registerData),
+        body: JSON.stringify(rest),
         headers: {
           "Content-Type": "application/json"
         }
