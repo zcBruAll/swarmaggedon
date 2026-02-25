@@ -176,7 +176,7 @@ const Friends = () => {
         <div className="panel friend-list">
           <div className="panel-header">
             <span className="panel-title">Friend list</span>
-            <span className="tag">{friends.length} friends</span>
+            <span className="tag">{friends.length} friend{friends.length === 1 ? "": "s"}</span>
           </div>
           <div className="panel-body">
             <div className="scroll-y">

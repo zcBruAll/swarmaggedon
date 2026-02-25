@@ -48,7 +48,7 @@ function GlobalLeaderboard() {
                 </div>
               ))}
               
-              {isLoggedIn && userRank === 0 && (
+              {isLoggedIn && userRank === 0 && user.rank && (
                 <>
                   <hr className="divider" />
                   <div className="lb-row highlight">

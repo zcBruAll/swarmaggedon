@@ -7,13 +7,13 @@ function AccountStats() {
     <div className="panel">
       <div className="panel-header">
         <span className="panel-title">My stats — {user.username}</span>
-        <span className="tag">Rank #{user.rank}</span>
+        <span className="tag">{!user.rank ? "No rank yet" : "Rank #" +user.rank}</span>
       </div>
       <div className="panel-body">
         <div className="stats-grid">
           <div className="stat-box" style={{ transform: 'rotate(-0.4deg)' }}>
             <div className="stat-value">{formatNumberFull(user.stats.total_games)}</div>
-            <div className="stat-label">Games played</div>
+            <div className="stat-label">Game{user.stats.total_games === 1 ? "" : "s"} played</div>
           </div>
           <div className="stat-box" style={{ transform: 'rotate(0.3deg)' }}>
             <div className="stat-value">{(user.stats.win_rate * 100).toFixed(1)}%</div>

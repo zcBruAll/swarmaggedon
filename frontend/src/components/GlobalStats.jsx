@@ -41,7 +41,7 @@ function GlobalStats() {
         <div className="global-stat">
             <div className="global-stat-value">{formatNumberFull(stats.players_online)}</div>
             <div>
-                <div className="global-stat-title">Players online</div>
+                <div className="global-stat-title">Player{stats.players_online === 1 ? "" : "s"} online</div>
                 <div className="global-stat-sub">active now</div>
             </div>
         </div>
