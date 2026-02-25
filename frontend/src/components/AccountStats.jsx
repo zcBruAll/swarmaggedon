@@ -9,7 +9,7 @@ function AccountStats() {
         <span className="panel-title">My stats — {user.username}</span>
         <span className="tag">{!user.rank ? "No rank yet" : "Rank #" + user.rank}</span>
       </div>
-      <div className="panel-body" style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+      <div className="panel-body account-stats" style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
         <div className="stats-grid" style={{ flex: 1 }}>
           <div className="stat-box" style={{ transform: 'rotate(-0.4deg)' }}>
             <div className="stat-value">{formatNumberFull(user.stats.total_games)}</div>

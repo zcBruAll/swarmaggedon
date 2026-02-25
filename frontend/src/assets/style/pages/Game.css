@@ -83,3 +83,45 @@
   color: #f4f0e8;
   transform: scale(1.05) rotate(0deg);
 }
+.overlay.game-over {
+  background-color: rgba(140, 20, 12, 0.88);
+  backdrop-filter: blur(5px);
+  animation: bloodFlood 0.4s ease-out forwards;
+}
+
+.overlay.game-over .game-title {
+  color: #f4f0e8;
+  font-size: 140px;
+  letter-spacing: 4px;
+  text-shadow:
+    4px 4px 0px rgba(80, 0, 0, 0.6),
+    0 0 80px rgba(255, 80, 40, 0.3);
+  animation: titleCrash 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.15s both;
+  transform-origin: center;
+}
+
+.overlay.game-over .menu-btn {
+  background: rgba(20, 8, 6, 0.85);
+  color: #f4e8e0;
+  border-color: rgba(244, 240, 232, 0.25);
+  box-shadow: none;
+  transform: none;
+}
+
+.overlay.game-over .menu-btn:hover {
+  background: #f4f0e8;
+  color: #8c140c;
+  border-color: #f4f0e8;
+  transform: none;
+}
+
+@keyframes bloodFlood {
+  0%   { opacity: 0; }
+  100% { opacity: 0.9; }
+}
+
+@keyframes titleCrash {
+  0%   { opacity: 0; transform: scale(1.3) rotate(-2deg); }
+  60%  { opacity: 1; transform: scale(0.96) rotate(0.5deg); }
+  100% { opacity: 1; transform: scale(1) rotate(-0.3deg); }
+}

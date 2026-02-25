@@ -35,10 +35,10 @@ export function createEngine(canvas, onHUDUpdate) {
 
     function init() {
         player = createPlayer(canvas.width, canvas.height);
-        enemies = spawnWave(wave, canvas.width, canvas.height);
         score = 0;
         elapsed = 0;
         wave = 1;
+        enemies = spawnWave(wave, canvas.width, canvas.height);
         waveTimer = WAVE_INTERVAL;
         state = GAME_STATE.RUNNING;
     }
