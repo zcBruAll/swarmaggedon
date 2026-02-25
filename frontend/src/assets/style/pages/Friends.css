@@ -35,6 +35,15 @@
   gap: 10px;
 }
 
+.friend-label {
+  line-height: 1.1;
+}
+
+.inline-status {
+  display: flex;
+  align-items: center;
+}
+
 /* ============ FRIENDS PAGE LAYOUT ============ */
 @media (max-width: 700px) {
   #section-friends .main {

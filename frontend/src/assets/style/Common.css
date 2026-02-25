@@ -265,6 +265,7 @@ select option {
   color: var(--ink);
   flex-shrink: 0;
   border-radius: 50% 48% 52% 50% / 50% 52% 48% 50%;
+  margin: auto;
 }
 
 /* ============ DOT STATUS ============ */
