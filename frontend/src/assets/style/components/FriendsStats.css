@@ -12,12 +12,16 @@
     grid-template-columns: 34px 1fr auto auto auto;
     gap: 8px;
     align-items: center;
-    padding: 7px 0;
+    padding: 7px;
     border-bottom: 1px dashed var(--line);
 }
 
 .friend-stat-row:last-child {
     border-bottom: none;
+}
+
+.friend-stats {
+    padding: 0px 10px;
 }
 
 /* On small screens, hide win% column and simplify */

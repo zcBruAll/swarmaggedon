@@ -1,6 +1,6 @@
 /* ============ DASHBOARD GRID ============ */
 .dashboard-main {
-  grid-template-columns: 25% 1fr 22%;
+  grid-template-columns: 25% 1fr 25%;
 }
 
 .dashboard-leaderboard {
@@ -140,14 +140,16 @@
 .stats-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 10px;
+  gap: 15px;
+  padding: 15px;
 }
 
 .stat-box {
   background: var(--paper2);
   border: 1.5px solid var(--line);
-  padding: 10px 12px;
+  padding: 5px;
   position: relative;
+  text-align: center;
 }
 
 .stat-value {
@@ -160,6 +162,21 @@
   font-size: 18px;
   color: var(--ink-faint);
   margin-top: 1px;
+}
+
+@media (max-width: 1300px) {
+  .stats-grid {
+    gap: 7px;
+    padding: 7px;
+  }
+
+  .stat-value {
+    font-size: 24px;
+  }
+
+  .stat-label {
+    font-size: 12px;
+  }
 }
 
 /* ============ LEADERBOARD ============ */

@@ -11,9 +11,9 @@ function FriendsStats() {
     <div className="panel">
       <div className="panel-header">
         <span className="panel-title">Friends stats</span>
-        <span className="tag">{friends.length} friend{friends.length === 1 ? "": "s"}</span>
+        <span className="tag">{friends.length} friend{friends.length === 1 ? "" : "s"}</span>
       </div>
-      <div className="panel-body">
+      <div className="panel-body friend-stats">
         <div className="friend-stat-row-title">
           <span></span>
           <span className="label" style={{ margin: 0 }}>player</span>
@@ -23,7 +23,10 @@ function FriendsStats() {
         </div>
         <div className="scroll-y">
           {friends.length === 0 ? (
-            <div className="text-muted p-16">No friends yet.</div>
+            <div className='friend-stat-row'>
+              <span></span>
+              <span className="text-muted">No friends yet.</span>
+            </div>
           ) : (
             friends.map(friend => (
               <div className="friend-stat-row" key={friend.id}>
