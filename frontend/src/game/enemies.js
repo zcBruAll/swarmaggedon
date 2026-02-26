@@ -1,7 +1,11 @@
-export function createEnemy(canvasWidth, canvasHeight) {
+export function createEnemy(player, canvasWidth, canvasHeight) {
+    const randAngle = Math.random() * Math.PI * 2;
+    const randDist = Math.random() * 500;
+    const safeRadius = 150;
+    const spawnRadius = safeRadius + randDist;
     return {
-        x: Math.random() * canvasWidth,
-        y: Math.random() * canvasHeight,
+        x: player.x + Math.cos(randAngle) * spawnRadius,
+        y: player.y + Math.sin(randAngle) * spawnRadius,
         radius: 5,
         hp: 10,
         maxHp: 10,
@@ -31,10 +35,10 @@ function updateEnemy(enemy, player, dt) {
     }
 }
 
-export function spawnWave(wave, canvasWidth, canvasHeight) {
+export function spawnWave(wave, player, canvasWidth, canvasHeight) {
     let enemies = [];
     for (let i = 0; i < wave; i++) {
-        enemies.push(createEnemy(canvasWidth, canvasHeight));
+        enemies.push(createEnemy(player, canvasWidth, canvasHeight));
     }
     return enemies;
 }

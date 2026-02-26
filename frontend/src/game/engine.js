@@ -38,7 +38,7 @@ export function createEngine(canvas, onHUDUpdate) {
         score = 0;
         elapsed = 0;
         wave = 1;
-        enemies = spawnWave(wave, canvas.width, canvas.height);
+        enemies = spawnWave(wave, player, canvas.width, canvas.height);
         waveTimer = WAVE_INTERVAL;
         state = GAME_STATE.RUNNING;
     }
@@ -77,7 +77,7 @@ export function createEngine(canvas, onHUDUpdate) {
         if (waveTimer <= 0 || enemies?.length === 0) {
             wave += 1;
             waveTimer = WAVE_INTERVAL;
-            enemies.push(...spawnWave(wave, canvas.width, canvas.height));
+            enemies.push(...spawnWave(wave, player, canvas.width, canvas.height));
         }
 
         // Check game over
