@@ -22,6 +22,13 @@ export const userTypeDefs = gql`
         user_by_id(id: ID!): User
 
         friends: [User]
+
+        search(usernameSearch: String!): [User]
+    }
+
+    extend type Mutation {
+        addFriend(userId: ID!): String
+        deleteFriend(userId: ID!): String
     }
 `
 
@@ -124,6 +131,28 @@ export const userResolvers = {
             }
 
             return ret
+        },
+        search: async (_, {usernameSearch}, { user: loggedin_info }) => {
+            if (!loggedin_info) throw new Error("You are not logged in")
+            
+            if (!usernameSearch) throw new Error("You must give a search keyword")
+                
+            const results = await getDB().collection(COLLECTION_USERS).find({
+                "username": { $regex: usernameSearch, $options: 'i' },
+                _id: { $ne: new ObjectId(loggedin_info.id) }
+            }, {
+                projection: {
+                    _id: 1,
+                    username: 1
+                }
+            }).limit(10).toArray()
+            
+            const formattedResults = results.map(user => ({
+                id: user._id,
+                username: user.username
+            }))
+        
+            return formattedResults
         }
     },
     User: {
@@ -142,6 +171,69 @@ export const userResolvers = {
             ]).toArray();
 
             return (betterPlayers[0]?.count || 0) + 1;
+        }
+    },
+    Mutation: {
+        addFriend: async (_, {userId: id}, {user: loggedin_info}) => {
+            const current_friend_status = await getDB().collection(COLLECTION_FRIENDS).findOne({
+                $or: [
+                    { requester_id: loggedin_info.id.toString(), accepter_id: id },
+                    { requester_id: id, accepter_id: loggedin_info.id.toString() }
+                ]
+            })
+
+            if (!!current_friend_status) {
+                // friend status found
+                if (current_friend_status.pending && current_friend_status.accepter_id == loggedin_info.id) {
+                    // pending, if current user is accepter, pending => false
+                    const result = await getDB().collection(COLLECTION_FRIENDS).findOneAndUpdate(
+                        {
+                            $or: [
+                                { requester_id: loggedin_info.id.toString(), accepter_id: id },
+                                { requester_id: id, accepter_id: loggedin_info.id.toString() }
+                            ]
+                        },
+                        {
+                            $set: { pending: false }
+                        }
+                    )
+                    if (!!result) return "Success"
+                    else return "Please try again later"
+                } else {
+                    // nothing to do
+                    return ""
+                }
+            }
+            // currently no friend status
+
+            /// Create new document in friend collection
+            const user_exists = await getDB().collection(COLLECTION_USERS).findOne({
+                _id: new ObjectId(id)
+            })
+
+            if (!user_exists) return "User does not exist"
+
+            const data = await getDB().collection(COLLECTION_FRIENDS).insertOne({
+                requester_id: loggedin_info.id,
+                accepter_id: id,
+                pending: true
+            })
+
+            return "Friend request sent"
+        },
+        deleteFriend: async (_, {userId: id}, {user: loggedin_info}) => {
+            const removed = await getDB().collection(COLLECTION_FRIENDS).findOneAndDelete(
+                {
+                    $or: [
+                        { requester_id: loggedin_info.id.toString(), accepter_id: id },
+                        { requester_id: id, accepter_id: loggedin_info.id.toString() }
+                    ]
+                }
+            )
+        
+            if (!removed) return "No friend status found"
+        
+            return "Successfully removed friend"
         }
     }
 }

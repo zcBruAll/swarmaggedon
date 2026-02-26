@@ -17,6 +17,10 @@ export const runTypeDefs = gql`
         runs: [Run]
         last_run: Run
     }
+
+    extend type Mutation {
+        addRun(score: Int!, duration: Int!, wave: Int!, kills: Int!): String
+    }
 `
 
 export const runResolvers = {
@@ -39,5 +43,22 @@ export const runResolvers = {
     },
     Run: {
         date: (parent) => parent.date ? new Date(Number(parent.date)).toISOString() : null
+    },
+    Mutation: {
+        addRun: async (_, {score, duration, wave, kills}, {user}) => {
+            if (!user) throw new Error("You are not logged in")
+
+            const result = await getDB().collection(COLLECTION_RUNS).insertOne({
+                user_id: user.id.toString(),
+                date: new Date(),
+                score,
+                duration,
+                wave,
+                kills
+            })
+
+            if (!result) return "Unknown error while inserting"
+            return "Inserted new run"
+        }
     }
 }
