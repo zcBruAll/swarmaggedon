@@ -5,6 +5,7 @@ import { gql } from 'graphql-tag';
 import { userTypeDefs, userResolvers } from './user.js';
 import { statsResolvers, statsTypeDefs } from './stats.js';
 import { authResolvers, authTypeDefs } from './auth.js';
+import { runResolvers, runTypeDefs } from './runs.js';
 
 const baseTypeDefs = gql`
   type Query {
@@ -21,10 +22,12 @@ export const typeDefs = mergeTypeDefs([
   userTypeDefs,
   statsTypeDefs,
   authTypeDefs,
+  runTypeDefs,
 ]);
 
 export const resolvers = mergeResolvers([
   userResolvers,
   statsResolvers,
   authResolvers,
+  runResolvers,
 ]);

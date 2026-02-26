@@ -4,9 +4,7 @@ import {getUser, getLoggedInUser, getLoggedInUserFriends, postAddFriend, deleteR
 const router = Router()
 
 router.route("/search/:username").get(getUserSearch)
-router.route("/runs").get(getUserRuns)
 router.route("/runs").post(postNewRun)
-router.route("/last_run").get(getUserLastRun)
 
 router.route("/:id/add").post(postAddFriend)
 router.route("/:id/remove").delete(deleteRemoveFriend)
