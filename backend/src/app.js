@@ -5,6 +5,9 @@ import dotenv from 'dotenv'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import cookieparser from 'cookie-parser'
+import { ApolloServer } from '@apollo/server'
+import jwt from 'jsonwebtoken'
+import { expressMiddleware } from '@as-integrations/express5'
 
 // setup dotenv
 const __filename = fileURLToPath(import.meta.url)
@@ -13,24 +16,49 @@ dotenv.config({ path: path.join(__dirname, '../../.env'), quiet: true })
 
 // express app
 const app = express()
-const port = 2877
+const port = 2878
 
+// init apollo server
+import { typeDefs, resolvers } from './schema/index.js'
+const server = new ApolloServer({
+    typeDefs,
+    resolvers
+})
+
+// use
 app.use(express.json())
 app.use(cors({
     credentials: true
 }))
 app.use(cookieparser())
 
-app.listen(port, async () => {
-    await connectDB()
+await connectDB()
+await server.start()
+
+app.use(
+    '/graphql',
+    expressMiddleware(server, {
+        context: async ({ req, res }) => {
+            const token = req.cookies.auth_token;
+            let user = null;
+
+            if (token) {
+                try {
+                user = jwt.verify(token, process.env.JWT_SECRET);
+                } catch (err) {
+                // Token is invalid/expired
+                }
+            }
+
+            return {
+                res, 
+                user 
+            };
+        }
+    })
+);
+
+app.listen(port, () => {
     console.log(`Backend is ready. Listening on port ${port}`)
 })
 
-// routes
-import authRoute from './routes/auth.route.js'
-import userRoute from './routes/user.route.js'
-import globalRoute from './routes/global.route.js'
-
-app.use("/auth", authRoute)
-app.use("/user", userRoute)
-app.use("/global", globalRoute)

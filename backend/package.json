@@ -12,11 +12,17 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
+    "@apollo/server": "^5.4.0",
+    "@as-integrations/express5": "^1.1.2",
+    "@graphql-tools/merge": "^9.1.7",
+    "@graphql-tools/schema": "^10.0.31",
     "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
+    "graphql": "^16.13.0",
+    "graphql-tag": "^2.12.6",
     "jsonwebtoken": "^9.0.3",
     "mongodb": "^7.1.0",
     "path": "^0.12.7"
