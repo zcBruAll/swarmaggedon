@@ -49,9 +49,9 @@ export function createEngine(canvas, onHUDUpdate) {
 
         if (state === GAME_STATE.RUNNING) {
             update(dt);
-        }
 
-        render();
+            render();
+        }
         flushInput();
 
         refId = requestAnimationFrame(loop);
@@ -61,7 +61,7 @@ export function createEngine(canvas, onHUDUpdate) {
         elapsed += dt;
 
         // Player movement
-        updatePlayer(player, input, dt, canvas.width, canvas.height);
+        updatePlayer(player, input, dt, enemies, canvas.width, canvas.height);
 
         // Enemies movement
         updateEnemies(enemies, player, dt);
@@ -99,11 +99,27 @@ export function createEngine(canvas, onHUDUpdate) {
         player.weapon.cooldown -= Math.min(dt, player.weapon.cooldown);
         if (player.weapon.cooldown > dt) return;
 
+        let firstEnemyAngle = undefined;
+
         for (const enemy of enemies) {
             const dx = enemy.x - player.x;
             const dy = enemy.y - player.y;
             const d = Math.hypot(dx, dy);
+            const angle = Math.atan2(dy, dx);
             if (d <= enemy.radius + player.radius + player.weapon.radius) {
+                if (firstEnemyAngle == undefined) {
+                    firstEnemyAngle = angle;
+                } else {
+                    let diff = Math.abs(angle - firstEnemyAngle);
+
+                    if (diff > Math.PI) {
+                        diff = Math.PI * 2 - diff;
+                    }
+
+                    if (diff > Math.PI / 180 * player.weapon.angle) {
+                        continue;
+                    }
+                }
                 player.weapon.cooldown = player.weapon.cooldownTime;
                 damageEnemy(enemy, player.weapon.damage);
             }

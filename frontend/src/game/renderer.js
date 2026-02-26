@@ -12,6 +12,8 @@ export function drawPlayer(ctx, player) {
 
 export function drawWeapon(ctx, player) {
     if (!player.weapon) return;
+
+    // Weapon radius
     ctx.beginPath();
     const weaponRadius = player.radius + player.weapon.radius;
     ctx.ellipse(player.x, player.y, weaponRadius, weaponRadius, 0, player.weapon.cooldown / player.weapon.cooldownTime * 2 * Math.PI, 2 * Math.PI);
@@ -21,6 +23,21 @@ export function drawWeapon(ctx, player) {
     }
 
     ctx.strokeStyle = strokeStyle;
+    ctx.stroke();
+    ctx.closePath();
+
+    // Weapon angle 
+    ctx.beginPath();
+    ctx.moveTo(player.x, player.y);
+
+    const halfSpread = (player.weapon.angle / 2) * (Math.PI / 180);
+    const startAngle = player.angle - halfSpread;
+    const endAngle = player.angle + halfSpread;
+
+    ctx.arc(player.x, player.y, weaponRadius, startAngle, endAngle);
+
+    ctx.lineTo(player.x, player.y);
+
     ctx.stroke();
 }
 

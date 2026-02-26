@@ -61,13 +61,11 @@ const Friends = () => {
 
       if (response.ok) {
         const data = await response.json()
-        console.log(data)
         // Filter out existing friends and pending requests
         const filteredResults = data.filter(result =>
           !friends.some(f => f.id === result.id) &&
           !pending_requests.some(p => p.id === result.id)
         );
-        console.log(filteredResults, pending_requests)
         setSearch(filteredResults)
       } else {
         const err = await response.text()

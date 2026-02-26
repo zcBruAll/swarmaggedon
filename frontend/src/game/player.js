@@ -10,6 +10,7 @@ export function createPlayer(canvasWidth, canvasHeight) {
         x: canvasWidth / 2,
         y: canvasHeight / 2,
         radius: playerRadius,
+        angle: 0,
         hp: playerMaxHp,
         maxHp: playerMaxHp,
         speed: playerSpeed,
@@ -20,12 +21,23 @@ export function createPlayer(canvasWidth, canvasHeight) {
     };
 }
 
-export function updatePlayer(player, input, dt, canvasWidth, canvasHeight) {
+export function updatePlayer(player, input, dt, enemies, canvasWidth, canvasHeight) {
     const dirY = input.keys.up ? -1 : input.keys.down ? 1 : 0;
     const dirX = input.keys.left ? -1 : input.keys.right ? 1 : 0;
     player.x += playerSpeed * dt * dirX;
     player.y += playerSpeed * dt * dirY;
     player.invicibleTimer -= Math.min(dt, player.invicibleTimer);
+
+    let nearestEnemy = 1e6;
+    for (const enemy of enemies) {
+        const dx = enemy.x - player.x;
+        const dy = enemy.y - player.y;
+        const d = Math.hypot(dx, dy);
+        if (d < nearestEnemy) {
+            player.angle = Math.atan2(dy, dx);
+            nearestEnemy = d;
+        }
+    }
 }
 
 export function damagePlayer(player, amount) {
