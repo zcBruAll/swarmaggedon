@@ -20,6 +20,8 @@ export const userTypeDefs = gql`
 
         # returns other user info
         user_by_id(id: ID!): User
+
+        friends: [User]
     }
 `
 
@@ -81,6 +83,47 @@ export const userResolvers = {
                 in_game: user.in_game,
                 date_created: user.date_created
             }
+        },
+        friends: async (_, __, {user: loggedin_info}) => {
+            if (!loggedin_info) throw new Error("You are not logged in")
+            const friends = await getDB().collection(COLLECTION_FRIENDS).aggregate([
+                {
+                    $match: {
+                        $or: [
+                            { requester_id: loggedin_info.id },
+                            { accepter_id: loggedin_info.id }
+                        ]
+                    }
+                },
+                {
+                    $project: {
+                        _id: 0,
+                        requester_id: 1,
+                        accepter_id: 1,
+                        pending: "$pending"
+                    }
+                }
+            ]).toArray()
+    
+            const ret = []
+    
+            for (const f of friends) {
+                const fid = f.requester_id == loggedin_info.id ? f.accepter_id : f.requester_id
+                const friend = await getDB().collection(COLLECTION_USERS).findOne({
+                    _id: new ObjectId(fid)
+                })
+                ret.push({
+                    id: friend._id,
+                    requester_id: f.requester_id,
+                    accepter_id: f.accepter_id,
+                    username: friend.username,
+                    last_online: friend.last_online,
+                    in_game: friend.in_game,
+                    date_created: friend.date_created
+                })
+            }
+
+            return ret
         }
     },
     User: {
