@@ -3,6 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import { createEngine, GAME_STATE } from '../game/engine';
 import '../assets/style/pages/Game.css';
 import { formatDurationToHours } from '../utils/Utils';
+import { gql } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
+
+const MUTATION_ADD_RUN = gql`
+  mutation AddRun($score: Int!, $duration: Int!, $wave: Int!, $kills: Int!) {
+    addRun(score: $score, duration: $duration, wave: $wave, kills: $kills)
+  }
+`
 
 const DEFAULT_HUD = {
   score: 0,
@@ -21,6 +29,7 @@ function Game() {
   const canvasRef = useRef(null);
   const engineRef = useRef(null);
   const navigate = useNavigate();
+  const [addRun] = useMutation(MUTATION_ADD_RUN)
 
   // ref is used for the raw values and only setState at ~15fps
   // to avoid React re-rendering on every animation frame
@@ -33,23 +42,19 @@ function Game() {
 
     if (data.gameState == "game_over") {
       try {
-        const result = await fetch('/api/user/runs', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
+        await addRun({
+          variables: {
             score: data.score,
             duration: Math.round(data.elapsed),
             wave: data.wave,
             kills: data.kills
-          })
+          }
         })
       } catch (err) {
         console.error("Error while sending data", err)
       }
     }
-  }, []);
+  }, [addRun]);
 
   // Flush raw HUD values into React state at ~15fps
   useEffect(() => {
