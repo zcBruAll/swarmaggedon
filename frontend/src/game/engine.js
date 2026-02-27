@@ -1,5 +1,5 @@
 import { createPlayer, updatePlayer, damagePlayer, healPlayer } from './player.js';
-import { createWave, updateEnemies, damageEnemy } from './enemies.js';
+import { createWave, updateEnemies, damageEnemy, ENEMY_TYPE } from './enemies.js';
 import { initInput, destroyInput, flushInput, input } from './input.js';
 import {
     drawBackground, drawPlayer, drawEnemies,
@@ -79,6 +79,11 @@ export function createEngine(canvas, onHUDUpdate) {
         updateEnemies(enemies, player, dt);
 
         updateBullets(player.bullets, enemies, dt);
+        for (const enemy of enemies) {
+            if (enemy.type === ENEMY_TYPE.SHOOTER) {
+                updateBullets(enemy.bullets, [player], dt);
+            }
+        }
 
         PlayerAttackEnemies(dt);
 
@@ -143,7 +148,7 @@ export function createEngine(canvas, onHUDUpdate) {
             const angle = Math.atan2(dy, dx);
             if (d <= target.radius + attacker.radius + attacker.weapon.range) {
                 if (attacker.weapon.type == WEAPON_TYPE.RANGE) {
-                    attackRange(attacker);
+                    attackRange(attacker, angle);
                     break;
                 }
                 if (firstTargetAngle == undefined) {
@@ -167,8 +172,8 @@ export function createEngine(canvas, onHUDUpdate) {
         }
     }
 
-    function attackRange(attacker) {
-        fireBullet(attacker);
+    function attackRange(attacker, angle) {
+        fireBullet(attacker, angle);
     }
 
     function attackMelee(target, damage, fun) {
@@ -201,10 +206,14 @@ export function createEngine(canvas, onHUDUpdate) {
         drawEnemies(ctx, enemies);
         drawPlayer(ctx, player);
         drawWeapon(ctx, player);
+        drawBullets(ctx, player.bullets);
+
         for (const enemy of enemies) {
             drawWeapon(ctx, enemy);
+            if (enemy.type === ENEMY_TYPE.SHOOTER) {
+                drawBullets(ctx, enemy.bullets);
+            }
         }
-        drawBullets(ctx, player.bullets);
     }
 
     return {

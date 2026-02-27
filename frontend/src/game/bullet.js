@@ -17,22 +17,22 @@ export function createBullet(x, y, angle) {
     }
 }
 
-export function updateBullets(bullets, enemies, dt) {
+export function updateBullets(bullets, targets, dt) {
     for (const bullet of bullets) {
-        updateBullet(bullet, enemies, dt);
+        updateBullet(bullet, targets, dt);
     }
 }
 
-export function updateBullet(bullet, enemies, dt) {
+export function updateBullet(bullet, targets, dt) {
     bullet.x = bullet.x + Math.cos(bullet.angle) * bullet.speed * dt;
     bullet.y = bullet.y + Math.sin(bullet.angle) * bullet.speed * dt;
 
-    for (const enemy of enemies) {
-        const dx = enemy.x - bullet.x;
-        const dy = enemy.y - bullet.y;
+    for (const target of targets) {
+        const dx = target.x - bullet.x;
+        const dy = target.y - bullet.y;
         const d = Math.hypot(dx, dy);
-        if (d <= enemy.radius) {
-            damageEnemy(enemy, bullet.damage);
+        if (d <= target.radius) {
+            damageEnemy(target, bullet.damage);
             if (bullet.explos == BULLET_EXPLOS.HIT)
                 bullet = undefined;
             break;

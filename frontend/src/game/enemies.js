@@ -33,6 +33,8 @@ const BASE_STATS = {
         hp: 20,
         speed: 90,
         score: 20,
+        cooldownInterval: 5,
+        bullets: [],
         color: '#e67e22',
     },
     [ENEMY_TYPE.BOSS]: {
@@ -115,6 +117,7 @@ export function createEnemy(type, x, y, wave) {
         weapon: weapon,
         type: type,
         color: base.color,
+        bullets: base.bullets,
     };
 }
 

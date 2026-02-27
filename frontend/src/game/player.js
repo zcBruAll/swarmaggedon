@@ -19,6 +19,7 @@ export function createPlayer(canvasWidth, canvasHeight) {
         totalDamageTaken: 0,
         weapon: createWeapon(),
         bullets: [],
+        type: 'player',
     };
 }
 
