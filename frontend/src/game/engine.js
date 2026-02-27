@@ -113,6 +113,7 @@ export function createEngine(canvas, onHUDUpdate) {
             wave,
             hp: player.hp,
             gameState: state,
+            kills,
             waveState
         });
     }
