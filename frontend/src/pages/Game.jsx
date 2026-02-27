@@ -10,6 +10,11 @@ const DEFAULT_HUD = {
   wave: 1,
   hp: 100,
   gameState: GAME_STATE.RUNNING,
+  waveState: {
+    waveTitle: "",
+    waveSubtitle: "",
+    duration: 0,
+  }
 };
 
 function Game() {
@@ -120,6 +125,12 @@ function Game() {
           <span>time: <strong>{formatDurationToHours(hudRawRef.current.elapsed)}</strong></span>
           <span>wave: <strong>{hudRawRef.current.wave}</strong></span>
           <span>hp: <strong>{hudRawRef.current.hp}</strong></span>
+        </div>
+      }
+      {hudRawRef.current.gameState === GAME_STATE.RUNNING && hudRawRef.current.waveState && hudRawRef.current.waveState.duration > 0 &&
+        <div className={`wave-info ${hudRawRef.current.waveState.duration < 0.5 ? 'exit' : ''}`}>
+          <span className='wave-title'>{hudRawRef.current.waveState.waveTitle}</span>
+          <span className='wave-subtitle'>{hudRawRef.current.waveState.waveSubtitle}</span>
         </div>
       }
       <canvas ref={canvasRef} className="game-canvas"></canvas>

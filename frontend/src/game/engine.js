@@ -33,8 +33,11 @@ export function createEngine(canvas, onHUDUpdate) {
     // Time before next wave
     const WAVE_INTERVAL = 20;
 
-    const hudState = {
-        waveAnnouncement: null, // { text, timer } - shown on wave start
+    const WAVE_MSG_TIMER = 2;
+    let waveState = {
+        waveTitle: "",
+        waveSubtitle: "",
+        duration: 0,
     };
 
     function init() {
@@ -45,6 +48,11 @@ export function createEngine(canvas, onHUDUpdate) {
         enemies = spawnWave(wave, player, canvas.width, canvas.height);
         waveTimer = WAVE_INTERVAL;
         state = GAME_STATE.RUNNING;
+        waveState = {
+            waveTitle: "WAVE 1",
+            waveSubtitle: "WEAPON: " + player.weapon.type,
+            duration: WAVE_MSG_TIMER,
+        }
     }
 
     function loop(ts) {
@@ -79,15 +87,23 @@ export function createEngine(canvas, onHUDUpdate) {
         EnemiesAttackPlayer();
 
         // Wave progression
+        if (waveState.duration > 0)
+            waveState.duration -= Math.min(dt, waveState.duration);
+
         waveTimer -= dt;
         if (waveTimer <= 0 || enemies?.length === 0) {
             wave += 1;
             waveTimer = WAVE_INTERVAL;
             enemies.push(...spawnWave(wave, player, canvas.width, canvas.height));
+            waveState = {
+                waveTitle: "WAVE " + wave,
+                waveSubtitle: "",
+                duration: WAVE_MSG_TIMER,
+            }
         }
 
         // Check game over
-        if (!player.hp > 0) {
+        if (player.hp <= 0) {
             state = GAME_STATE.GAME_OVER;
         }
 
@@ -97,6 +113,7 @@ export function createEngine(canvas, onHUDUpdate) {
             wave,
             hp: player.hp,
             gameState: state,
+            waveState
         });
     }
 
