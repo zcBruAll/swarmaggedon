@@ -6,6 +6,7 @@ import { userTypeDefs, userResolvers } from './user.js';
 import { statsResolvers, statsTypeDefs } from './stats.js';
 import { authResolvers, authTypeDefs } from './auth.js';
 import { runResolvers, runTypeDefs } from './runs.js';
+import { globalResolvers, globalTypeDefs } from './global.js';
 
 const baseTypeDefs = gql`
   type Query {
@@ -23,6 +24,7 @@ export const typeDefs = mergeTypeDefs([
   statsTypeDefs,
   authTypeDefs,
   runTypeDefs,
+  globalTypeDefs,
 ]);
 
 export const resolvers = mergeResolvers([
@@ -30,4 +32,5 @@ export const resolvers = mergeResolvers([
   statsResolvers,
   authResolvers,
   runResolvers,
+  globalResolvers,
 ]);
