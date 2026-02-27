@@ -16,7 +16,7 @@ dotenv.config({ path: path.join(__dirname, '../../.env'), quiet: true })
 
 // express app
 const app = express()
-const port = 2878
+const port = 2877
 
 // init apollo server
 import { typeDefs, resolvers } from './schema/index.js'
