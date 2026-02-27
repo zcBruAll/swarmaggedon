@@ -31,6 +31,7 @@ export const userTypeDefs = gql`
     extend type Mutation {
         addFriend(userId: ID!): String
         deleteFriend(userId: ID!): String
+        changeUsername(newUsername: String!): String
     }
 `
 
@@ -278,6 +279,22 @@ export const userResolvers = {
             if (!removed) return "No friend status found"
         
             return "Successfully removed friend"
+        },
+        changeUsername: async (_, {newUsername}, {user}) => {
+            if (!user) throw new Error("You are not logged in")
+            if (newUsername.length > 16 || newUsername.length < 3) throw new Error("Your new username is not correct")
+            if (newUsername === user.username) throw new Error("New username must be different")
+
+            const result = await getDB().collection(COLLECTION_USERS).findOneAndUpdate({
+                _id: new ObjectId(user.id)
+            },{
+                $set: {
+                    username: newUsername
+                }
+            })
+
+            if (result) return "Username changed successfully"
+            else throw new Error("Unknown error")
         }
     }
 }

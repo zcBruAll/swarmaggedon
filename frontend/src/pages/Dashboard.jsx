@@ -37,8 +37,8 @@ const Dashboard = () => {
             <div className="play-sub">
               {isLoggedIn ? (
                 <>
-                  Last run: {formatRelativeTime(user.last_run.date)} · 
-                  best: {formatDurationToHours(user.stats.best_time)} 
+                  Last run: {formatRelativeTime(user.last_run?.date)} · 
+                  best: {formatDurationToHours(user.stats?.best_time)} 
                   {user.rank ? ` · rank #${user.rank}` : ""}
                 </>
               ) : "Create an account to see your stats !"}

@@ -10,7 +10,7 @@ export const statsTypeDefs = gql`
         best_time: Int
         avg_wave: Float
         high_score: Int
-        avg_duration: Int
+        avg_duration: Float
     }
     
     extend type User {

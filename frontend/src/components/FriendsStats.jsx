@@ -21,6 +21,7 @@ const GET_FRIENDS = gql`
 
 function FriendsStats() {
   const { loading, error, data } = useQuery(GET_FRIENDS)
+  console.log(data)
 
   if (loading) return <div>Loading friends...</div>;
 
@@ -49,8 +50,8 @@ function FriendsStats() {
               <div className="friend-stat-row" key={friend.id}>
                 <div className="avatar">{friend.username?.substring(0, 2).toUpperCase()}</div>
                 <span>{friend.username}</span>
-                <span className="score">{friend.stats?.score?.toLocaleString() || 0}</span>
-                <span className="text-muted">{(friend.stats.avg_wave).toFixed(1)}</span>
+                <span className="score">{friend.stats?.high_score?.toLocaleString() || 0}</span>
+                <span className="text-muted">{(friend.stats?.avg_wave || 0).toFixed(1)}</span>
                 <span className="game-state">
                   <span className={`dot ${isUserOnline(friend.last_online) || friend.in_game ? 'dot-online' : 'dot-offline'}`}></span>
                   <span className={isUserOnline(friend.last_online) || friend.in_game ? 'state-active' : 'text-muted'}>

@@ -36,7 +36,9 @@ export const authResolvers = {
             return "Logged in successfully"
         },
         register: async(_, {username, email, password}, {}) => {
-            const existingUsername = await getDB().collection(COLLECTION_USERS).findOne({username})
+            if (username.length > 16 || username.length < 3) throw new Error("Your new username is not correct")
+            
+                const existingUsername = await getDB().collection(COLLECTION_USERS).findOne({username})
             if (existingUsername) return "Username already taken"
             
             const existingEmail = await getDB().collection(COLLECTION_USERS).findOne({ email })
