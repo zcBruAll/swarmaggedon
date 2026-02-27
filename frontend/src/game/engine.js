@@ -4,7 +4,10 @@ import { initInput, destroyInput, flushInput, input } from './input.js';
 import {
     drawBackground, drawPlayer, drawEnemies,
     drawWeapon,
+    drawBullets,
 } from './renderer.js';
+import { WEAPON_TYPE, fireBullet } from './weapon.js';
+import { updateBullets } from './bullet.js';
 
 export const GAME_STATE = {
     RUNNING: 'running',
@@ -25,6 +28,7 @@ export function createEngine(canvas, onHUDUpdate) {
     let elapsed = 0;
     let wave = 1;
     let waveTimer = 0;
+    let kills = 0;
 
     // Time before next wave
     const WAVE_INTERVAL = 20;
@@ -66,6 +70,8 @@ export function createEngine(canvas, onHUDUpdate) {
         // Enemies movement
         updateEnemies(enemies, player, dt);
 
+        updateBullets(player.bullets, enemies, dt);
+
         PlayerAttackEnemies(dt);
 
         cleanupEnemies();
@@ -99,6 +105,7 @@ export function createEngine(canvas, onHUDUpdate) {
         player.weapon.cooldown -= Math.min(dt, player.weapon.cooldown);
         if (player.weapon.cooldown > dt) return;
 
+
         let firstEnemyAngle = undefined;
 
         for (const enemy of enemies) {
@@ -106,7 +113,7 @@ export function createEngine(canvas, onHUDUpdate) {
             const dy = enemy.y - player.y;
             const d = Math.hypot(dx, dy);
             const angle = Math.atan2(dy, dx);
-            if (d <= enemy.radius + player.radius + player.weapon.radius) {
+            if (d <= enemy.radius + player.radius + player.weapon.range) {
                 if (firstEnemyAngle == undefined) {
                     firstEnemyAngle = angle;
                 } else {
@@ -121,9 +128,21 @@ export function createEngine(canvas, onHUDUpdate) {
                     }
                 }
                 player.weapon.cooldown = player.weapon.cooldownTime;
-                damageEnemy(enemy, player.weapon.damage);
+
+                if (player.weapon.type == WEAPON_TYPE.MELEE)
+                    attackMelee();
+                else if (player.weapon.type == WEAPON_TYPE.RANGE)
+                    attackRange();
             }
         }
+    }
+
+    function attackRange() {
+        fireBullet(player);
+    }
+
+    function attackMelee() {
+        damageEnemy(enemy, player.weapon.damage);
     }
 
     function EnemiesAttackPlayer() {
@@ -139,20 +158,18 @@ export function createEngine(canvas, onHUDUpdate) {
 
     function cleanupEnemies() {
         let writeIndex = 0;
-        let gainedScore = 0;
 
         for (let readIndex = 0; readIndex < enemies.length; readIndex++) {
             const enemy = enemies[readIndex];
 
             if (enemy.hp <= 0) {
-                gainedScore += enemy.score;
+                score += enemy.score;
+                kills += 1;
             } else {
                 enemies[writeIndex] = enemy;
                 writeIndex++;
             }
         }
-
-        score += gainedScore;
 
         enemies.length = writeIndex;
     }
@@ -165,6 +182,7 @@ export function createEngine(canvas, onHUDUpdate) {
         drawEnemies(ctx, enemies);
         drawPlayer(ctx, player);
         drawWeapon(ctx, player);
+        drawBullets(ctx, player.bullets);
     }
 
     return {
