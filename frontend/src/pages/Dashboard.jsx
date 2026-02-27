@@ -12,22 +12,6 @@ import { formatDurationToHours, formatRelativeTime } from '../utils/Utils'
 const Dashboard = () => {
   const navigate = useNavigate();
   const { isLoggedIn, user, loading } = useAuth();
-  const [lastRun, setLastRun] = useState(null);
-
-  useEffect(() => {
-    const fetchLastRun = async () => {
-      try {
-        const response = await fetch('/api/user/last_run');
-        if (response.ok) {
-          setLastRun(await response.json());
-        }
-      } catch (error) {
-        console.error("Failed to fetch last run", error);
-      }
-    };
-
-    if (isLoggedIn) fetchLastRun();
-  }, [isLoggedIn]);
 
   return (
     <div id="section-dashboard" className="section-content active">
@@ -53,7 +37,7 @@ const Dashboard = () => {
             <div className="play-sub">
               {isLoggedIn ? (
                 <>
-                  Last run: {formatRelativeTime(lastRun?.date)} · 
+                  Last run: {formatRelativeTime(user.last_run.date)} · 
                   best: {formatDurationToHours(user.stats.best_time)} 
                   {user.rank ? ` · rank #${user.rank}` : ""}
                 </>

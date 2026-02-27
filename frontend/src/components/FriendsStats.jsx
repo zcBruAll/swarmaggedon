@@ -1,9 +1,26 @@
+import { gql } from '@apollo/client';
 import '../assets/style/components/FriendsStats.css';
-import { useFriends } from '../context/FriendsContext';
 import { isUserOnline } from '../utils/Utils.js';
+import { useQuery } from '@apollo/client/react';
+
+const GET_FRIENDS = gql`
+  query User {
+    friends {
+      id
+      username
+      last_online
+      in_game
+      date_created
+      stats {
+          avg_wave
+          high_score
+      }
+    }
+  }
+`
 
 function FriendsStats() {
-  const { friends, loading } = useFriends();
+  const { loading, error, data } = useQuery(GET_FRIENDS)
 
   if (loading) return <div>Loading friends...</div>;
 
@@ -11,7 +28,7 @@ function FriendsStats() {
     <div className="panel">
       <div className="panel-header">
         <span className="panel-title">Friends stats</span>
-        <span className="tag">{friends.length} friend{friends.length === 1 ? "" : "s"}</span>
+        <span className="tag">{data?.friends.length} friend{data?.friends.length === 1 ? "" : "s"}</span>
       </div>
       <div className="panel-body friend-stats">
         <div className="friend-stat-row-title">
@@ -22,13 +39,13 @@ function FriendsStats() {
           <span className="label" style={{ margin: 0 }}>status</span>
         </div>
         <div className="scroll-y">
-          {friends.length === 0 ? (
+          {data?.friends.length === 0 ? (
             <div className='friend-stat-row'>
               <span></span>
               <span className="text-muted">No friends yet.</span>
             </div>
           ) : (
-            friends.map(friend => (
+            data.friends.map(friend => (
               <div className="friend-stat-row" key={friend.id}>
                 <div className="avatar">{friend.username?.substring(0, 2).toUpperCase()}</div>
                 <span>{friend.username}</span>

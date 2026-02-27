@@ -1,26 +1,76 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
+import { gql } from '@apollo/client';
+import { useQuery, useMutation, useApolloClient } from '@apollo/client/react';
 
 const AuthContext = createContext();
 
+const ME_QUERY = gql`
+  query Me {
+    me {
+      id
+      username
+      email
+      date_created
+      rank
+      last_run {
+        date
+      }
+      stats {
+        total_games
+        total_kills
+        best_time
+        avg_wave
+        high_score
+        avg_duration
+      }
+    }
+  }
+`;
+
+const MUTATION_LOGOUT = gql`
+  mutation Logout {
+    logout
+  }
+`;
+
 export const AuthProvider = ({ children }) => {
+    const client = useApolloClient();
+    const { data, loading: queryLoading, refetch } = useQuery(ME_QUERY, {
+        errorPolicy: 'all',
+        onError: () => {} // ignore errors (not logged in)
+    });
+    
+    const [logoutMutation] = useMutation(MUTATION_LOGOUT);
+    
     const [user, setUser] = useState(null);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [loading, setLoading] = useState(true);
 
-    const checkAuth = async () => {
-        try {
-            const response = await fetch('/api/user', {
-                credentials: 'include'
-            });
-            if (response.ok) {
-                const userData = await response.json();
-                setUser(userData);
+    useEffect(() => {
+        if (!queryLoading) {
+            if (data?.me) {
+                setUser(data.me);
                 setIsLoggedIn(true);
             } else {
                 setUser(null);
                 setIsLoggedIn(false);
             }
-        } catch (error) {
+            setLoading(false);
+        }
+    }, [data, queryLoading]);
+
+    const checkAuth = async () => {
+        setLoading(true);
+        try {
+            const { data: refetchedData } = await refetch();
+            if (refetchedData?.me) {
+                setUser(refetchedData.me);
+                setIsLoggedIn(true);
+            } else {
+                setUser(null);
+                setIsLoggedIn(false);
+            }
+        } catch (e) {
             setUser(null);
             setIsLoggedIn(false);
         } finally {
@@ -28,21 +78,15 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    useEffect(() => {
-        checkAuth();
-    }, []);
-
     const logout = async () => {
         try {
-            await fetch('/api/auth/logout', {
-                method: 'DELETE',
-                credentials: 'include'
-            });
+            await logoutMutation();
+            await client.resetStore();  // reset cache
+            setUser(null);
+            setIsLoggedIn(false);
         } catch (error) {
             console.error("Logout error:", error);
         }
-        setUser(null);
-        setIsLoggedIn(false);
     };
 
     return (

@@ -3,6 +3,20 @@ import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import LoadingSpinner from './LoadingSpinner';
 import { sha256 } from 'js-sha256'
+import { gql } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
+
+const MUTATION_LOGIN = gql`
+  mutation LoginUser($username: String!, $password: String!) {
+    login(username: $username, password: $password)
+  }
+`
+
+const MUTATION_REGISTER = gql`
+  mutation RegisterUser($username: String!, $email: String!, $password: String!) {
+    register(username: $username, email: $email, password: $password)
+  }
+`
 
 function AccountLogin() {
   const [loginData, setLoginData] = useState({ username: '', password: '' });
@@ -12,40 +26,38 @@ function AccountLogin() {
     password: '', 
     confirmPassword: '' 
   });
-  const [isLoadingLogin, setIsLoadingLogin] = useState(false);
-  const [isLoadingRegister, setIsLoadingRegister] = useState(false);
+  
+  const [loginUser, { loading: isLoadingLogin }] = useMutation(MUTATION_LOGIN);
+  const [registerUser, { loading: isLoadingRegister }] = useMutation(MUTATION_REGISTER);
+
   const [registrationSuccess, setRegistrationSuccess] = useState(false);
   const [loginError, setLoginError] = useState('');
   const [registerError, setRegisterError] = useState('');
   
   const { checkAuth } = useAuth();
   const navigate = useNavigate();
-
+  
   const handleLogin = async (e) => {
     e.preventDefault();
-    setIsLoadingLogin(true);
     setLoginError('');
+    
     try {
-      const data = {...loginData, password: sha256(loginData.password)}
-      const response = await fetch('/api/auth/login', {
-        method: "POST",
-        body: JSON.stringify(data),
-        headers: {
-          "Content-Type": "application/json"
+      const { data } = await loginUser({
+        variables: {
+          username: loginData.username,
+          password: sha256(loginData.password)
         }
       });
-      if (response.ok) {
+      
+      if (data.login === "Logged in successfully") {
         await checkAuth();
         navigate('/account');
       } else {
-        const err = await response.text();
-        setLoginError(err || 'Failed to login');
+        setLoginError(data.login || 'Failed to login');
       }
     } catch (error) {
       setLoginError('An unexpected error occurred');
       console.error('Login error:', error);
-    } finally {
-      setIsLoadingLogin(false);
     }
   };
 
@@ -59,29 +71,24 @@ function AccountLogin() {
       return;
     }
     
-    setIsLoadingRegister(true);
     try {
-      const {confirmPassword, ...rest} = registerData
-      rest.password = sha256(rest.password)
-      const response = await fetch('/api/auth/register', {
-        method: "POST",
-        body: JSON.stringify(rest),
-        headers: {
-          "Content-Type": "application/json"
+      const { data } = await registerUser({
+        variables: {
+          username: registerData.username,
+          email: registerData.email,
+          password: sha256(registerData.password)
         }
       });
-      if (response.ok) {
+      
+      if (data.register === "Account created successfully") {
         setRegistrationSuccess(true);
         setRegisterData({ username: '', email: '', password: '', confirmPassword: '' });
       } else {
-        const err = await response.text();
-        setRegisterError(err || 'Failed to create account');
+        setRegisterError(data.register || 'Failed to create account');
       }
     } catch (error) {
       setRegisterError('An unexpected error occurred');
       console.error('Register error:', error);
-    } finally {
-      setIsLoadingRegister(false);
     }
   };
 

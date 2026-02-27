@@ -22,7 +22,7 @@ export const statsResolvers = {
     User: {
         stats: async (user, _, {}) => {
             const run_data = await getDB().collection(COLLECTION_RUNS).aggregate([
-                { $match: { user_id: user.id } },  // filter for specified user
+                { $match: { user_id: user.id.toString() } },  // filter for specified user
                 {
                     $group: {
                         _id: null,

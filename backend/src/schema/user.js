@@ -23,6 +23,8 @@ export const userTypeDefs = gql`
 
         friends: [User]
 
+        pending_requests: [User]
+
         search(usernameSearch: String!): [User]
     }
 
@@ -99,15 +101,15 @@ export const userResolvers = {
                         $or: [
                             { requester_id: loggedin_info.id },
                             { accepter_id: loggedin_info.id }
-                        ]
+                        ],
+                        pending: false
                     }
                 },
                 {
                     $project: {
                         _id: 0,
                         requester_id: 1,
-                        accepter_id: 1,
-                        pending: "$pending"
+                        accepter_id: 1
                     }
                 }
             ]).toArray()
@@ -136,10 +138,18 @@ export const userResolvers = {
             if (!loggedin_info) throw new Error("You are not logged in")
             
             if (!usernameSearch) throw new Error("You must give a search keyword")
+
+            // Find all relationships initiated by the current user
+            const initiatedRelations = await getDB().collection(COLLECTION_FRIENDS).find({
+                requester_id: loggedin_info.id
+            }).toArray()
+
+            const excludedIds = initiatedRelations.map(rel => new ObjectId(rel.accepter_id))
+            excludedIds.push(new ObjectId(loggedin_info.id))
                 
             const results = await getDB().collection(COLLECTION_USERS).find({
                 "username": { $regex: usernameSearch, $options: 'i' },
-                _id: { $ne: new ObjectId(loggedin_info.id) }
+                _id: { $nin: excludedIds }
             }, {
                 projection: {
                     _id: 1,
@@ -153,6 +163,40 @@ export const userResolvers = {
             }))
         
             return formattedResults
+        },
+        pending_requests: async (_, __, {user: loggedin_info}) => {
+            if (!loggedin_info) throw new Error("You are not logged in")
+            const pending = await getDB().collection(COLLECTION_FRIENDS).aggregate([
+                {
+                    $match: {
+                        accepter_id: loggedin_info.id,
+                        pending: true
+                    }
+                },
+                {
+                    $project: {
+                        _id: 0,
+                        requester_id: 1
+                    }
+                }
+            ]).toArray()
+    
+            const ret = []
+    
+            for (const f of pending) {
+                const user = await getDB().collection(COLLECTION_USERS).findOne({
+                    _id: new ObjectId(f.requester_id)
+                })
+                ret.push({
+                    id: f.requester_id,
+                    username: user.username,
+                    last_online: user.last_online,
+                    in_game: user.in_game,
+                    date_created: user.date_created
+                })
+            }
+
+            return ret
         }
     },
     User: {
