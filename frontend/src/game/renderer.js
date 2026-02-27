@@ -1,3 +1,5 @@
+import { ENEMY_TYPE } from "./enemies";
+
 export function drawBackground(ctx, width, height) {
     ctx.clearRect(0, 0, width, height);
 }
@@ -52,8 +54,26 @@ export function drawEnemy(ctx, enemy) {
     let enemyRegion = new Path2D();
     enemyRegion.ellipse(enemy.x, enemy.y, enemy.radius, enemy.radius, 0, 0, 2 * Math.PI);
     enemyRegion.closePath();
-    ctx.fillStyle = "#ff0000";
+    ctx.fillStyle = enemy.color;
     ctx.fill(enemyRegion);
+
+    // Enemy HP bar
+    if (enemy.hp < enemy.maxHp) {
+        const barW = enemy.radius * 2.4;
+        const barH = enemy.type === ENEMY_TYPE.BOSS ? 6 : 3;
+        const bx = enemy.x - barW / 2;
+        const by = enemy.y - enemy.radius - (enemy.type === ENEMY_TYPE.BOSS ? 18 : 10);
+        const filled = (enemy.hp / enemy.maxHp) * barW;
+
+        ctx.fillStyle = 'rgba(0,0,0,0.35)';
+        ctx.fillRect(bx, by, barW, barH);
+
+        const percent = enemy.hp / enemy.maxHp;
+        ctx.fillStyle = percent > 0.5
+            ? 'orange'
+            : 'red';
+        ctx.fillRect(bx, by, filled, barH);
+    }
 }
 
 export function drawBullets(ctx, bullets) {

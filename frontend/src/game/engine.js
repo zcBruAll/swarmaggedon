@@ -1,5 +1,5 @@
-import { createPlayer, updatePlayer, damagePlayer } from './player.js';
-import { spawnWave, updateEnemies, damageEnemy } from './enemies.js';
+import { createPlayer, updatePlayer, damagePlayer, healPlayer } from './player.js';
+import { createWave, updateEnemies, damageEnemy } from './enemies.js';
 import { initInput, destroyInput, flushInput, input } from './input.js';
 import {
     drawBackground, drawPlayer, drawEnemies,
@@ -31,7 +31,7 @@ export function createEngine(canvas, onHUDUpdate) {
     let kills = 0;
 
     // Time before next wave
-    const WAVE_INTERVAL = 20;
+    const WAVE_INTERVAL = 30;
 
     const WAVE_MSG_TIMER = 2;
     let waveState = {
@@ -45,7 +45,7 @@ export function createEngine(canvas, onHUDUpdate) {
         score = 0;
         elapsed = 0;
         wave = 1;
-        enemies = spawnWave(wave, player, canvas.width, canvas.height);
+        enemies = createWave(wave, player, canvas.width, canvas.height);
         waveTimer = WAVE_INTERVAL;
         state = GAME_STATE.RUNNING;
         waveState = {
@@ -84,7 +84,7 @@ export function createEngine(canvas, onHUDUpdate) {
 
         cleanupEnemies();
 
-        EnemiesAttackPlayer();
+        EnemiesAttackPlayer(dt);
 
         // Wave progression
         if (waveState.duration > 0)
@@ -94,7 +94,9 @@ export function createEngine(canvas, onHUDUpdate) {
         if (waveTimer <= 0 || enemies?.length === 0) {
             wave += 1;
             waveTimer = WAVE_INTERVAL;
-            enemies.push(...spawnWave(wave, player, canvas.width, canvas.height));
+            if (enemies?.length === 0)
+                healPlayer(player, 15);
+            enemies.push(...createWave(wave, player, canvas.width, canvas.height));
             waveState = {
                 waveTitle: "WAVE " + wave,
                 waveSubtitle: "",
@@ -113,67 +115,64 @@ export function createEngine(canvas, onHUDUpdate) {
             wave,
             hp: player.hp,
             gameState: state,
+            waveState,
             kills,
-            waveState
         });
     }
 
     function PlayerAttackEnemies(dt) {
-        if (!player?.weapon) return;
-        player.weapon.cooldown -= Math.min(dt, player.weapon.cooldown);
-        if (player.weapon.cooldown > dt) return;
+        tryAttack(dt, player, enemies, damageEnemy);
+    }
 
-        if (player.weapon.type == WEAPON_TYPE.RANGE) {
-            attackRange();
-            return;
-        }
-
-        let firstEnemyAngle = undefined;
-
+    function EnemiesAttackPlayer(dt) {
         for (const enemy of enemies) {
-            const dx = enemy.x - player.x;
-            const dy = enemy.y - player.y;
+            tryAttack(dt, enemy, [player], damagePlayer);
+        }
+    }
+
+    function tryAttack(dt, attacker, targets, fun) {
+        if (!attacker?.weapon) return;
+        attacker.weapon.cooldown -= Math.min(dt, attacker.weapon.cooldown);
+        if (attacker.weapon.cooldown > 0) return;
+
+        let firstTargetAngle = undefined;
+        for (const target of targets) {
+            const dx = target.x - attacker.x;
+            const dy = target.y - attacker.y;
             const d = Math.hypot(dx, dy);
             const angle = Math.atan2(dy, dx);
-            if (d <= enemy.radius + player.radius + player.weapon.range) {
-                if (firstEnemyAngle == undefined) {
-                    firstEnemyAngle = angle;
+            if (d <= target.radius + attacker.radius + attacker.weapon.range) {
+                if (attacker.weapon.type == WEAPON_TYPE.RANGE) {
+                    attackRange(attacker);
+                    break;
+                }
+                if (firstTargetAngle == undefined) {
+                    firstTargetAngle = angle;
                 } else {
-                    let diff = Math.abs(angle - firstEnemyAngle);
+                    let diff = Math.abs(angle - firstTargetAngle);
 
                     if (diff > Math.PI) {
                         diff = Math.PI * 2 - diff;
                     }
 
-                    if (diff > Math.PI / 180 * player.weapon.angle) {
+                    if (diff > Math.PI / 180 * attacker.weapon.angle) {
                         continue;
                     }
                 }
-                player.weapon.cooldown = player.weapon.cooldownTime;
+                attacker.weapon.cooldown = attacker.weapon.cooldownTime;
 
-                if (player.weapon.type == WEAPON_TYPE.MELEE)
-                    attackMelee(enemy);
+                if (attacker.weapon.type == WEAPON_TYPE.MELEE)
+                    attackMelee(target, attacker.weapon.damage, fun);
             }
         }
     }
 
-    function attackRange() {
-        fireBullet(player);
+    function attackRange(attacker) {
+        fireBullet(attacker);
     }
 
-    function attackMelee(enemy) {
-        damageEnemy(enemy, player.weapon.damage);
-    }
-
-    function EnemiesAttackPlayer() {
-        for (const enemy of enemies) {
-            const dx = enemy.x - player.x;
-            const dy = enemy.y - player.y;
-            const d = Math.sqrt(dx * dx + dy * dy);
-            if (d <= enemy.radius + player.radius) {
-                damagePlayer(player, enemy.damage);
-            }
-        }
+    function attackMelee(target, damage, fun) {
+        fun(target, damage);
     }
 
     function cleanupEnemies() {
@@ -202,6 +201,9 @@ export function createEngine(canvas, onHUDUpdate) {
         drawEnemies(ctx, enemies);
         drawPlayer(ctx, player);
         drawWeapon(ctx, player);
+        for (const enemy of enemies) {
+            drawWeapon(ctx, enemy);
+        }
         drawBullets(ctx, player.bullets);
     }
 

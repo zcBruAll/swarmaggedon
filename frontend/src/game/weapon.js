@@ -27,16 +27,15 @@ export function createRangeWeapon() {
     return {
         cooldown: 5,
         cooldownTime: 5,
-        damage: 10,
         type: WEAPON_TYPE.RANGE,
         action: WEAPON_ACTION.AUTO,
         range: 350,
     }
 }
 
-export function fireBullet(player) {
-    player.bullets.push(createBullet(player.x, player.y, player.angle));
-    player.weapon.cooldown = player.weapon.cooldownTime;
+export function fireBullet(attacker) {
+    attacker.bullets.push(createBullet(attacker.x, attacker.y, attacker.angle));
+    attacker.weapon.cooldown = attacker.weapon.cooldownTime;
 }
 
 export function createWeapon() {

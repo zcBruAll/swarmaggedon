@@ -47,6 +47,6 @@ export function damagePlayer(player, amount) {
     player.hp -= Math.min(amount, player.hp);
 }
 
-export function healPlayer(player, amount) {
-    player.hp += Math.min(amount, player.maxHp - player.hp);
+export function healPlayer(target, amount) {
+    target.hp += Math.min(amount, target.maxHp - target.hp);
 }
