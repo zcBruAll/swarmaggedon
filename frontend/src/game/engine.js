@@ -31,7 +31,7 @@ export function createEngine(canvas, onHUDUpdate) {
     let kills = 0;
 
     // Time before next wave
-    const WAVE_INTERVAL = 30;
+    const WAVE_INTERVAL = 40;
 
     const WAVE_MSG_TIMER = 2;
     let waveState = {
@@ -100,7 +100,7 @@ export function createEngine(canvas, onHUDUpdate) {
             wave += 1;
             waveTimer = WAVE_INTERVAL;
             if (enemies?.length === 0)
-                healPlayer(player, 15);
+                healPlayer(player, 20);
             enemies.push(...createWave(wave, player, canvas.width, canvas.height));
             waveState = {
                 waveTitle: "WAVE " + wave,
@@ -141,16 +141,21 @@ export function createEngine(canvas, onHUDUpdate) {
         if (attacker.weapon.cooldown > 0) return;
 
         let firstTargetAngle = undefined;
+        let nearestTarget = 1e6;
+        let angleToShoot;
+        let targetToShoot;
         for (const target of targets) {
             const dx = target.x - attacker.x;
             const dy = target.y - attacker.y;
             const d = Math.hypot(dx, dy);
             const angle = Math.atan2(dy, dx);
             if (d <= target.radius + attacker.radius + attacker.weapon.range) {
-                if (attacker.weapon.type == WEAPON_TYPE.RANGE) {
-                    attackRange(attacker, angle);
-                    break;
+                if (d < nearestTarget) {
+                    nearestTarget = d;
+                    angleToShoot = angle;
+                    targetToShoot = target;
                 }
+
                 if (firstTargetAngle == undefined) {
                     firstTargetAngle = angle;
                 } else {
@@ -170,6 +175,9 @@ export function createEngine(canvas, onHUDUpdate) {
                     attackMelee(target, attacker.weapon.damage, fun);
             }
         }
+
+        if (nearestTarget <= targetToShoot?.radius + attacker.radius + attacker.weapon.range && attacker.weapon.type === WEAPON_TYPE.RANGE)
+            attackRange(attacker, angleToShoot);
     }
 
     function attackRange(attacker, angle) {

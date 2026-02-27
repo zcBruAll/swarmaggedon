@@ -17,15 +17,33 @@ export function createBullet(x, y, angle) {
     }
 }
 
+const MAX_BULLET_DIST = 900;
+
 export function updateBullets(bullets, targets, dt) {
     for (const bullet of bullets) {
-        updateBullet(bullet, targets, dt);
+        if (!bullet.dead) {
+            updateBullet(bullet, targets, dt);
+        }
     }
+
+    let w = 0;
+    for (let r = 0; r < bullets.length; r++) {
+        if (!bullets[r].dead) {
+            bullets[w++] = bullets[r];
+        }
+    }
+    bullets.length = w;
 }
 
 export function updateBullet(bullet, targets, dt) {
     bullet.x = bullet.x + Math.cos(bullet.angle) * bullet.speed * dt;
     bullet.y = bullet.y + Math.sin(bullet.angle) * bullet.speed * dt;
+
+    bullet.dist = (bullet.dist ?? 0) + bullet.speed * dt;
+    if (bullet.dist > MAX_BULLET_DIST) {
+        bullet.dead = true;
+        return;
+    }
 
     for (const target of targets) {
         const dx = target.x - bullet.x;
@@ -34,7 +52,7 @@ export function updateBullet(bullet, targets, dt) {
         if (d <= target.radius) {
             damageEnemy(target, bullet.damage);
             if (bullet.explos == BULLET_EXPLOS.HIT)
-                bullet = undefined;
+                bullet.dead = true;
             break;
         }
     }

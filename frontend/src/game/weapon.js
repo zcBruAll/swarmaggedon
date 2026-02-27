@@ -13,28 +13,28 @@ export const WEAPON_ACTION = {
 
 export function createMeeleWeapon() {
     return {
-        cooldown: 2,
-        cooldownTime: 2,
-        damage: 5,
+        cooldown: 1.2,
+        cooldownTime: 1.2,
+        damage: 20,
         type: WEAPON_TYPE.MELEE,
         action: WEAPON_ACTION.AUTO,
-        angle: 45,
+        angle: 90,
         range: 50,
     }
 }
 
 export function createRangeWeapon() {
     return {
-        cooldown: 5,
-        cooldownTime: 5,
+        cooldown: 0.6,
+        cooldownTime: 0.6,
         type: WEAPON_TYPE.RANGE,
         action: WEAPON_ACTION.AUTO,
         range: 350,
     }
 }
 
-export function fireBullet(attacker) {
-    attacker.bullets.push(createBullet(attacker.x, attacker.y, attacker.angle));
+export function fireBullet(attacker, angle) {
+    attacker.bullets.push(createBullet(attacker.x, attacker.y, angle));
     attacker.weapon.cooldown = attacker.weapon.cooldownTime;
 }
 

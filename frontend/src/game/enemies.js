@@ -7,67 +7,67 @@ export const ENEMY_TYPE = {
     BOSS: 'boss',           // Giant, appears every X waves
 }
 
-const BOSS_WAVE_INTERVAL = 5;
+const BOSS_WAVE_INTERVAL = 10;
 
 const BASE_STATS = {
     [ENEMY_TYPE.RUNNER]: {
         radius: 6,
-        hp: 8,
-        speed: 180,
-        damage: 15,
+        hp: 10,
+        speed: 140,
+        damage: 12,
         cooldownInterval: 1,
         score: 8,
         color: '#e74c3c',
     },
     [ENEMY_TYPE.BRUTE]: {
         radius: 14,
-        hp: 30,
-        speed: 60,
-        damage: 40,
+        hp: 45,
+        speed: 55,
+        damage: 35,
         cooldownInterval: 2,
         score: 25,
         color: '#8e44ad',
     },
     [ENEMY_TYPE.SHOOTER]: {
         radius: 8,
-        hp: 20,
-        speed: 90,
+        hp: 18,
+        speed: 80,
         score: 20,
-        cooldownInterval: 5,
+        cooldownInterval: 4,
         bullets: [],
         color: '#e67e22',
     },
     [ENEMY_TYPE.BOSS]: {
-        radius: 30,
-        hp: 100,
-        speed: 80,
-        damage: 60,
-        cooldownInterval: 5,
-        score: 200,
+        radius: 32,
+        hp: 150,
+        speed: 70,
+        damage: 50,
+        cooldownInterval: 4,
+        score: 300,
         color: '#c0392b',
     }
 }
 
 const WAVE_SCALE = {
     [ENEMY_TYPE.RUNNER]: {
-        hp: 1.10,
-        speed: 1.04,
-        damage: 1.08,
+        hp: 1.07,
+        speed: 1.02,
+        damage: 1.06,
     },
     [ENEMY_TYPE.BRUTE]: {
-        hp: 1.15,
-        speed: 1.03,
-        damage: 1.10,
+        hp: 1.10,
+        speed: 1.02,
+        damage: 1.07,
     },
     [ENEMY_TYPE.SHOOTER]: {
-        hp: 1.10,
-        speed: 1.03,
-        damage: 1.10,
+        hp: 1.08,
+        speed: 1.02,
+        damage: 1.07,
     },
     [ENEMY_TYPE.BOSS]: {
-        hp: 1.20,
-        speed: 1.05,
-        damage: 1.12,
+        hp: 1.15,
+        speed: 1.03,
+        damage: 1.08,
     },
 }
 
@@ -117,7 +117,7 @@ export function createEnemy(type, x, y, wave) {
         weapon: weapon,
         type: type,
         color: base.color,
-        bullets: base.bullets,
+        bullets: [],
     };
 }
 
@@ -159,14 +159,14 @@ export function createWave(wave, player, canvasWidth, canvasHeight) {
     if (isBossWave) {
         queue.push(spawnEnemy(player, ENEMY_TYPE.BOSS, wave));
 
-        const runnerCount = 2 + Math.floor(wave / 5);
+        const runnerCount = 1 + Math.floor(wave / 10);
         for (let i = 0; i < runnerCount; i++) {
             queue.push(spawnEnemy(player, ENEMY_TYPE.RUNNER, wave));
         }
     } else {
-        const runnerCount = Math.max(2, wave + 2);
-        const bruteCount = Math.floor(wave / 3);
-        const shooterCount = Math.floor(wave / 4);
+        const runnerCount = Math.max(2, Math.floor(wave * 0.8) + 2);
+        const bruteCount = Math.max(0, Math.floor((wave - 3) / 3));
+        const shooterCount = Math.max(0, Math.floor((wave - 4) / 4));
 
         for (let i = 0; i < runnerCount; i++) {
             queue.push(spawnEnemy(player, ENEMY_TYPE.RUNNER, wave));
