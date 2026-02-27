@@ -105,6 +105,10 @@ export function createEngine(canvas, onHUDUpdate) {
         player.weapon.cooldown -= Math.min(dt, player.weapon.cooldown);
         if (player.weapon.cooldown > dt) return;
 
+        if (player.weapon.type == WEAPON_TYPE.RANGE) {
+            attackRange();
+            return;
+        }
 
         let firstEnemyAngle = undefined;
 
@@ -130,9 +134,7 @@ export function createEngine(canvas, onHUDUpdate) {
                 player.weapon.cooldown = player.weapon.cooldownTime;
 
                 if (player.weapon.type == WEAPON_TYPE.MELEE)
-                    attackMelee();
-                else if (player.weapon.type == WEAPON_TYPE.RANGE)
-                    attackRange();
+                    attackMelee(enemy);
             }
         }
     }
@@ -141,7 +143,7 @@ export function createEngine(canvas, onHUDUpdate) {
         fireBullet(player);
     }
 
-    function attackMelee() {
+    function attackMelee(enemy) {
         damageEnemy(enemy, player.weapon.damage);
     }
 
