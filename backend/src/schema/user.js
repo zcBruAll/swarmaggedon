@@ -284,6 +284,8 @@ export const userResolvers = {
             if (!user) throw new Error("You are not logged in")
             if (newUsername.length > 16 || newUsername.length < 3) throw new Error("Your new username is not correct")
             if (newUsername === user.username) throw new Error("New username must be different")
+            const existingUsername = await getDB().collection(COLLECTION_USERS).findOne({username: newUsername})
+            if (existingUsername) return "Username already taken"
 
             const result = await getDB().collection(COLLECTION_USERS).findOneAndUpdate({
                 _id: new ObjectId(user.id)
