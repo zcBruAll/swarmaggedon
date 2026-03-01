@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import { useState } from 'react';
 import { gql } from '@apollo/client';
 import { useMutation } from '@apollo/client/react';
+import { sha256 } from 'js-sha256';
 
 const MUTATION_CHANGEUSERNAME = gql`
   mutation UserChange($newUsername: String!) {
@@ -12,11 +13,23 @@ const MUTATION_CHANGEUSERNAME = gql`
   }
 `
 
+const MUTATION_CHANGEPASSWORD = gql`
+  mutation PasswordChange($oldPassword: String!, $newPassword: String!) {
+    changePassword(oldPassword: $oldPassword, newPassword: $newPassword)
+  }
+`
+
 const Account = () => {
   const { isLoggedIn, user, logout, loading, checkAuth } = useAuth();
   const [usernameChange, setUsernameChange] = useState("")
+  const [passwordData, setPasswordData] = useState({
+    oldPassword: '',
+    newPassword: '',
+    confirmPassword: ''
+  });
   const [status, setStatus] = useState({ type: '', text: '' });
   const [changeUsername, { loading: newUsernameLoading }] = useMutation(MUTATION_CHANGEUSERNAME)
+  const [changePassword, { loading: passwordLoading }] = useMutation(MUTATION_CHANGEPASSWORD)
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -49,6 +62,39 @@ const Account = () => {
         }
     } catch (err) {
         setStatus({ type: 'error', text: err.message || 'An error occurred' });
+    }
+  }
+
+  const handlePasswordChange = async (e) => {
+    e.preventDefault();
+    setStatus({ type: '', text: '' });
+
+    if (!passwordData.oldPassword || !passwordData.newPassword || !passwordData.confirmPassword) {
+      setStatus({ type: 'error', text: 'Please fill in all password fields.' });
+      return;
+    }
+
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
+      setStatus({ type: 'error', text: 'New passwords do not match.' });
+      return;
+    }
+
+    try {
+      const { data } = await changePassword({
+        variables: {
+          oldPassword: sha256(passwordData.oldPassword),
+          newPassword: sha256(passwordData.newPassword)
+        }
+      });
+
+      if (data.changePassword === "Password changed successfully") {
+        setStatus({ type: 'success', text: data.changePassword });
+        setPasswordData({ oldPassword: '', newPassword: '', confirmPassword: '' });
+      } else {
+        setStatus({ type: 'error', text: data.changePassword || 'Failed to change password' });
+      }
+    } catch (err) {
+      setStatus({ type: 'error', text: err.message || 'An error occurred' });
     }
   }
 
@@ -116,19 +162,41 @@ const Account = () => {
             </div>
             <div>
               <div className="label" style={{ fontSize: '14px', color: 'var(--ink-mid)', marginBottom: '12px' }}>— security —</div>
-              <div className="account-field">
-                <div className="label">current password</div>
-                <input type="password" placeholder="••••••••" />
-              </div>
-              <div className="account-field">
-                <div className="label">new password</div>
-                <input type="password" placeholder="••••••••" />
-              </div>
-              <div className="account-field">
-                <div className="label">confirm new password</div>
-                <input type="password" placeholder="••••••••" />
-              </div>
-              <button className="btn btn-primary btn-sm mt-8">Change password</button>
+              <form id="password-change" onSubmit={handlePasswordChange}>
+                <div className="account-field">
+                  <div className="label">current password</div>
+                  <input 
+                    type="password" 
+                    placeholder="••••••••" 
+                    value={passwordData.oldPassword}
+                    onChange={(e) => setPasswordData({ ...passwordData, oldPassword: e.target.value })}
+                    disabled={passwordLoading}
+                  />
+                </div>
+                <div className="account-field">
+                  <div className="label">new password</div>
+                  <input 
+                    type="password" 
+                    placeholder="••••••••" 
+                    value={passwordData.newPassword}
+                    onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
+                    disabled={passwordLoading}
+                  />
+                </div>
+                <div className="account-field">
+                  <div className="label">confirm new password</div>
+                  <input 
+                    type="password" 
+                    placeholder="••••••••" 
+                    value={passwordData.confirmPassword}
+                    onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
+                    disabled={passwordLoading}
+                  />
+                </div>
+                <button type="submit" className="btn btn-primary btn-sm mt-8" disabled={passwordLoading}>
+                  {passwordLoading ? 'Changing...' : 'Change password'}
+                </button>
+              </form>
             </div>
           </div>
         </div>
