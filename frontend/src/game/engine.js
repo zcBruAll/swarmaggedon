@@ -6,7 +6,7 @@ import {
     drawWeapon,
     drawBullets,
 } from './renderer.js';
-import { WEAPON_TYPE, enhanceWeaponDamage, enhanceWeaponRange, fireBullet } from './weapon.js';
+import { WEAPON_TYPE, fireBullet } from './weapon.js';
 import { updateBullets } from './bullet.js';
 
 export const GAME_STATE = {
@@ -122,8 +122,7 @@ export function createEngine(canvas, onHUDUpdate) {
             score,
             elapsed,
             wave,
-            hp: player.hp,
-            maxHp: player.maxHp,
+            player,
             gameState: state,
             waveState,
             kills,
@@ -215,31 +214,73 @@ export function createEngine(canvas, onHUDUpdate) {
     function augment() {
         state = GAME_STATE.CHOICE;
 
-        choices = [{
-            id: 1,
-            attr: "damage",
-            curr: player.weapon.damage,
-            bonus: 10,
-            new: Math.round(player.weapon.damage * 1.1),
-            arg: player.weapon,
-            func: enhanceWeaponDamage,
-        }, {
-            id: 2,
-            attr: "range",
-            curr: player.weapon.range,
-            bonus: 5,
-            new: Math.round(player.weapon.range * 1.05),
-            arg: player.weapon,
-            func: enhanceWeaponRange,
-        }, {
-            id: 3,
-            attr: "life",
-            curr: player.maxHp,
-            bonus: 5,
-            new: Math.round(player.maxHp * 1.05),
-            arg: player,
-            func: increaseMaxHp,
-        },];
+        const rand = (min, max) => Math.floor(Math.random() * (max - min + 1) + min);
+
+        const possibleChoices = [
+            {
+                id: 1,
+                attr: "Damage",
+                bonus: rand(10, 25),
+                arg: player.weapon,
+                getCurr: (arg) => arg.damage,
+                getNew: (arg, b) => Math.round(arg.damage * (1 + b / 100)),
+                func: (wpn, b) => { wpn.damage = Math.round(wpn.damage * (1 + b / 100)); },
+            },
+            {
+                id: 2,
+                attr: "Range",
+                bonus: rand(5, 15),
+                arg: player.weapon,
+                getCurr: (arg) => arg.range,
+                getNew: (arg, b) => Math.round(arg.range * (1 + b / 100)),
+                func: (wpn, b) => { wpn.range = Math.round(wpn.range * (1 + b / 100)); },
+            },
+            {
+                id: 3,
+                attr: "Max HP",
+                bonus: rand(10, 20),
+                arg: player,
+                getCurr: (arg) => arg.maxHp,
+                getNew: (arg, b) => Math.round(arg.maxHp * (1 + b / 100)),
+                func: increaseMaxHp,
+            },
+            {
+                id: 4,
+                attr: "Move Speed",
+                bonus: rand(5, 12),
+                arg: player,
+                getCurr: (arg) => arg.speed,
+                getNew: (arg, b) => Math.round(arg.speed * (1 + b / 100)),
+                func: (p, b) => { p.speed = Math.round(p.speed * (1 + b / 100)); },
+            },
+            {
+                id: 5,
+                attr: "Cooldown",
+                bonus: -1 * rand(5, 10),
+                arg: player.weapon,
+                getCurr: (arg) => arg.cooldownTime,
+                getNew: (arg, b) => (arg.cooldownTime * (1 + b / 100).toFixed(2)),
+                func: (wpn, b) => { wpn.cooldownTime = (wpn.cooldownTime * (1 + b / 100)).toFixed(2); },
+            }
+        ];
+
+        choices = possibleChoices
+            .sort(() => 0.5 - Math.random())
+            .slice(0, 3)
+            .map(choice => {
+                const currentVal = choice.getCurr(choice.arg);
+                const newVal = choice.getNew(choice.arg, choice.bonus);
+
+                return {
+                    id: choice.id,
+                    attr: choice.attr,
+                    bonus: choice.bonus,
+                    curr: currentVal,
+                    new: newVal,
+                    arg: choice.arg,
+                    func: choice.func
+                };
+            });
 
         onHUDUpdate?.({
             score,
@@ -301,8 +342,7 @@ export function createEngine(canvas, onHUDUpdate) {
                 score,
                 elapsed,
                 wave,
-                hp: player.hp,
-                maxHp: player.maxHp,
+                player,
                 gameState: state,
                 kills,
                 choices,
@@ -315,8 +355,7 @@ export function createEngine(canvas, onHUDUpdate) {
                 score,
                 elapsed,
                 wave,
-                hp: player.hp,
-                maxHp: player.maxHp,
+                player,
                 gameState: state,
                 kills,
                 choices,

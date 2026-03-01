@@ -16,8 +16,7 @@ const DEFAULT_HUD = {
   score: 0,
   elapsed: 0,
   wave: 1,
-  hp: 100,
-  maxHp: 100,
+  player: undefined,
   gameState: GAME_STATE.RUNNING,
   waveState: {
     waveTitle: "",
@@ -137,7 +136,7 @@ function Game() {
 
                 <div className="choice-stats-container">
                   <span className="choice-curr">current: {choice.curr}</span>
-                  <span className="choice-bonus">+{choice.bonus}%</span>
+                  <span className="choice-bonus">{choice.bonus > 0 ? '+' : ''}{choice.bonus}%</span>
                   <span className="choice-new">➔ {choice.new}</span>
                 </div>
               </div>
@@ -150,7 +149,7 @@ function Game() {
           <span>score: <strong>{hudRawRef.current.score}</strong></span>
           <span>time: <strong>{formatDurationToHours(hudRawRef.current.elapsed)}</strong></span>
           <span>wave: <strong>{hudRawRef.current.wave}</strong></span>
-          <span>hp: <strong>{Math.round(hudRawRef.current.hp)} / {hudRawRef.current.maxHp}</strong></span>
+          <span>hp: <strong>{Math.round(hudRawRef.current.player?.hp)} / {hudRawRef.current.player?.maxHp}</strong></span>
         </div>
       }
       {hudRawRef.current.gameState === GAME_STATE.RUNNING && hudRawRef.current.waveState && hudRawRef.current.waveState.duration > 0 &&

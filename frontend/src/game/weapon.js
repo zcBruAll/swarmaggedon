@@ -42,11 +42,3 @@ export function fireBullet(attacker, angle) {
 export function createWeapon() {
     return Math.random() >= 0.5 ? createMeeleWeapon() : createRangeWeapon();
 }
-
-export function enhanceWeaponDamage(weapon, percent) {
-    weapon.damage = Math.round(weapon.damage * (1 + (percent / 100)));
-}
-
-export function enhanceWeaponRange(weapon, percent) {
-    weapon.range = Math.round(weapon.range * (1 + (percent / 100)));
-}

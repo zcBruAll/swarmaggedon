@@ -80,7 +80,7 @@ export function spawnEnemy(player, type, wave) {
     // Compute random spawn position
     const randAngle = Math.random() * Math.PI * 2;
     const randDist = Math.random() * 500;
-    const safeRadius = 150;
+    const safeRadius = 250;
     const spawnRadius = safeRadius + randDist;
     const x = player.x + Math.cos(randAngle) * spawnRadius;
     const y = player.y + Math.sin(randAngle) * spawnRadius;
