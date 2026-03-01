@@ -61,6 +61,13 @@ const Friends = () => {
   const [searchUsername, setSearchUsername] = useState("")
   const [searchError, setSearchError] = useState("")
   const [confirmingId, setConfirmingId] = useState(null);
+  const [localSearch, setLocalSearch] = useState([]);
+
+  useEffect(() => {
+    if (searchData?.search) {
+      setLocalSearch(searchData.search);
+    }
+  }, [searchData]);
 
   useEffect(() => {
     if (!authLoading && !isLoggedIn) {
@@ -80,7 +87,7 @@ const Friends = () => {
 
   const friends = friendsData?.friends || [];
   const pending_requests = friendsData?.pending_requests || [];
-  const searchResults = searchData?.search || [];
+  const searchResults = localSearch;
 
   const Message = ({ type, text }) => (
     <div style={{
@@ -102,16 +109,18 @@ const Friends = () => {
     setSearchError("")
     setInitialSearchDone(true)
     try {
-        await searchFriends({ variables: { usernameSearch: searchUsername } });
+        const { data } = await searchFriends({ variables: { usernameSearch: searchUsername } });
+        if (data?.search) setLocalSearch(data.search);
     } catch (err) {
         setSearchError("Search failed. Please try again.");
     }
   }
 
-  const handleAddFriend = async (userId) => {
+  const handleAddFriend = async (userId, fromSearch=true) => {
     try {
         await addFriendMutation({ variables: { userId } });
-        await refetchFriends();
+        setLocalSearch(prev => prev.filter(u => u.id !== userId));
+        if (!fromSearch) await refetchFriends();
     } catch (err) {
         console.error("Add friend error", err);
     }
@@ -200,7 +209,7 @@ const Friends = () => {
                           </div>
                         </div>
                         <div className="flex gap-8">
-                          <button type="button" className="btn btn-primary btn-sm" onClick={() => handleAddFriend(f.id)}>Accept</button>
+                          <button type="button" className="btn btn-primary btn-sm" onClick={() => handleAddFriend(f.id, fromSearch=false)}>Accept</button>
                           <button type="button" className="btn btn-outline btn-sm" onClick={() => handleRemove(f.id)}>Decline</button>
                         </div>
                       </div>
