@@ -3,6 +3,7 @@ import { COLLECTION_USERS, COLLECTION_FRIENDS, COLLECTION_RUNS, getDB } from '..
 import { ObjectId } from 'mongodb'
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
+import { checkProfanity } from '../utils.js'
 
 export const userTypeDefs = gql`
     type User {
@@ -287,8 +288,10 @@ export const userResolvers = {
             if (newUsername.length > 16 || newUsername.length < 3) throw new Error("Your new username is not correct")
             if (newUsername === user.username) throw new Error("New username must be different")
             const existingUsername = await getDB().collection(COLLECTION_USERS).findOne({username: newUsername})
-            if (existingUsername) return "Username already taken"
+            if (existingUsername) throw new Error("Username already taken")
 
+            if (!await checkProfanity(newUsername)) throw new Error("New username contains profanity")
+            
             const result = await getDB().collection(COLLECTION_USERS).findOneAndUpdate({
                 _id: new ObjectId(user.id)
             },{

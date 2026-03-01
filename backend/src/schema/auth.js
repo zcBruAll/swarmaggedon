@@ -3,6 +3,7 @@ import { COLLECTION_USERS, COLLECTION_FRIENDS, COLLECTION_RUNS, getDB } from '..
 import { ObjectId } from 'mongodb'
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
+import { checkProfanity } from '../utils.js'
 
 export const authTypeDefs = gql`
     extend type Mutation {
@@ -34,13 +35,15 @@ export const authResolvers = {
             return "Logged in successfully"
         },
         register: async(_, {username, email, password}, {}) => {
-            if (username.length > 16 || username.length < 3) throw new Error("Your new username is not correct")
+            if (username.length > 16 || username.length < 3) return "Your new username is not correct"
             
             const existingUsername = await getDB().collection(COLLECTION_USERS).findOne({username})
             if (existingUsername) return "Username already taken"
             
             const existingEmail = await getDB().collection(COLLECTION_USERS).findOne({ email })
             if (existingEmail) return "Email already taken"
+            
+            if (!await checkProfanity(username)) return "Username contains profanity"
         
             const newUser = {
                 username: username,
