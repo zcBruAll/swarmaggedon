@@ -77,3 +77,8 @@ export const formatRelativeTime = (date) => {
     
     return `${Math.floor(months / 12)}y ago`;
 };
+
+export const formatTotalToHours = (duration) => {
+    const hours = duration / 3600
+    return hours.toFixed(1)
+}

@@ -8,7 +8,7 @@ export const globalTypeDefs = gql`
         players_online: Int
         total_games: Int
         total_kills: Int
-        avg_survival_time: Float
+        total_survival_time: Float
     }
 
     type GlobalLeaderboardPlace {
@@ -48,7 +48,7 @@ export const globalResolvers = {
                         _id: null,
                         total_games: { $sum: 1 },
                         total_kills: { $sum: "$kills" },
-                        avg_survival_time: { $avg: "$duration" }
+                        total_survival_time: { $sum: "$duration" }
                     }
                 }
             ]).toArray()
@@ -57,7 +57,7 @@ export const globalResolvers = {
                 players_online,
                 total_games: global_run_stats[0]?.total_games || 0,
                 total_kills: global_run_stats[0]?.total_kills || 0,
-                avg_survival_time: global_run_stats[0]?.avg_survival_time || 0
+                total_survival_time: global_run_stats[0]?.total_survival_time || 0
             }
 
             return stats
