@@ -17,34 +17,34 @@ export const authTypeDefs = gql`
 
 export const authResolvers = {
     Mutation: {
-        login: async (_, {username, password}, {res}) => {
-            const user = await getDB().collection(COLLECTION_USERS).findOne({username})
+        login: async (_, { username, password }, { res }) => {
+            const user = await getDB().collection(COLLECTION_USERS).findOne({ username })
 
             if (!user || !bcrypt.compareSync(password, user.password)) return "Wrong username or password"
-            
+
             // JWT
-            const token = jwt.sign({id: user._id.toString(), email: user.email}, process.env.JWT_SECRET, {expiresIn: '7d'})
-            
+            const token = jwt.sign({ id: user._id.toString(), email: user.email }, process.env.JWT_SECRET, { expiresIn: '7d' })
+
             res.cookie('auth_token', token, {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production',
                 sameSite: 'lax',
                 maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
             });
-            
+
             return "Logged in successfully"
         },
-        register: async(_, {username, email, password}, {}) => {
+        register: async (_, { username, email, password }, { }) => {
             if (username.length > 16 || username.length < 3) return "Your new username is not correct"
-            
-            const existingUsername = await getDB().collection(COLLECTION_USERS).findOne({username})
+
+            const existingUsername = await getDB().collection(COLLECTION_USERS).findOne({ username })
             if (existingUsername) return "Username already taken"
-            
+
             const existingEmail = await getDB().collection(COLLECTION_USERS).findOne({ email })
             if (existingEmail) return "Email already taken"
-            
+
             if (!await checkProfanity(username)) return "Username contains profanity"
-        
+
             const newUser = {
                 username: username,
                 email: email,
@@ -56,12 +56,12 @@ export const authResolvers = {
             try {
                 await getDB().collection(COLLECTION_USERS).insertOne(newUser)
             } catch (error) {
-                console.log("Registration error", error)
+                console.error("Registration error", error)
                 return "Internal server error"
             }
             return "Account created successfully"
         },
-        logout: async(_, __, {res}) => {
+        logout: async (_, __, { res }) => {
             res.clearCookie('auth_token')
             return true
         }

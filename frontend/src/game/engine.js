@@ -206,7 +206,6 @@ export function createEngine(canvas, onHUDUpdate) {
     function updateCamera(camera, player, enemies, w, h) {
         const dx = player.x - camera.x;
         const dy = player.y - camera.y;
-        console.log(player.x, player.y);
         if (dx < CAMERA_PADDING) {
             camera.x -= (CAMERA_PADDING - dx);
         }

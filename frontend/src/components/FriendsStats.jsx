@@ -20,8 +20,7 @@ const GET_FRIENDS = gql`
 `
 
 function FriendsStats() {
-  const { loading, error, data } = useQuery(GET_FRIENDS)
-  console.log(data)
+  const { loading, error, data } = useQuery(GET_FRIENDS);
 
   if (loading) return <div>Loading friends...</div>;
 
