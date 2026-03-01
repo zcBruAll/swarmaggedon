@@ -4,8 +4,6 @@ import { ObjectId } from 'mongodb'
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
 
-const SALT_ROUNDS = 10
-
 export const authTypeDefs = gql`
     extend type Mutation {
         login(username: String!, password: String!): String
@@ -47,7 +45,7 @@ export const authResolvers = {
             const newUser = {
                 username: username,
                 email: email,
-                password: bcrypt.hashSync(password, SALT_ROUNDS),
+                password: bcrypt.hashSync(password, Number(process.env.SALT_ROUNDS)),
                 last_online: Date.now(),
                 in_game: false,
                 date_created: Date.now()

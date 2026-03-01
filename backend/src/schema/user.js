@@ -2,6 +2,7 @@ import { gql } from 'graphql-tag'
 import { COLLECTION_USERS, COLLECTION_FRIENDS, COLLECTION_RUNS, getDB } from '../config/db.js'
 import { ObjectId } from 'mongodb'
 import jwt from 'jsonwebtoken'
+import bcrypt from 'bcrypt'
 
 export const userTypeDefs = gql`
     type User {
@@ -32,6 +33,7 @@ export const userTypeDefs = gql`
         addFriend(userId: ID!): String
         deleteFriend(userId: ID!): String
         changeUsername(newUsername: String!): String
+        changePassword(oldPassword: String!, newPassword: String!): String
     }
 `
 
@@ -297,6 +299,20 @@ export const userResolvers = {
 
             if (result) return "Username changed successfully"
             else throw new Error("Unknown error")
+        },
+        changePassword: async (_, {oldPassword, newPassword}, {user}) => {
+            if (!user) throw new Error("You are not logged in")
+            if (oldPassword == newPassword) throw new Error("New password must be different from last one")
+            const userDb = await getDB().collection(COLLECTION_USERS).findOne({_id: new ObjectId(user.id)})
+            if (!userDb) throw new Error("User not found")
+            if (!bcrypt.compareSync(oldPassword, userDb.password)) throw new Error("Old password is incorrect")
+            const res = await getDB().collection(COLLECTION_USERS).findOneAndUpdate({_id: new ObjectId(user.id)}, {
+                $set: {
+                    password: bcrypt.hashSync(newPassword, Number(process.env.SALT_ROUNDS))
+                }
+            })
+            
+            return "Password changed successfully"
         }
     }
 }
