@@ -17,12 +17,14 @@ const DEFAULT_HUD = {
   elapsed: 0,
   wave: 1,
   hp: 100,
+  maxHp: 100,
   gameState: GAME_STATE.RUNNING,
   waveState: {
     waveTitle: "",
     waveSubtitle: "",
     duration: 0,
-  }
+  },
+  choices: [],
 };
 
 function Game() {
@@ -124,12 +126,31 @@ function Game() {
           </div>
         </div>
       }
+      {hudRawRef.current.gameState === GAME_STATE.CHOICE && (
+        <div className='overlay choice'>
+          <span className='choice-title'>CHOOSE YOUR AUGMENT</span>
+          <div className='choice-list'>
+            {hudRawRef.current.choices.map((choice) => (
+              <div className='choice-card' onClick={() => { choice.func(choice.arg, choice.bonus); engineRef.current.madeChoice() }} key={choice.id}>
+                <img className='choice-img' src={choice.icon || "temp.png"} alt="icon" />
+                <span className='choice-attr'>{choice.attr}</span>
+
+                <div className="choice-stats-container">
+                  <span className="choice-curr">current: {choice.curr}</span>
+                  <span className="choice-bonus">+{choice.bonus}%</span>
+                  <span className="choice-new">➔ {choice.new}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
       {hudRawRef.current.gameState === GAME_STATE.RUNNING &&
         <div className="hud">
           <span>score: <strong>{hudRawRef.current.score}</strong></span>
           <span>time: <strong>{formatDurationToHours(hudRawRef.current.elapsed)}</strong></span>
           <span>wave: <strong>{hudRawRef.current.wave}</strong></span>
-          <span>hp: <strong>{hudRawRef.current.hp}</strong></span>
+          <span>hp: <strong>{Math.round(hudRawRef.current.hp)} / {hudRawRef.current.maxHp}</strong></span>
         </div>
       }
       {hudRawRef.current.gameState === GAME_STATE.RUNNING && hudRawRef.current.waveState && hudRawRef.current.waveState.duration > 0 &&

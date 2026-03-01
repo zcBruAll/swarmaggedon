@@ -1,4 +1,4 @@
-import { createPlayer, updatePlayer, damagePlayer, healPlayer } from './player.js';
+import { createPlayer, updatePlayer, damagePlayer, healPlayer, increaseMaxHp } from './player.js';
 import { createWave, updateEnemies, damageEnemy, ENEMY_TYPE } from './enemies.js';
 import { initInput, destroyInput, flushInput, input } from './input.js';
 import {
@@ -6,13 +6,14 @@ import {
     drawWeapon,
     drawBullets,
 } from './renderer.js';
-import { WEAPON_TYPE, fireBullet } from './weapon.js';
+import { WEAPON_TYPE, enhanceWeaponDamage, enhanceWeaponRange, fireBullet } from './weapon.js';
 import { updateBullets } from './bullet.js';
 
 export const GAME_STATE = {
     RUNNING: 'running',
     PAUSED: 'paused',
     GAME_OVER: 'game_over',
+    CHOICE: 'choice',
 };
 
 export function createEngine(canvas, onHUDUpdate) {
@@ -29,6 +30,7 @@ export function createEngine(canvas, onHUDUpdate) {
     let wave = 1;
     let waveTimer = 0;
     let kills = 0;
+    let choices = [];
 
     // Time before next wave
     const WAVE_INTERVAL = 40;
@@ -53,6 +55,7 @@ export function createEngine(canvas, onHUDUpdate) {
             waveSubtitle: "WEAPON: " + player.weapon.type,
             duration: WAVE_MSG_TIMER,
         }
+        choices = [];
     }
 
     function loop(ts) {
@@ -107,6 +110,7 @@ export function createEngine(canvas, onHUDUpdate) {
                 waveSubtitle: "",
                 duration: WAVE_MSG_TIMER,
             }
+            augment();
         }
 
         // Check game over
@@ -119,9 +123,11 @@ export function createEngine(canvas, onHUDUpdate) {
             elapsed,
             wave,
             hp: player.hp,
+            maxHp: player.maxHp,
             gameState: state,
             waveState,
             kills,
+            choices,
         });
     }
 
@@ -206,6 +212,47 @@ export function createEngine(canvas, onHUDUpdate) {
         enemies.length = writeIndex;
     }
 
+    function augment() {
+        state = GAME_STATE.CHOICE;
+
+        choices = [{
+            id: 1,
+            attr: "damage",
+            curr: player.weapon.damage,
+            bonus: 10,
+            new: Math.round(player.weapon.damage * 1.1),
+            arg: player.weapon,
+            func: enhanceWeaponDamage,
+        }, {
+            id: 2,
+            attr: "range",
+            curr: player.weapon.range,
+            bonus: 5,
+            new: Math.round(player.weapon.range * 1.05),
+            arg: player.weapon,
+            func: enhanceWeaponRange,
+        }, {
+            id: 3,
+            attr: "life",
+            curr: player.maxHp,
+            bonus: 5,
+            new: Math.round(player.maxHp * 1.05),
+            arg: player,
+            func: increaseMaxHp,
+        },];
+
+        onHUDUpdate?.({
+            score,
+            elapsed,
+            wave,
+            hp: player.hp,
+            maxHp: player.maxHp,
+            gameState: state,
+            kills: kills,
+            choices: choices,
+        });
+    }
+
     function render() {
         const w = canvas.width;
         const h = canvas.height;
@@ -255,8 +302,25 @@ export function createEngine(canvas, onHUDUpdate) {
                 elapsed,
                 wave,
                 hp: player.hp,
+                maxHp: player.maxHp,
                 gameState: state,
-            })
+                kills,
+                choices,
+            });
         },
+
+        madeChoice() {
+            if (state === GAME_STATE.CHOICE) state = GAME_STATE.RUNNING;
+            onHUDUpdate?.({
+                score,
+                elapsed,
+                wave,
+                hp: player.hp,
+                maxHp: player.maxHp,
+                gameState: state,
+                kills,
+                choices,
+            });
+        }
     };
 }

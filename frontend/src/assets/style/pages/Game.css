@@ -178,3 +178,83 @@
   font-weight: 500;
   text-transform: capitalize;
 }
+
+.choice-title {
+  font-family: 'Patrick Hand';
+  font-size: 48px;
+  font-weight: 700;
+  color: #2a2318;
+  margin-bottom: 20px;
+}
+
+.choice-list {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.choice-card {
+  background: #faf7f1;
+  border: 2px solid #2a2318;
+  padding: 20px;
+  width: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  box-shadow: 4px 4px 0 rgba(42, 35, 24, 0.15);
+  transition: all 0.1s;
+}
+
+.choice-card:hover {
+  transform: translateY(-5px);
+  background: #fff;
+  box-shadow: 6px 6px 0 rgba(42, 35, 24, 0.2);
+}
+
+.choice-img {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  background: rgba(42, 35, 24, 0.05);
+  border-radius: 4px;
+  padding: 8px;
+}
+
+.choice-attr {
+  font-family: 'Patrick Hand';
+  font-size: 24px;
+  font-weight: 700;
+  color: #2a2318;
+  text-transform: uppercase;
+}
+
+.choice-stats-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding-top: 10px;
+  border-top: 1.5px dashed #ccc;
+  gap: 4px;
+}
+
+.choice-curr {
+  font-size: 14px;
+  color: #777;
+  font-style: italic;
+}
+
+.choice-bonus {
+  font-family: 'Patrick Hand';
+  font-size: 28px;
+  color: #27ae60;
+  font-weight: 700;
+}
+
+.choice-new {
+  font-size: 16px;
+  color: #2a2318;
+  font-weight: 600;
+}

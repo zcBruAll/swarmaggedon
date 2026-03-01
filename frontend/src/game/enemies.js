@@ -34,6 +34,7 @@ const BASE_STATS = {
         speed: 80,
         score: 20,
         cooldownInterval: 4,
+        damage: 30,
         bullets: [],
         color: '#e67e22',
     },

@@ -6,13 +6,13 @@ export const BULLET_EXPLOS = {
     TRANSFER: 'transfer',
 }
 
-export function createBullet(x, y, angle) {
+export function createBullet(x, y, angle, damage) {
     return {
-        x: x,
-        y: y,
-        angle: angle,
+        x,
+        y,
+        angle,
         speed: 500,
-        damage: 15,
+        damage,
         explos: BULLET_EXPLOS.HIT,
     }
 }

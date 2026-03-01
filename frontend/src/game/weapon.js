@@ -27,6 +27,7 @@ export function createRangeWeapon() {
     return {
         cooldown: 0.6,
         cooldownTime: 0.6,
+        damage: 15,
         type: WEAPON_TYPE.RANGE,
         action: WEAPON_ACTION.AUTO,
         range: 350,
@@ -34,10 +35,18 @@ export function createRangeWeapon() {
 }
 
 export function fireBullet(attacker, angle) {
-    attacker.bullets.push(createBullet(attacker.x, attacker.y, angle));
+    attacker.bullets.push(createBullet(attacker.x, attacker.y, angle, attacker.weapon.damage));
     attacker.weapon.cooldown = attacker.weapon.cooldownTime;
 }
 
 export function createWeapon() {
     return Math.random() >= 0.5 ? createMeeleWeapon() : createRangeWeapon();
+}
+
+export function enhanceWeaponDamage(weapon, percent) {
+    weapon.damage = Math.round(weapon.damage * (1 + (percent / 100)));
+}
+
+export function enhanceWeaponRange(weapon, percent) {
+    weapon.range = Math.round(weapon.range * (1 + (percent / 100)));
 }

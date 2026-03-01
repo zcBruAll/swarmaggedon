@@ -51,3 +51,9 @@ export function damagePlayer(player, amount) {
 export function healPlayer(target, amount) {
     target.hp += Math.min(amount, target.maxHp - target.hp);
 }
+
+export function increaseMaxHp(player, percent) {
+    const lifePercent = player.hp / player.maxHp * 100;
+    player.maxHp = Math.round(player.maxHp * (1 + (percent / 100)));
+    player.hp = Math.round(player.maxHp * lifePercent / 100);
+}
