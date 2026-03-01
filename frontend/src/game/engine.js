@@ -16,6 +16,8 @@ export const GAME_STATE = {
     CHOICE: 'choice',
 };
 
+const CAMERA_PADDING = 150;
+
 export function createEngine(canvas, onHUDUpdate) {
     const ctx = canvas.getContext('2d');
 
@@ -31,6 +33,8 @@ export function createEngine(canvas, onHUDUpdate) {
     let waveTimer = 0;
     let kills = 0;
     let choices = [];
+
+    let camera = { x: 0, y: 0 };
 
     // Time before next wave
     const WAVE_INTERVAL = 40;
@@ -80,6 +84,8 @@ export function createEngine(canvas, onHUDUpdate) {
 
         // Enemies movement
         updateEnemies(enemies, player, dt);
+
+        updateCamera(camera, player, enemies, canvas.width, canvas.height);
 
         updateBullets(player.bullets, enemies, dt);
         for (const enemy of enemies) {
@@ -193,6 +199,25 @@ export function createEngine(canvas, onHUDUpdate) {
         fun(target, damage);
     }
 
+    function updateCamera(camera, player, enemies, w, h) {
+        const dx = player.x - camera.x;
+        const dy = player.y - camera.y;
+        console.log(player.x, player.y);
+        if (dx < CAMERA_PADDING) {
+            camera.x -= (CAMERA_PADDING - dx);
+        }
+        else if (dx > w - CAMERA_PADDING) {
+            camera.x += (dx - (w - CAMERA_PADDING));
+        }
+
+        if (dy < CAMERA_PADDING) {
+            camera.y -= (CAMERA_PADDING - dy);
+        }
+        else if (dy > h - CAMERA_PADDING) {
+            camera.y += (dy - (h - CAMERA_PADDING));
+        }
+    }
+
     function cleanupEnemies() {
         let writeIndex = 0;
 
@@ -259,7 +284,7 @@ export function createEngine(canvas, onHUDUpdate) {
                 bonus: -1 * rand(5, 10),
                 arg: player.weapon,
                 getCurr: (arg) => arg.cooldownTime,
-                getNew: (arg, b) => (arg.cooldownTime * (1 + b / 100).toFixed(2)),
+                getNew: (arg, b) => (arg.cooldownTime * (1 + b / 100)).toFixed(2),
                 func: (wpn, b) => { wpn.cooldownTime = (wpn.cooldownTime * (1 + b / 100)).toFixed(2); },
             }
         ];
@@ -299,15 +324,15 @@ export function createEngine(canvas, onHUDUpdate) {
         const h = canvas.height;
 
         drawBackground(ctx, w, h);
-        drawEnemies(ctx, enemies);
-        drawPlayer(ctx, player);
-        drawWeapon(ctx, player);
-        drawBullets(ctx, player.bullets);
+        drawEnemies(ctx, camera, enemies);
+        drawPlayer(ctx, camera, player);
+        drawWeapon(ctx, camera, player);
+        drawBullets(ctx, camera, player.bullets);
 
         for (const enemy of enemies) {
-            drawWeapon(ctx, enemy);
+            drawWeapon(ctx, camera, enemy);
             if (enemy.type === ENEMY_TYPE.SHOOTER) {
-                drawBullets(ctx, enemy.bullets);
+                drawBullets(ctx, camera, enemy.bullets);
             }
         }
     }

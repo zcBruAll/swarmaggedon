@@ -4,21 +4,21 @@ export function drawBackground(ctx, width, height) {
     ctx.clearRect(0, 0, width, height);
 }
 
-export function drawPlayer(ctx, player) {
+export function drawPlayer(ctx, camera, player) {
     let playerRegion = new Path2D();
-    playerRegion.ellipse(player.x, player.y, player.radius, player.radius, 0, 0, 2 * Math.PI);
+    playerRegion.ellipse(player.x - camera.x, player.y - camera.y, player.radius, player.radius, 0, 0, 2 * Math.PI);
     playerRegion.closePath();
     ctx.fillStyle = "#000000";
     ctx.fill(playerRegion);
 }
 
-export function drawWeapon(ctx, bearer) {
+export function drawWeapon(ctx, camera, bearer) {
     if (!bearer.weapon) return;
 
     // Weapon radius
     ctx.beginPath();
     const weaponRadius = bearer.radius + bearer.weapon.range;
-    ctx.ellipse(bearer.x, bearer.y, weaponRadius, weaponRadius, 0, bearer.weapon.cooldown / bearer.weapon.cooldownTime * 2 * Math.PI, 2 * Math.PI);
+    ctx.ellipse(bearer.x - camera.x, bearer.y - camera.y, weaponRadius, weaponRadius, 0, bearer.weapon.cooldown / bearer.weapon.cooldownTime * 2 * Math.PI, 2 * Math.PI);
     let strokeStyle = "#c9570b";
     if (bearer.weapon.cooldown <= 0) {
         strokeStyle = "#169116";
@@ -30,29 +30,29 @@ export function drawWeapon(ctx, bearer) {
 
     // Weapon angle 
     ctx.beginPath();
-    ctx.moveTo(bearer.x, bearer.y);
+    ctx.moveTo(bearer.x - camera.x, bearer.y - camera.y);
 
     const halfSpread = ((bearer.weapon.angle ?? 0) / 2) * (Math.PI / 180);
     const startAngle = bearer.angle - halfSpread;
     const endAngle = bearer.angle + halfSpread;
 
-    ctx.arc(bearer.x, bearer.y, weaponRadius, startAngle, endAngle);
+    ctx.arc(bearer.x - camera.x, bearer.y - camera.y, weaponRadius, startAngle, endAngle);
 
-    ctx.lineTo(bearer.x, bearer.y);
+    ctx.lineTo(bearer.x - camera.x, bearer.y - camera.y);
 
     ctx.stroke();
 }
 
-export function drawEnemies(ctx, enemies) {
+export function drawEnemies(ctx, camera, enemies) {
     if (!enemies || enemies.length <= 0) return;
     for (const enemy of enemies) {
-        drawEnemy(ctx, enemy);
+        drawEnemy(ctx, camera, enemy);
     }
 }
 
-export function drawEnemy(ctx, enemy) {
+export function drawEnemy(ctx, camera, enemy) {
     let enemyRegion = new Path2D();
-    enemyRegion.ellipse(enemy.x, enemy.y, enemy.radius, enemy.radius, 0, 0, 2 * Math.PI);
+    enemyRegion.ellipse(enemy.x - camera.x, enemy.y - camera.y, enemy.radius, enemy.radius, 0, 0, 2 * Math.PI);
     enemyRegion.closePath();
     ctx.fillStyle = enemy.color;
     ctx.fill(enemyRegion);
@@ -61,8 +61,8 @@ export function drawEnemy(ctx, enemy) {
     if (enemy.hp < enemy.maxHp) {
         const barW = enemy.radius * 2.4;
         const barH = enemy.type === ENEMY_TYPE.BOSS ? 6 : 3;
-        const bx = enemy.x - barW / 2;
-        const by = enemy.y - enemy.radius - (enemy.type === ENEMY_TYPE.BOSS ? 18 : 10);
+        const bx = enemy.x - camera.x - barW / 2;
+        const by = enemy.y - camera.y - enemy.radius - (enemy.type === ENEMY_TYPE.BOSS ? 18 : 10);
         const filled = (enemy.hp / enemy.maxHp) * barW;
 
         ctx.fillStyle = 'rgba(0,0,0,0.35)';
@@ -76,15 +76,15 @@ export function drawEnemy(ctx, enemy) {
     }
 }
 
-export function drawBullets(ctx, bullets) {
+export function drawBullets(ctx, camera, bullets) {
     for (const bullet of bullets) {
-        drawBullet(ctx, bullet);
+        drawBullet(ctx, camera, bullet);
     }
 }
 
-export function drawBullet(ctx, bullet) {
+export function drawBullet(ctx, camera, bullet) {
     ctx.fillStyle = "#00ff00";
     ctx.beginPath();
-    ctx.ellipse(bullet.x, bullet.y, 6, 3, bullet.angle, 0, 2 * Math.PI);
+    ctx.ellipse(bullet.x - camera.x, bullet.y - camera.y, 6, 3, bullet.angle, 0, 2 * Math.PI);
     ctx.fill();
 }
