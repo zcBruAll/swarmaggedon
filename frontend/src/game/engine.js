@@ -16,9 +16,13 @@ export const GAME_STATE = {
     CHOICE: 'choice',
 };
 
-const CAMERA_PADDING = 150;
+const CAMERA_FREE_SPACE = 35;
+let CAMERA_PADDING = 150;
 
 export function createEngine(canvas, onHUDUpdate) {
+    let minValue = Math.min(canvas.width, canvas.height);
+    CAMERA_PADDING = minValue / 2 - CAMERA_FREE_SPACE;
+
     const ctx = canvas.getContext('2d');
 
     let state = GAME_STATE.RUNNING;

@@ -19,7 +19,7 @@ export function createMeeleWeapon() {
         type: WEAPON_TYPE.MELEE,
         action: WEAPON_ACTION.AUTO,
         angle: 90,
-        range: 50,
+        range: 65,
     }
 }
 

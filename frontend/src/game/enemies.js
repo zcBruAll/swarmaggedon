@@ -105,7 +105,7 @@ export function createEnemy(type, x, y, wave) {
     weapon.cooldown = base.cooldownInterval;
     weapon.cooldownTime = base.cooldownInterval;
     weapon.damage = scaleStats(base.damage, scale.damage, wave);
-    weapon.range *= 0.85;
+    weapon.range *= 0.75;
 
     return {
         x: x,
