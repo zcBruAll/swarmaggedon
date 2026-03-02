@@ -76,16 +76,16 @@ function scaleStats(base, multiplier, wave) {
     return base * Math.pow(multiplier, wave - 1);
 }
 
-export function spawnEnemy(player, type, wave) {
+export function spawnEnemy(player, type, wave, minAngle = 0, maxAngle = Math.PI * 2) {
     // Compute random spawn position
-    const randAngle = Math.random() * Math.PI * 2;
+    const randAngle = minAngle + Math.random() * (maxAngle - minAngle);
     const randDist = Math.random() * 500;
     const safeRadius = 250;
     const spawnRadius = safeRadius + randDist;
     const x = player.x + Math.cos(randAngle) * spawnRadius;
     const y = player.y + Math.sin(randAngle) * spawnRadius;
 
-    return createEnemy(type, x, y, wave)
+    return createEnemy(type, x, y, wave);
 }
 
 export function createEnemy(type, x, y, wave) {
@@ -157,12 +157,16 @@ export function createWave(wave, player, canvasWidth, canvasHeight) {
     const isBossWave = wave % BOSS_WAVE_INTERVAL == 0;
     const queue = [];
 
+    const dangerArc = Math.PI * 1.5;
+    const startAngle = Math.random() * Math.PI * 2;
+    const endAngle = startAngle + dangerArc;
+
     if (isBossWave) {
-        queue.push(spawnEnemy(player, ENEMY_TYPE.BOSS, wave));
+        queue.push(spawnEnemy(player, ENEMY_TYPE.BOSS, wave, startAngle, endAngle));
 
         const runnerCount = 1 + Math.floor(wave / 10);
         for (let i = 0; i < runnerCount; i++) {
-            queue.push(spawnEnemy(player, ENEMY_TYPE.RUNNER, wave));
+            queue.push(spawnEnemy(player, ENEMY_TYPE.RUNNER, wave, startAngle, endAngle));
         }
     } else {
         const runnerCount = Math.max(2, Math.floor(wave * 0.8) + 2);
@@ -170,13 +174,13 @@ export function createWave(wave, player, canvasWidth, canvasHeight) {
         const shooterCount = Math.max(0, Math.floor((wave - 4) / 4));
 
         for (let i = 0; i < runnerCount; i++) {
-            queue.push(spawnEnemy(player, ENEMY_TYPE.RUNNER, wave));
+            queue.push(spawnEnemy(player, ENEMY_TYPE.RUNNER, wave, startAngle, endAngle));
         }
         for (let i = 0; i < bruteCount; i++) {
-            queue.push(spawnEnemy(player, ENEMY_TYPE.BRUTE, wave));
+            queue.push(spawnEnemy(player, ENEMY_TYPE.BRUTE, wave, startAngle, endAngle));
         }
         for (let i = 0; i < shooterCount; i++) {
-            queue.push(spawnEnemy(player, ENEMY_TYPE.SHOOTER, wave));
+            queue.push(spawnEnemy(player, ENEMY_TYPE.SHOOTER, wave, startAngle, endAngle));
         }
     }
 

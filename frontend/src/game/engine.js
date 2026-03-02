@@ -113,15 +113,16 @@ export function createEngine(canvas, onHUDUpdate) {
         if (waveTimer <= 0 || enemies?.length === 0) {
             wave += 1;
             waveTimer = WAVE_INTERVAL;
-            if (enemies?.length === 0)
+            if (enemies?.length === 0) {
                 healPlayer(player, 20);
-            enemies.push(...createWave(wave, player, canvas.width, canvas.height));
+                augment();
+            }
+            enemies.push(...createWave(25, player, canvas.width, canvas.height));
             waveState = {
                 waveTitle: "WAVE " + wave,
                 waveSubtitle: "",
                 duration: WAVE_MSG_TIMER,
             }
-            augment();
         }
 
         // Check game over
