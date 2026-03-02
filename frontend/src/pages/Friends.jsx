@@ -54,7 +54,7 @@ const Friends = () => {
   const [searchFriends, { loading: searchLoading, data: searchData }] = useLazyQuery(SEARCH_FRIEND)
   const [addFriendMutation] = useMutation(ADD_FRIEND)
   const [removeFriendMutation] = useMutation(REMOVE_FRIEND)
-  
+
   const navigate = useNavigate();
 
   const [initialSearchDone, setInitialSearchDone] = useState(false)
@@ -109,31 +109,31 @@ const Friends = () => {
     setSearchError("")
     setInitialSearchDone(true)
     try {
-        const { data } = await searchFriends({ variables: { usernameSearch: searchUsername } });
-        if (data?.search) setLocalSearch(data.search);
+      const { data } = await searchFriends({ variables: { usernameSearch: searchUsername } });
+      if (data?.search) setLocalSearch(data.search);
     } catch (err) {
-        setSearchError("Search failed. Please try again.");
+      setSearchError("Search failed. Please try again.");
     }
   }
 
-  const handleAddFriend = async (userId, fromSearch=true) => {
+  const handleAddFriend = async (userId, fromSearch = true) => {
     try {
-        await addFriendMutation({ variables: { userId } });
-        setLocalSearch(prev => prev.filter(u => u.id !== userId));
-        if (!fromSearch) await refetchFriends();
+      await addFriendMutation({ variables: { userId } });
+      setLocalSearch(prev => prev.filter(u => u.id !== userId));
+      if (!fromSearch) await refetchFriends();
     } catch (err) {
-        console.error("Add friend error", err);
+      console.error("Add friend error", err);
     }
   }
 
   const handleRemove = async (friendId) => {
     if (confirmingId === friendId) {
       try {
-          await removeFriendMutation({ variables: { userId: friendId } });
-          await refetchFriends();
-          setConfirmingId(null);
+        await removeFriendMutation({ variables: { userId: friendId } });
+        await refetchFriends();
+        setConfirmingId(null);
       } catch (err) {
-          console.error("Remove friend error", err);
+        console.error("Remove friend error", err);
       }
     } else {
       setConfirmingId(friendId);
@@ -168,7 +168,7 @@ const Friends = () => {
               {
                 initialSearchDone ?
                   searchLoading ?
-                    <div style={{textAlign: 'center', padding: '10px'}}><LoadingSpinner /></div>
+                    <div style={{ textAlign: 'center', padding: '10px' }}><LoadingSpinner /></div>
                     :
                     <>
                       <hr className="divider" />
@@ -179,17 +179,17 @@ const Friends = () => {
                         searchResults
                           .filter(x => !friends.some(f => f.id === x.id))
                           .map(x => (
-                          <div key={x.id} className="flex-between search-result">
-                            <span>{x.username}</span>
-                            <button
-                              type="button"
-                              className="btn btn-outline btn-sm"
-                              onClick={() => handleAddFriend(x.id)}
-                            >
-                              + Add
-                            </button>
-                          </div>
-                        ))
+                            <div key={x.id} className="flex-between search-result">
+                              <span>{x.username}</span>
+                              <button
+                                type="button"
+                                className="btn btn-outline btn-sm"
+                                onClick={() => handleAddFriend(x.id)}
+                              >
+                                + Add
+                              </button>
+                            </div>
+                          ))
                       )}
                     </>
                   : ""
@@ -209,7 +209,7 @@ const Friends = () => {
                           </div>
                         </div>
                         <div className="flex gap-8">
-                          <button type="button" className="btn btn-primary btn-sm" onClick={() => handleAddFriend(f.id, fromSearch=false)}>Accept</button>
+                          <button type="button" className="btn btn-primary btn-sm" onClick={() => handleAddFriend(f.id, false)}>Accept</button>
                           <button type="button" className="btn btn-outline btn-sm" onClick={() => handleRemove(f.id)}>Decline</button>
                         </div>
                       </div>
@@ -230,7 +230,7 @@ const Friends = () => {
           <div className="panel-body">
             <div className="scroll-y">
               {loadingFriends ? (
-                <div style={{textAlign: 'center', padding: '20px'}}><LoadingSpinner /></div>
+                <div style={{ textAlign: 'center', padding: '20px' }}><LoadingSpinner /></div>
               ) : friends.length === 0 ? (
                 <div className="p-16 text-muted">You haven't added any friends yet.</div>
               ) : (
