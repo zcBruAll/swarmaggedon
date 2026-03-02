@@ -163,7 +163,8 @@ export function createEngine(canvas, onHUDUpdate) {
                     attacker.x,
                     attacker.y,
                     attacker.weapon.burstAngle,
-                    attacker.weapon.damage
+                    attacker.weapon.damage,
+                    attacker.weapon.range,
                 ));
                 attacker.weapon.bulletsToFire--;
                 attacker.weapon.nextBurstTime = attacker.weapon.burstInterval;
@@ -262,11 +263,29 @@ export function createEngine(canvas, onHUDUpdate) {
 
         const rand = (min, max) => Math.floor(Math.random() * (max - min + 1) + min);
 
+        const RARITIES = {
+            COMMON: { name: 'Common', color: '#bdc3c7', weight: 60, mult: 1.0 },
+            RARE: { name: 'Rare', color: '#3498db', weight: 25, mult: 1.5 },
+            EPIC: { name: 'Epic', color: '#9b59b6', weight: 10, mult: 2.0 },
+            LEGENDARY: { name: 'Legendary', color: '#f1c40f', weight: 5, mult: 3.0 }
+        };
+
+        function getRandomRarity() {
+            const totalWeight = Object.values(RARITIES).reduce((sum, r) => sum + r.weight, 0);
+            let random = Math.random() * totalWeight;
+
+            for (const key in RARITIES) {
+                if (random < RARITIES[key].weight) return RARITIES[key];
+                random -= RARITIES[key].weight;
+            }
+            return RARITIES.COMMON;
+        }
+
         const possibleChoices = [
             {
                 id: 1,
                 attr: "Damage",
-                bonus: rand(10, 25),
+                getBonus: (mult) => rand(10 * mult, 17 * mult),
                 arg: player.weapon,
                 getCurr: (arg) => arg.damage,
                 getNew: (arg, b) => Math.round(arg.damage * (1 + b / 100)),
@@ -275,7 +294,7 @@ export function createEngine(canvas, onHUDUpdate) {
             {
                 id: 2,
                 attr: "Range",
-                bonus: rand(5, 15),
+                getBonus: (mult) => rand(5 * mult, 15 * mult),
                 arg: player.weapon,
                 getCurr: (arg) => arg.range,
                 getNew: (arg, b) => Math.round(arg.range * (1 + b / 100)),
@@ -284,7 +303,7 @@ export function createEngine(canvas, onHUDUpdate) {
             {
                 id: 3,
                 attr: "Max HP",
-                bonus: rand(10, 20),
+                getBonus: (mult) => rand(10 * mult, 15 * mult),
                 arg: player,
                 getCurr: (arg) => arg.maxHp,
                 getNew: (arg, b) => Math.round(arg.maxHp * (1 + b / 100)),
@@ -293,7 +312,7 @@ export function createEngine(canvas, onHUDUpdate) {
             {
                 id: 4,
                 attr: "Move Speed",
-                bonus: rand(5, 12),
+                getBonus: (mult) => rand(5 * mult, 12 * mult),
                 arg: player,
                 getCurr: (arg) => arg.speed,
                 getNew: (arg, b) => Math.round(arg.speed * (1 + b / 100)),
@@ -302,7 +321,7 @@ export function createEngine(canvas, onHUDUpdate) {
             {
                 id: 5,
                 attr: "Cooldown",
-                bonus: -1 * rand(5, 10),
+                getBonus: (mult) => -1 * rand(5 * mult, 10 * mult),
                 arg: player.weapon,
                 getCurr: (arg) => arg.cooldownTime,
                 getNew: (arg, b) => (arg.cooldownTime * (1 + b / 100)).toFixed(2),
@@ -314,13 +333,18 @@ export function createEngine(canvas, onHUDUpdate) {
             .sort(() => 0.5 - Math.random())
             .slice(0, 3)
             .map(choice => {
+                const rarity = getRandomRarity();
+                const bonus = choice.getBonus(rarity.mult);
+
                 const currentVal = choice.getCurr(choice.arg);
-                const newVal = choice.getNew(choice.arg, choice.bonus);
+                const newVal = choice.getNew(choice.arg, bonus);
 
                 return {
                     id: choice.id,
                     attr: choice.attr,
-                    bonus: choice.bonus,
+                    bonus: bonus,
+                    rarityName: rarity.name,
+                    rarityColor: rarity.color,
                     curr: currentVal,
                     new: newVal,
                     arg: choice.arg,

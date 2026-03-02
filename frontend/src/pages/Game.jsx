@@ -134,13 +134,27 @@ function Game() {
           <span className='choice-title'>CHOOSE YOUR AUGMENT</span>
           <div className='choice-list'>
             {hudRawRef.current.choices.map((choice) => (
-              <div className='choice-card' onClick={() => { choice.func(choice.arg, choice.bonus); engineRef.current.madeChoice() }} key={choice.id}>
+              <div
+                className='choice-card'
+                onClick={() => { choice.func(choice.arg, choice.bonus); engineRef.current.madeChoice() }}
+                key={choice.id}
+                style={{ borderColor: choice.rarityColor }}
+              >
+                <span
+                  className="choice-rarity"
+                  style={{ backgroundColor: choice.rarityColor }}
+                >
+                  {choice.rarityName}
+                </span>
+
                 <img className='choice-img' src={choice.icon || "temp.png"} alt="icon" />
                 <span className='choice-attr'>{choice.attr}</span>
 
                 <div className="choice-stats-container">
                   <span className="choice-curr">current: {choice.curr}</span>
-                  <span className="choice-bonus">{choice.bonus > 0 ? '+' : ''}{choice.bonus}%</span>
+                  <span className="choice-bonus">
+                    {choice.bonus > 0 ? '+' : ''}{choice.bonus}%
+                  </span>
                   <span className="choice-new">➔ {choice.new}</span>
                 </div>
               </div>

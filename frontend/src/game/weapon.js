@@ -54,7 +54,7 @@ export function fireBullet(attacker, angle) {
         attacker.weapon.burstAngle = angle;
         attacker.weapon.nextBurstTime = attacker.weapon.burstInterval;
     }
-    attacker.bullets.push(createBullet(attacker.x, attacker.y, angle, attacker.weapon.damage));
+    attacker.bullets.push(createBullet(attacker.x, attacker.y, angle, attacker.weapon.damage, attacker.weapon.range));
     attacker.weapon.cooldown = attacker.weapon.cooldownTime;
 }
 

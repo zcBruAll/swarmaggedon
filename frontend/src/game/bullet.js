@@ -6,13 +6,14 @@ export const BULLET_EXPLOS = {
     TRANSFER: 'transfer',
 }
 
-export function createBullet(x, y, angle, damage) {
+export function createBullet(x, y, angle, damage, range) {
     return {
         x,
         y,
         angle,
         speed: 500,
         damage,
+        range,
         explos: BULLET_EXPLOS.HIT,
     }
 }
@@ -40,7 +41,7 @@ export function updateBullet(bullet, targets, dt) {
     bullet.y = bullet.y + Math.sin(bullet.angle) * bullet.speed * dt;
 
     bullet.dist = (bullet.dist ?? 0) + bullet.speed * dt;
-    if (bullet.dist > MAX_BULLET_DIST) {
+    if (bullet.dist > MAX_BULLET_DIST + bullet.range) {
         bullet.dead = true;
         return;
     }

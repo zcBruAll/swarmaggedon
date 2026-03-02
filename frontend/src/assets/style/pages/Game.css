@@ -157,25 +157,24 @@
   text-transform: capitalize;
 }
 
-.choice-title {
+.choice-rarity {
   font-family: 'Patrick Hand';
-  font-size: 48px;
+  font-size: 14px;
   font-weight: 700;
-  color: #2a2318;
-  margin-bottom: 20px;
-}
-
-.choice-list {
-  display: flex;
-  gap: 20px;
-  justify-content: center;
-  flex-wrap: wrap;
+  color: #fff;
+  padding: 2px 12px;
+  border-radius: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 5px;
+  box-shadow: 2px 2px 0 rgba(42, 35, 24, 0.15);
 }
 
 .choice-card {
   background: #faf7f1;
-  border: 2px solid #2a2318;
-  padding: 20px;
+  border-style: solid;
+  border-width: 3px;
+  padding: 15px 20px 20px 20px;
   width: 200px;
   display: flex;
   flex-direction: column;
@@ -189,7 +188,21 @@
 .choice-card:hover {
   transform: translateY(-5px);
   background: #fff;
-  box-shadow: 6px 6px 0 rgba(42, 35, 24, 0.2);
+  box-shadow: 6px 6px 0 rgba(42, 35, 24, 0.2); 
+}
+.choice-title {
+  font-family: 'Patrick Hand';
+  font-size: 48px;
+  font-weight: 700;
+  color: #2a2318;
+  margin-bottom: 20px;
+}
+
+.choice-list {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 .choice-img {
