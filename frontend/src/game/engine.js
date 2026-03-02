@@ -117,7 +117,7 @@ export function createEngine(canvas, onHUDUpdate) {
                 healPlayer(player, 20);
                 augment();
             }
-            enemies.push(...createWave(25, player, canvas.width, canvas.height));
+            enemies.push(...createWave(wave, player, canvas.width, canvas.height));
             waveState = {
                 waveTitle: "WAVE " + wave,
                 waveSubtitle: "",
