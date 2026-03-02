@@ -20,7 +20,7 @@ function GlobalLeaderboard() {
   const { loading, error, data } = useQuery(GET_LEADERBOARD)
   const { user, isLoggedIn } = useAuth();
 
-  const userRank = loading ? -1 : data.global.leaderboard.findIndex(lb => lb.username === user?.username) + 1;
+  const userRank = loading ? -1 : data?.global.leaderboard.findIndex(lb => lb.username === user?.username) + 1;
 
   return <div>
     <div className="panel">
@@ -34,7 +34,7 @@ function GlobalLeaderboard() {
             <div className="lb-row">Loading leaderboard...</div>
           ) : (
             <>
-              {data.global.leaderboard.map((lb, index) => (
+              {data?.global.leaderboard.map((lb, index) => (
                 <div key={lb.user_id} className={`lb-row ${lb.username === user?.username ? 'highlight' : ''}`}>
                   <span className={`lb-rank ${index < 3 ? 'top' : ''}`}>#{index + 1}</span>
                   <span className="lb-name" style={{ color: lb.username === user?.username ? 'var(--blue)' : '' }}>{lb.username}{lb.username === user?.username ? ' ← you' : ''}</span>

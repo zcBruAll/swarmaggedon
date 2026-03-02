@@ -12,16 +12,20 @@ export function drawPlayer(ctx, camera, player) {
     ctx.fill(playerRegion);
 }
 
-export function drawWeapon(ctx, camera, bearer) {
+export function drawWeapon(ctx, camera, bearer, debug = true) {
     if (!bearer.weapon) return;
 
     // Weapon radius
     ctx.beginPath();
-    const weaponRadius = bearer.radius + bearer.weapon.range;
-    ctx.ellipse(bearer.x - camera.x, bearer.y - camera.y, weaponRadius, weaponRadius, 0, bearer.weapon.cooldown / bearer.weapon.cooldownTime * 2 * Math.PI, 2 * Math.PI);
+    const cooldownRadius = bearer.radius + (debug ? bearer.weapon.range : 3);
+    ctx.ellipse(bearer.x - camera.x, bearer.y - camera.y, cooldownRadius, cooldownRadius, 0, bearer.weapon.cooldown / bearer.weapon.cooldownTime * 2 * Math.PI, 2 * Math.PI);
     let strokeStyle = "#c9570b";
+    ctx.lineWidth = 3;
+    let lineDash = [8, 8];
+    ctx.setLineDash([]);
     if (bearer.weapon.cooldown <= 0) {
         strokeStyle = "#169116";
+        lineDash = [];
     }
 
     ctx.strokeStyle = strokeStyle;
@@ -30,17 +34,22 @@ export function drawWeapon(ctx, camera, bearer) {
 
     // Weapon angle 
     ctx.beginPath();
+    ctx.lineWidth = 1;
+    ctx.setLineDash(lineDash);
     ctx.moveTo(bearer.x - camera.x, bearer.y - camera.y);
 
     const halfSpread = ((bearer.weapon.angle ?? 0) / 2) * (Math.PI / 180);
     const startAngle = bearer.angle - halfSpread;
     const endAngle = bearer.angle + halfSpread;
+    const weaponRadius = bearer.radius + bearer.weapon.range;
 
     ctx.arc(bearer.x - camera.x, bearer.y - camera.y, weaponRadius, startAngle, endAngle);
 
     ctx.lineTo(bearer.x - camera.x, bearer.y - camera.y);
 
     ctx.stroke();
+    ctx.fillStyle = strokeStyle + '25';
+    ctx.fill();
 }
 
 export function drawEnemies(ctx, camera, enemies) {

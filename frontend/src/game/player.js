@@ -12,6 +12,7 @@ export function createPlayer(canvasWidth, canvasHeight) {
         weapon: createWeapon(),
         bullets: [],
         type: 'player',
+        items: [],
     };
 }
 

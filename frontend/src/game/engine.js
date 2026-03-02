@@ -19,6 +19,9 @@ export const GAME_STATE = {
 const CAMERA_FREE_SPACE = 35;
 let CAMERA_PADDING = 150;
 
+// Time before next wave
+export const WAVE_INTERVAL = 40;
+
 export function createEngine(canvas, onHUDUpdate) {
     let minValue = Math.min(canvas.width, canvas.height);
     CAMERA_PADDING = minValue / 2 - CAMERA_FREE_SPACE;
@@ -37,11 +40,9 @@ export function createEngine(canvas, onHUDUpdate) {
     let waveTimer = 0;
     let kills = 0;
     let choices = [];
+    let items = [];
 
     let camera = { x: 0, y: 0 };
-
-    // Time before next wave
-    const WAVE_INTERVAL = 40;
 
     const WAVE_MSG_TIMER = 2;
     let waveState = {
@@ -132,6 +133,7 @@ export function createEngine(canvas, onHUDUpdate) {
             score,
             elapsed,
             wave,
+            waveTimer,
             player,
             gameState: state,
             waveState,
@@ -314,11 +316,12 @@ export function createEngine(canvas, onHUDUpdate) {
             score,
             elapsed,
             wave,
+            waveTimer,
             hp: player.hp,
             maxHp: player.maxHp,
             gameState: state,
-            kills: kills,
-            choices: choices,
+            kills,
+            choices,
         });
     }
 
@@ -329,11 +332,11 @@ export function createEngine(canvas, onHUDUpdate) {
         drawBackground(ctx, w, h);
         drawEnemies(ctx, camera, enemies);
         drawPlayer(ctx, camera, player);
-        drawWeapon(ctx, camera, player);
+        drawWeapon(ctx, camera, player, false);
         drawBullets(ctx, camera, player.bullets);
 
         for (const enemy of enemies) {
-            drawWeapon(ctx, camera, enemy);
+            drawWeapon(ctx, camera, enemy, false);
             if (enemy.type === ENEMY_TYPE.SHOOTER) {
                 drawBullets(ctx, camera, enemy.bullets);
             }
@@ -370,6 +373,7 @@ export function createEngine(canvas, onHUDUpdate) {
                 score,
                 elapsed,
                 wave,
+                waveTimer,
                 player,
                 gameState: state,
                 kills,
@@ -383,6 +387,7 @@ export function createEngine(canvas, onHUDUpdate) {
                 score,
                 elapsed,
                 wave,
+                waveTimer,
                 player,
                 gameState: state,
                 kills,

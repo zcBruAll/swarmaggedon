@@ -7,8 +7,10 @@ export const WEAPON_TYPE = {
 
 export const WEAPON_ACTION = {
     SINGLE: 'single',
-    CHARGE: 'charge',
+    AOE: 'aoe',
     RIFLE: 'rifle',
+    TRANSFER: 'transfer',
+    PIERCE: 'pierce',
 }
 
 export function createMeeleWeapon() {
@@ -17,7 +19,7 @@ export function createMeeleWeapon() {
         cooldownTime: 1.2,
         damage: 20,
         type: WEAPON_TYPE.MELEE,
-        action: WEAPON_ACTION.AUTO,
+        action: WEAPON_ACTION.SINGLE,
         angle: 90,
         range: 65,
     }
@@ -29,7 +31,7 @@ export function createRangeWeapon() {
         cooldownTime: 0.6,
         damage: 15,
         type: WEAPON_TYPE.RANGE,
-        action: WEAPON_ACTION.AUTO,
+        action: WEAPON_ACTION.SINGLE,
         range: 350,
     }
 }

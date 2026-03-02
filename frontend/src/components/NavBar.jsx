@@ -21,7 +21,6 @@ function NavBar() {
     <header>
       <div>
         <span className="logo">Swarmaggedon</span>
-        <span className="logo-sub">Survivor game - v0.0.0</span>
       </div>
       <nav>
         <Link 
