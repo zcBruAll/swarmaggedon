@@ -6,8 +6,8 @@ import {
     drawWeapon,
     drawBullets,
 } from './renderer.js';
-import { WEAPON_TYPE, fireBullet } from './weapon.js';
-import { updateBullets } from './bullet.js';
+import { WEAPON_ACTION, WEAPON_TYPE, fireBullet } from './weapon.js';
+import { createBullet, updateBullets } from './bullet.js';
 
 export const GAME_STATE = {
     RUNNING: 'running',
@@ -61,7 +61,7 @@ export function createEngine(canvas, onHUDUpdate) {
         state = GAME_STATE.RUNNING;
         waveState = {
             waveTitle: "WAVE 1",
-            waveSubtitle: "WEAPON: " + player.weapon.type,
+            waveSubtitle: `WEAPON: ${player.weapon.type} · ${player.weapon.action}`,
             duration: WAVE_MSG_TIMER,
         }
         choices = [];
@@ -154,6 +154,21 @@ export function createEngine(canvas, onHUDUpdate) {
 
     function tryAttack(dt, attacker, targets, fun) {
         if (!attacker?.weapon) return;
+
+        if (attacker.weapon.action === WEAPON_ACTION.RIFLE && (attacker.weapon.bulletsToFire ?? 0) > 0) {
+            attacker.weapon.nextBurstTime -= Math.min(attacker.weapon.nextBurstTime, dt);
+            if (attacker.weapon.nextBurstTime <= 0) {
+                attacker.bullets.push(createBullet(
+                    attacker.x,
+                    attacker.y,
+                    attacker.weapon.burstAngle,
+                    attacker.weapon.damage
+                ));
+                attacker.weapon.bulletsToFire--;
+                attacker.weapon.nextBurstTime = attacker.weapon.burstInterval;
+            }
+        }
+
         attacker.weapon.cooldown -= Math.min(dt, attacker.weapon.cooldown);
         if (attacker.weapon.cooldown > 0) return;
 
