@@ -265,9 +265,9 @@ export function createEngine(canvas, onHUDUpdate) {
 
         const RARITIES = {
             COMMON: { name: 'Common', color: '#bdc3c7', weight: 60, mult: 1.0 },
-            RARE: { name: 'Rare', color: '#3498db', weight: 25, mult: 1.5 },
-            EPIC: { name: 'Epic', color: '#9b59b6', weight: 10, mult: 2.0 },
-            LEGENDARY: { name: 'Legendary', color: '#f1c40f', weight: 5, mult: 3.0 }
+            RARE: { name: 'Rare', color: '#3498db', weight: 30, mult: 1.5 },
+            EPIC: { name: 'Epic', color: '#9b59b6', weight: 8, mult: 2.0 },
+            LEGENDARY: { name: 'Legendary', color: '#f1c40f', weight: 2, mult: 3.0 }
         };
 
         function getRandomRarity() {
