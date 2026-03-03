@@ -33,7 +33,7 @@ export function createRangeWeapon() {
             damage: 15,
             type: WEAPON_TYPE.RANGE,
             action: WEAPON_ACTION.AOE,
-            aoeRadius: 350,
+            aoeRadius: 150,
             range: 300,
         }
     }
