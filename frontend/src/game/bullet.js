@@ -3,10 +3,11 @@ import { damageEnemy } from "./enemies";
 export const BULLET_EXPLOS = {
     HIT: 'hit',
     AOE: 'aoe',
+    PIERCE: 'pierce',
     TRANSFER: 'transfer',
 }
 
-export function createBullet(x, y, angle, damage, range) {
+export function createBullet(x, y, angle, damage, range, type = BULLET_EXPLOS.HIT, args = null) {
     return {
         x,
         y,
@@ -14,7 +15,8 @@ export function createBullet(x, y, angle, damage, range) {
         speed: 500,
         damage,
         range,
-        explos: BULLET_EXPLOS.HIT,
+        explos: type,
+        args,
     }
 }
 
@@ -50,10 +52,26 @@ export function updateBullet(bullet, targets, dt) {
         const dx = target.x - bullet.x;
         const dy = target.y - bullet.y;
         const d = Math.hypot(dx, dy);
+
         if (d <= target.radius) {
-            damageEnemy(target, bullet.damage);
-            if (bullet.explos == BULLET_EXPLOS.HIT)
-                bullet.dead = true;
+            if (bullet.explos == BULLET_EXPLOS.AOE) {
+                const blastRadius = bullet.args.aoeRadius || 150;
+
+                for (const areaTarget of targets) {
+                    const adx = areaTarget.x - bullet.x;
+                    const ady = areaTarget.y - bullet.y;
+                    const ad = Math.hypot(adx, ady);
+                    if (ad <= blastRadius + areaTarget.radius) {
+                        const falloff = Math.max(0, 1 - (ad / blastRadius));
+
+                        const finalDamage = bullet.damage * falloff;
+                        damageEnemy(areaTarget, finalDamage);
+                    }
+                }
+            } else {
+                damageEnemy(target, bullet.damage);
+            }
+            bullet.dead = true;
             break;
         }
     }
