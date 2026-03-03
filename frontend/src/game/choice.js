@@ -76,7 +76,7 @@ export function getChoices(wave, player) {
         if (player.weapon.action === WEAPON_ACTION.AOE) {
             possibleChoices.push({
                 attr: "AOE Radius",
-                getBonus: (mult) => -1 * rand(5 * mult, 10 * mult),
+                getBonus: (mult) => rand(5 * mult, 10 * mult),
                 arg: player.weapon,
                 getCurr: (arg) => arg.aoeRadius,
                 getNew: (arg, b) => Math.round(arg.aoeRadius * (1 + b / 100)),
@@ -85,7 +85,7 @@ export function getChoices(wave, player) {
         } else if (player.weapon.action === WEAPON_ACTION.PIERCE) {
             possibleChoices.push({
                 attr: "Pierce",
-                getBonus: (mult) => -1 * rand(5 * mult, 10 * mult),
+                getBonus: (mult) => rand(5 * mult, 10 * mult),
                 arg: player.weapon,
                 getCurr: (arg) => arg.pierce,
                 getNew: (arg, b) => (arg.pierce * (1 + b / 100).toFixed(2)),
@@ -94,7 +94,7 @@ export function getChoices(wave, player) {
         } else if (player.weapon.action === WEAPON_ACTION.RIFLE) {
             possibleChoices.push({
                 attr: "Rifle",
-                getBonus: (mult) => -1 * rand(5 * mult, 10 * mult),
+                getBonus: (mult) => rand(5 * mult, 10 * mult),
                 arg: player.weapon,
                 getCurr: (arg) => arg.rifle,
                 getNew: (arg, b) => (arg.rifle * (1 + b / 100).toFixed(2)),
@@ -103,7 +103,7 @@ export function getChoices(wave, player) {
         } else if (player.weapon.action === WEAPON_ACTION.TRANSFER) {
             possibleChoices.push({
                 attr: "Transfer Radius",
-                getBonus: (mult) => -1 * rand(5 * mult, 10 * mult),
+                getBonus: (mult) => rand(5 * mult, 10 * mult),
                 arg: player.weapon,
                 getCurr: (arg) => arg.transferRadius,
                 getNew: (arg, b) => (arg.transferRadius * (1 + b / 100).toFixed(2)),
@@ -111,7 +111,7 @@ export function getChoices(wave, player) {
             });
             possibleChoices.push({
                 attr: "Transfer time",
-                getBonus: (mult) => -1 * rand(5 * mult, 10 * mult),
+                getBonus: (mult) => rand(5 * mult, 10 * mult),
                 arg: player.weapon,
                 getCurr: (arg) => arg.transferTime,
                 getNew: (arg, b) => (arg.transferTime * (1 + b / 100).toFixed(2)),
