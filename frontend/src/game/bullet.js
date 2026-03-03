@@ -68,10 +68,14 @@ export function updateBullet(bullet, targets, dt) {
                         damageEnemy(areaTarget, finalDamage);
                     }
                 }
+            } else if (bullet.explos == BULLET_EXPLOS.PIERCE) {
+                damageEnemy(target, bullet.damage);
+                bullet.args.pierce -= 1;
             } else {
                 damageEnemy(target, bullet.damage);
             }
-            bullet.dead = true;
+            if (bullet.explos !== BULLET_EXPLOS.PIERCE || bullet.args.pierce <= 0)
+                bullet.dead = true;
             break;
         }
     }

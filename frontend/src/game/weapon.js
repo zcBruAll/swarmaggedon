@@ -37,6 +37,17 @@ export function createRangeWeapon() {
             range: 300,
         }
     }
+    if (Math.random() > 0.5) {
+        return {
+            cooldown: 1,
+            cooldownTime: 1,
+            damage: 12,
+            type: WEAPON_TYPE.RANGE,
+            action: WEAPON_ACTION.PIERCE,
+            pierce: 3,
+            range: 300,
+        }
+    }
     if (Math.random() > 0.85) {
         return {
             cooldown: 2,
@@ -65,7 +76,12 @@ export function fireBullet(attacker, angle) {
         attacker.weapon.burstAngle = angle;
         attacker.weapon.nextBurstTime = attacker.weapon.burstInterval;
     }
-    attacker.bullets.push(createBullet(attacker.x, attacker.y, angle, attacker.weapon.damage, attacker.weapon.range, attacker.weapon.action, { aoeDamage: attacker.weapon.aoeDamage }));
+    let args;
+    if (attacker.weapon.action === WEAPON_ACTION.AOE)
+        args = { aoeRadius: attacker.weapon.aoeRadius };
+    else if (attacker.weapon.action === WEAPON_ACTION.PIERCE)
+        args = { pierce: attacker.weapon.pierce };
+    attacker.bullets.push(createBullet(attacker.x, attacker.y, angle, attacker.weapon.damage, attacker.weapon.range, attacker.weapon.action, args));
     attacker.weapon.cooldown = attacker.weapon.cooldownTime;
 }
 
