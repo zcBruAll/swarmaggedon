@@ -234,7 +234,13 @@ const Friends = () => {
               ) : friends.length === 0 ? (
                 <div className="p-16 text-muted">You haven't added any friends yet.</div>
               ) : (
-                friends.map(friend => (
+                [...friends]
+                  .sort((a, b) => {
+                    const statusA = a.in_game ? 2 : isUserOnline(a.last_online) ? 1 : 0;
+                    const statusB = b.in_game ? 2 : isUserOnline(b.last_online) ? 1 : 0;
+                    return statusB - statusA;
+                  })
+                  .map(friend => (
                   <div className="friend-row" key={friend.id}>
                     <div className="friend-info">
                       <div className="avatar">{friend.username?.substring(0, 2).toUpperCase()}</div>

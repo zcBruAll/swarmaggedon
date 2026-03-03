@@ -45,7 +45,13 @@ function FriendsStats() {
               <span className="text-muted">No friends yet.</span>
             </div>
           ) : (
-            data.friends.map(friend => (
+            [...data.friends]
+              .sort((a, b) => {
+                const statusA = a.in_game ? 2 : isUserOnline(a.last_online) ? 1 : 0;
+                const statusB = b.in_game ? 2 : isUserOnline(b.last_online) ? 1 : 0;
+                return statusB - statusA;
+              })
+              .map(friend => (
               <div className="friend-stat-row" key={friend.id}>
                 <div className="avatar">{friend.username?.substring(0, 2).toUpperCase()}</div>
                 <span>{friend.username}</span>
