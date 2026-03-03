@@ -15,6 +15,7 @@ export function createBullet(x, y, angle, damage, range, type = BULLET_EXPLOS.HI
         speed: 500,
         damage,
         range,
+        transpierced: [],
         explos: type,
         args,
     }
@@ -69,8 +70,11 @@ export function updateBullet(bullet, targets, dt) {
                     }
                 }
             } else if (bullet.explos == BULLET_EXPLOS.PIERCE) {
-                damageEnemy(target, bullet.damage);
-                bullet.args.pierce -= 1;
+                if (!bullet.transpierced.includes(target)) {
+                    damageEnemy(target, bullet.damage);
+                    bullet.transpierced.push(target);
+                    bullet.args.pierce -= 1;
+                }
             } else {
                 damageEnemy(target, bullet.damage);
             }
