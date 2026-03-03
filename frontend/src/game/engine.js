@@ -6,9 +6,9 @@ import {
     drawWeapon,
     drawBullets,
 } from './renderer.js';
-import { WEAPON_ACTION, WEAPON_TYPE, fireBullet } from './weapon.js';
+import { WEAPON_ENCHANT, WEAPON_TYPE, fireBullet } from './weapon.js';
 import { createBullet, updateBullets } from './bullet.js';
-import { CHOICE_TYPE, getChoices, getWeaponChoices } from './choice.js';
+import { CHOICE_TYPE, getChoices, getEnchantChoices, getWeaponChoices } from './choice.js';
 
 export const GAME_STATE = {
     RUNNING: 'running',
@@ -53,12 +53,15 @@ export function createEngine(canvas, onHUDUpdate) {
     };
 
     function init() {
+        drawBackground(ctx, canvas.width, canvas.height);
+
         player = createPlayer(canvas.width, canvas.height);
         score = 0;
         elapsed = 0;
         waveTimer = WAVE_INTERVAL;
         state = GAME_STATE.RUNNING;
         choices = [];
+        wave = 0;
         augment(CHOICE_TYPE.WEAPON);
         wave = 1;
         enemies = createWave(wave, player, canvas.width, canvas.height);
@@ -113,12 +116,16 @@ export function createEngine(canvas, onHUDUpdate) {
 
         waveTimer -= dt;
         if (waveTimer <= 0 || enemies?.length === 0) {
-            wave += 1;
             waveTimer = WAVE_INTERVAL;
             if (enemies?.length === 0) {
                 healPlayer(player, 20);
-                augment();
+                if (wave === 20) {
+                    augment(CHOICE_TYPE.ENCHANT);
+                } else {
+                    augment();
+                }
             }
+            wave += 1;
             enemies.push(...createWave(wave, player, canvas.width, canvas.height));
             waveState = {
                 waveTitle: "WAVE " + wave,
@@ -158,7 +165,7 @@ export function createEngine(canvas, onHUDUpdate) {
     function tryAttack(dt, attacker, targets, fun) {
         if (!attacker?.weapon) return;
 
-        if (attacker.weapon.action === WEAPON_ACTION.RIFLE && (attacker.weapon.bulletsToFire ?? 0) > 0) {
+        if (attacker.weapon.enchant === WEAPON_ENCHANT.RIFLE && (attacker.weapon.bulletsToFire ?? 0) > 0) {
             attacker.weapon.nextBurstTime -= Math.min(attacker.weapon.nextBurstTime, dt);
             if (attacker.weapon.nextBurstTime <= 0) {
                 attacker.bullets.push(createBullet(
@@ -266,7 +273,14 @@ export function createEngine(canvas, onHUDUpdate) {
         switch (type) {
             case CHOICE_TYPE.WEAPON:
                 choices = getWeaponChoices(wave, player);
-                break
+                break;
+            case CHOICE_TYPE.ENCHANT:
+                if (player.weapon.type === WEAPON_TYPE.MELEE) {
+                    choices = getChoices(wave, player);
+                } else {
+                    choices = getEnchantChoices(wave, player);
+                }
+                break;
             default:
                 choices = getChoices(wave, player);
                 break;

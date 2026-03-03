@@ -5,7 +5,7 @@ export const WEAPON_TYPE = {
     RANGE: 'range',
 }
 
-export const WEAPON_ACTION = {
+export const WEAPON_ENCHANT = {
     SINGLE: 'single',
     AOE: 'aoe',
     RIFLE: 'rifle',
@@ -13,85 +13,125 @@ export const WEAPON_ACTION = {
     PIERCE: 'pierce',
 }
 
-export function createWeapon(type, action) {
+export function createWeapon(type, enchant) {
+    let weapon;
     switch (type) {
         case WEAPON_TYPE.MELEE:
-            return {
-                cooldown: 0.8,
+            weapon = {
                 cooldownTime: 0.8,
+                cooldown: 0.8,
                 damage: 20,
                 type: WEAPON_TYPE.MELEE,
-                action: WEAPON_ACTION.SINGLE,
                 angle: 90,
                 range: 65,
-                props: ['angle'],
+                props: ['cooldown', 'damage', 'angle', 'range'],
             }
+            break;
         case WEAPON_TYPE.RANGE:
         default:
-            switch (action) {
-                case WEAPON_ACTION.RIFLE:
-                    return {
-                        cooldown: 2,
-                        cooldownTime: 2,
-                        damage: 15,
-                        type: WEAPON_TYPE.RANGE,
-                        action: WEAPON_ACTION.RIFLE,
-                        rifle: 3,
-                        burstInterval: 0.1,
-                        range: 350,
-                        props: ['rifle', 'burstInterval'],
-                    }
-                case WEAPON_ACTION.PIERCE:
-                    return {
-                        cooldown: 1,
-                        cooldownTime: 1,
-                        damage: 12,
-                        type: WEAPON_TYPE.RANGE,
-                        action: WEAPON_ACTION.PIERCE,
-                        pierce: 3,
-                        range: 300,
-                        props: ['pierce'],
-                    }
-                case WEAPON_ACTION.AOE:
-                    return {
-                        cooldown: 2,
-                        cooldownTime: 2,
-                        damage: 15,
-                        type: WEAPON_TYPE.RANGE,
-                        action: WEAPON_ACTION.AOE,
-                        aoeRadius: 150,
-                        range: 300,
-                        props: ['aoeRadius'],
-                    }
-                case WEAPON_ACTION.SINGLE:
-                default:
-                    return {
-                        cooldown: 0.6,
-                        cooldownTime: 0.6,
-                        damage: 15,
-                        type: WEAPON_TYPE.RANGE,
-                        action: WEAPON_ACTION.SINGLE,
-                        range: 350,
-                        props: [],
-                    }
+            weapon = {
+                cooldownTime: 0.6,
+                cooldown: 0.6,
+                damage: 15,
+                type: WEAPON_TYPE.RANGE,
+                range: 350,
+                props: ['cooldown', 'damage', 'range'],
+            }
+            break;
+    }
+    enchantWeapon(weapon, createEnchant(enchant));
+    return weapon;
+}
+
+export function createEnchant(enchant) {
+    switch (enchant) {
+        case WEAPON_ENCHANT.RIFLE:
+            return {
+                name: WEAPON_ENCHANT.RIFLE,
+                cooldown: 150,
+                damage: 90,
+                rifle: 3,
+                support: [WEAPON_TYPE.RANGE],
+                burstInterval: 0.1,
+                range: 95,
+                props: ['rifle', 'burstInterval'],
+                bonusProps: ['cooldown', 'damage', 'range'],
+            }
+        case WEAPON_ENCHANT.PIERCE:
+            return {
+                name: WEAPON_ENCHANT.PIERCE,
+                cooldown: 115,
+                damage: 92.5,
+                support: [WEAPON_TYPE.RANGE],
+                pierce: 3,
+                range: 75,
+                props: ['pierce'],
+                bonusProps: ['cooldown', 'damage', 'range'],
+            }
+        case WEAPON_ENCHANT.AOE:
+            return {
+                name: WEAPON_ENCHANT.AOE,
+                cooldown: 135,
+                damage: 85,
+                support: [WEAPON_TYPE.RANGE],
+                aoeRadius: 150,
+                range: 85,
+                props: ['aoeRadius'],
+                bonusProps: ['cooldown', 'damage', 'range'],
+            }
+        case WEAPON_ENCHANT.TRANSFER:
+            return {
+                name: WEAPON_ENCHANT.TRANSFER,
+                cooldown: 115,
+                damage: 95,
+                support: [WEAPON_TYPE.RANGE],
+                transferRadius: 150,
+                transfer: 3,
+                range: 85,
+                props: ['transferRadius', 'transfer'],
+                bonusProps: ['cooldown', 'damage', 'range'],
+            }
+        case WEAPON_ENCHANT.SINGLE:
+        default:
+            return {
+                name: WEAPON_ENCHANT.SINGLE,
+                cooldown: 100,
+                cooldownTime: 100,
+                damage: 100,
+                support: [WEAPON_TYPE.MELEE, WEAPON_TYPE.RANGE],
+                angle: 100,
+                range: 100,
+                props: [],
             }
     }
 }
 
-
 export function fireBullet(attacker, angle) {
-    if (attacker.weapon.action === WEAPON_ACTION.RIFLE) {
+    if (attacker.weapon.enchant === WEAPON_ENCHANT.RIFLE) {
         attacker.weapon.bulletsToFire = attacker.weapon.rifle - 1;
         attacker.weapon.burstAngle = angle;
         attacker.weapon.nextBurstTime = attacker.weapon.burstInterval;
     }
     let args;
-    if (attacker.weapon.action === WEAPON_ACTION.AOE)
+    if (attacker.weapon.enchant === WEAPON_ENCHANT.AOE)
         args = { aoeRadius: attacker.weapon.aoeRadius };
-    else if (attacker.weapon.action === WEAPON_ACTION.PIERCE)
+    else if (attacker.weapon.enchant === WEAPON_ENCHANT.PIERCE)
         args = { pierce: attacker.weapon.pierce };
-    else if (attacker.weapon.action === WEAPON_ACTION.TRANSFER)
+    else if (attacker.weapon.enchant === WEAPON_ENCHANT.TRANSFER)
         args = { transferRadius: attacker.weapon.transferRadius, transfer: attacker.weapon.transfer };
-    attacker.bullets.push(createBullet(attacker.x, attacker.y, angle, attacker.weapon.damage, attacker.weapon.range, attacker.weapon.action, args));
+    attacker.bullets.push(createBullet(attacker.x, attacker.y, angle, attacker.weapon.damage, attacker.weapon.range, attacker.weapon.enchant, args));
     attacker.weapon.cooldown = attacker.weapon.cooldownTime;
+}
+
+export function enchantWeapon(weapon, enchant) {
+    if (!enchant.support.includes(weapon.type)) return;
+
+    weapon.enchant = enchant.name;
+    for (const prop of weapon.props) {
+        weapon[prop] *= enchant[prop] / 100;
+    }
+
+    for (const prop of enchant.props) {
+        weapon[prop] = enchant[prop];
+    }
 }

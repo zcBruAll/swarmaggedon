@@ -1,10 +1,11 @@
 import { equipWeapon, increaseMaxHp } from "./player.js";
-import { createWeapon, WEAPON_ACTION, WEAPON_TYPE } from "./weapon.js";
+import { createEnchant, createWeapon, enchantWeapon, WEAPON_ENCHANT, WEAPON_TYPE } from "./weapon.js";
 
 export const CHOICE_TYPE = {
     AUGMENT: 'augment',
     WEAPON: 'weapon',
     ITEM: 'item',
+    ENCHANT: 'enchant',
 }
 
 const rand = (min, max) => Math.floor(Math.random() * (max - min + 1) + min);
@@ -73,7 +74,7 @@ export function getChoices(wave, player) {
     ];
 
     if (player.weapon.type === WEAPON_TYPE.RANGE) {
-        if (player.weapon.action === WEAPON_ACTION.AOE) {
+        if (player.weapon.enchant === WEAPON_ENCHANT.AOE) {
             possibleChoices.push({
                 attr: "AOE Radius",
                 getBonus: (mult) => rand(5 * mult, 10 * mult),
@@ -82,7 +83,7 @@ export function getChoices(wave, player) {
                 getNew: (arg, b) => Math.round(arg.aoeRadius * (1 + b / 100)),
                 func: (wpn, b) => { wpn.aoeRadius = Math.round(wpn.aoeRadius * (1 + b / 100)); },
             });
-        } else if (player.weapon.action === WEAPON_ACTION.PIERCE) {
+        } else if (player.weapon.enchant === WEAPON_ENCHANT.PIERCE) {
             possibleChoices.push({
                 attr: "Pierce",
                 getBonus: (mult) => rand(5 * mult, 10 * mult),
@@ -91,7 +92,7 @@ export function getChoices(wave, player) {
                 getNew: (arg, b) => (arg.pierce * (1 + b / 100)).toFixed(2),
                 func: (wpn, b) => { wpn.pierce = (wpn.pierce * (1 + b / 100)).toFixed(2); },
             });
-        } else if (player.weapon.action === WEAPON_ACTION.RIFLE) {
+        } else if (player.weapon.enchant === WEAPON_ENCHANT.RIFLE) {
             possibleChoices.push({
                 attr: "Rifle",
                 getBonus: (mult) => rand(5 * mult, 10 * mult),
@@ -100,7 +101,7 @@ export function getChoices(wave, player) {
                 getNew: (arg, b) => (arg.rifle * (1 + b / 100)).toFixed(2),
                 func: (wpn, b) => { wpn.rifle = (wpn.rifle * (1 + b / 100)).toFixed(2); },
             });
-        } else if (player.weapon.action === WEAPON_ACTION.TRANSFER) {
+        } else if (player.weapon.enchant === WEAPON_ENCHANT.TRANSFER) {
             possibleChoices.push({
                 attr: "Transfer Radius",
                 getBonus: (mult) => rand(5 * mult, 10 * mult),
@@ -147,33 +148,63 @@ export function getChoices(wave, player) {
     return choices;
 }
 
+export function getEnchantChoices(wave, player) {
+    let possibleChoices = [];
+
+    Object.values(WEAPON_ENCHANT).forEach(enchant => {
+        if (enchant !== WEAPON_ENCHANT.TRANSFER && enchant !== player.weapon.enchant) {
+            let weapon = createEnchant(enchant);
+            possibleChoices.push(weapon);
+        }
+    });
+
+    const choices = possibleChoices
+        .sort(() => 0.5 - Math.random())
+        .slice(0, 3)
+        .map((enchant, index) => {
+            const rarity = RARITIES.EPIC;//getRandomRarity();
+            return {
+                id: index,
+                attr: enchant.name,
+                enchant,
+                rarityName: rarity.name,
+                rarityColor: rarity.color,
+                type: CHOICE_TYPE.ENCHANT,
+                arg: player.weapon,
+                func: enchantWeapon,
+            };
+        });
+
+    return choices;
+}
+
 export function getWeaponChoices(wave, player) {
     let possibleChoices = wave > 0 ? [player.weapon] : [];
 
     Object.values(WEAPON_TYPE).forEach(type => {
         if (wave > 0) {
-            Object.values(WEAPON_ACTION).forEach(action => {
-                let weapon = createWeapon(type, action);
+            Object.values(WEAPON_ENCHANT).forEach(enchant => {
+                let weapon = createWeapon(type, enchant);
                 possibleChoices.push(weapon);
             });
         }
         possibleChoices.push(createWeapon(type, undefined));
     });
 
-    let rarity;
-    if (wave <= 0) {
-        rarity = RARITIES.COMMON;
-    } else {
-        rarity = getRandomRarity();
-    }
-
     const choices = possibleChoices
         .sort(() => 0.5 - Math.random())
         .slice(0, 3)
         .map((wpn, index) => {
+            let rarity;
+            if (wave <= 0) {
+                rarity = RARITIES.COMMON;
+            } else {
+                rarity = getRandomRarity();
+            }
+
             return {
                 id: index,
-                attr: wpn.type + ' · ' + wpn.action ?? '',
+                attr: wpn.type + ' · ' + wpn.enchant ?? '',
                 wpn,
                 rarityName: rarity.name,
                 rarityColor: rarity.color,

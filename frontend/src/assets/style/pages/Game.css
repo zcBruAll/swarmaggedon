@@ -231,8 +231,9 @@
   gap: 4px;
 }
 
-.choice-stats-container.weapon {
-  flex-direction: row;
+.choice-stats-container.weapon, .choice-stats-container.enchant {
+  flex-flow: row wrap;
+  justify-content: space-evenly;
 }
 
 .choice-curr {
@@ -254,20 +255,28 @@
   font-weight: 600;
 }
 
-.choice-wpn-attr {
+.choice-wpn-attr, .choice-enchant-attr {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   text-align: center;
-  flex: 1;
 }
 
-.choice-wpn-attr-title {
+.choice-wpn-attr-title, .choice-enchant-attr-title {
+  text-transform: capitalize;
+  font-size: 14px;
+}
+
+.choice-wpn-attr-value, .choice-enchant-attr-value {
   font-size: 20px;
 }
 
-.choice-wpn-attr-value {
-  font-size: 24px;
+.choice-enchant-attr-value.malus {
+  color: #8c140c;
+}
+
+.choice-enchant-attr-value.bonus {
+  color: #27ae60;
 }
 
 .wave-time {
@@ -422,7 +431,7 @@
   color: rgba(42, 35, 24, 0.7);
 }
 
-.pc-weapon-action {
+.pc-weapon-enchant {
   font-size: 11px;
   color: rgba(42, 35, 24, 0.4);
   font-style: italic;

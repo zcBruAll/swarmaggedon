@@ -6,7 +6,7 @@ import { formatDurationToHours } from '../utils/Utils';
 import { gql } from '@apollo/client';
 import { useMutation } from '@apollo/client/react';
 import { useAuth } from '../context/AuthContext';
-import { WEAPON_TYPE, WEAPON_ACTION } from '../game/weapon';
+import { WEAPON_TYPE, WEAPON_ENCHANT } from '../game/weapon';
 import { CHOICE_TYPE } from '../game/choice';
 
 const MUTATION_ADD_RUN = gql`
@@ -137,7 +137,7 @@ function Game() {
             {hudRawRef.current.choices.map((choice) => (
               <div
                 className='choice-card'
-                onClick={() => { choice.func(choice.arg, choice.type === CHOICE_TYPE.AUGMENT ? choice.bonus : choice.wpn); engineRef.current.madeChoice() }}
+                onClick={() => { choice.func(choice.arg, choice.type === CHOICE_TYPE.AUGMENT ? choice.bonus : choice.type === CHOICE_TYPE.WEAPON ? choice.wpn : choice.enchant); engineRef.current.madeChoice() }}
                 key={choice.id}
                 style={{ borderColor: choice.rarityColor }}
               >
@@ -169,6 +169,35 @@ function Game() {
                       </div>
                     ))}
                   </div>
+                }
+                {choice.type === CHOICE_TYPE.ENCHANT &&
+                  <>
+                    <div className="choice-stats-container enchant">
+                      {choice.enchant.props.map(prop => (
+                        <div className='choice-enchant-attr' key={prop}>
+                          <span className='choice-enchant-attr-title'>{prop}</span>
+                          <span className='choice-enchant-attr-value'>{choice.enchant[prop]}</span>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="choice-stats-container enchant">
+                      {choice.enchant.bonusProps.map(prop => {
+                        const value = choice.enchant[prop];
+                        const diff = value - 100;
+                        const isBonus = prop === 'cooldown' ? diff < 0 : diff > 0;
+                        const statusClass = diff === 0 ? '' : (isBonus ? 'bonus' : 'malus');
+
+                        return (
+                          <div className='choice-enchant-attr' key={prop}>
+                            <span className='choice-enchant-attr-title'>{prop}</span>
+                            <span className={`choice-enchant-attr-value ${statusClass}`}>
+                              {diff >= 0 && '+'}{diff}%
+                            </span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </>
                 }
               </div>
             ))}
@@ -220,7 +249,7 @@ function Game() {
               <>
                 <div className="pc-weapon-row">
                   <span className="pc-weapon-type">{w.type}</span>
-                  {w.action && <span className="pc-weapon-action">{w.action}</span>}
+                  {w.enchant && <span className="pc-weapon-enchant">{w.enchant}</span>}
                 </div>
                 <div className="pc-weapon-stats">
                   <span className="pw-stat">
@@ -242,7 +271,7 @@ function Game() {
                       <span className="pw-value">{w.angle}°</span>
                     </span>
                   )}
-                  {w.action === WEAPON_ACTION.AOE && (
+                  {w.enchant === WEAPON_ENCHANT.AOE && (
                     <>
                       <span className="pw-stat">
                         <span className="pw-label">aoe</span>
@@ -254,19 +283,19 @@ function Game() {
                       </span>
                     </>
                   )}
-                  {w.action === WEAPON_ACTION.PIERCE && w.pierce != null && (
+                  {w.enchant === WEAPON_ENCHANT.PIERCE && w.pierce != null && (
                     <span className="pw-stat">
                       <span className="pw-label">pierce</span>
                       <span className="pw-value">{w.pierce}</span>
                     </span>
                   )}
-                  {w.action === WEAPON_ACTION.RIFLE && w.rifle != null && (
+                  {w.enchant === WEAPON_ENCHANT.RIFLE && w.rifle != null && (
                     <span className="pw-stat">
                       <span className="pw-label">rifle</span>
                       <span className="pw-value">{w.rifle}</span>
                     </span>
                   )}
-                  {w.action === WEAPON_ACTION.TRANSFER && (
+                  {w.enchant === WEAPON_ENCHANT.TRANSFER && (
                     <>
                       <span className="pw-stat">
                         <span className="pw-label">chain</span>
