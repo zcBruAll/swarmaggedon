@@ -8,7 +8,7 @@ import {
 } from './renderer.js';
 import { WEAPON_ACTION, WEAPON_TYPE, fireBullet } from './weapon.js';
 import { createBullet, updateBullets } from './bullet.js';
-import { getChoices } from './choice.js';
+import { CHOICE_TYPE, getChoices, getWeaponChoices } from './choice.js';
 
 export const GAME_STATE = {
     RUNNING: 'running',
@@ -37,7 +37,7 @@ export function createEngine(canvas, onHUDUpdate) {
     let enemies = [];
     let score = 0;
     let elapsed = 0;
-    let wave = 1;
+    let wave = 0;
     let waveTimer = 0;
     let kills = 0;
     let choices = [];
@@ -56,16 +56,17 @@ export function createEngine(canvas, onHUDUpdate) {
         player = createPlayer(canvas.width, canvas.height);
         score = 0;
         elapsed = 0;
-        wave = 1;
-        enemies = createWave(wave, player, canvas.width, canvas.height);
         waveTimer = WAVE_INTERVAL;
         state = GAME_STATE.RUNNING;
-        waveState = {
-            waveTitle: "WAVE 1",
-            waveSubtitle: `WEAPON: ${player.weapon.type} · ${player.weapon.action}`,
-            duration: WAVE_MSG_TIMER,
-        }
         choices = [];
+        augment(CHOICE_TYPE.WEAPON);
+        wave = 1;
+        enemies = createWave(wave, player, canvas.width, canvas.height);
+        waveState = {
+            waveTitle: "WAVE " + wave,
+            waveSubtitle: "",
+            duration: WAVE_MSG_TIMER,
+        };
     }
 
     function loop(ts) {
@@ -259,10 +260,17 @@ export function createEngine(canvas, onHUDUpdate) {
         enemies.length = writeIndex;
     }
 
-    function augment() {
+    function augment(type) {
         state = GAME_STATE.CHOICE;
 
-        choices = getChoices(wave, player);
+        switch (type) {
+            case CHOICE_TYPE.WEAPON:
+                choices = getWeaponChoices(wave, player);
+                break
+            default:
+                choices = getChoices(wave, player);
+                break;
+        }
 
         onHUDUpdate?.({
             score,

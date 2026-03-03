@@ -1,4 +1,4 @@
-import { createMeeleWeapon, createRangeWeapon } from "./weapon";
+import { WEAPON_TYPE, createWeapon } from "./weapon";
 
 export const ENEMY_TYPE = {
     RUNNER: 'runner',       // Fast, low hp
@@ -97,9 +97,9 @@ export function createEnemy(type, x, y, wave) {
     let weapon;
 
     if (type === ENEMY_TYPE.SHOOTER) {
-        weapon = createRangeWeapon();
+        weapon = createWeapon(WEAPON_TYPE.RANGE);
     } else {
-        weapon = createMeeleWeapon();
+        weapon = createWeapon(WEAPON_TYPE.MELEE);
     }
 
     weapon.cooldown = base.cooldownInterval;

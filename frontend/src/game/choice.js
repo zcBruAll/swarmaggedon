@@ -1,5 +1,5 @@
-import { increaseMaxHp } from "./player.js";
-import { WEAPON_ACTION, WEAPON_TYPE } from "./weapon.js";
+import { equipWeapon, increaseMaxHp } from "./player.js";
+import { createWeapon, WEAPON_ACTION, WEAPON_TYPE } from "./weapon.js";
 
 export const CHOICE_TYPE = {
     AUGMENT: 'augment',
@@ -88,7 +88,7 @@ export function getChoices(wave, player) {
                 getBonus: (mult) => rand(5 * mult, 10 * mult),
                 arg: player.weapon,
                 getCurr: (arg) => arg.pierce,
-                getNew: (arg, b) => (arg.pierce * (1 + b / 100).toFixed(2)),
+                getNew: (arg, b) => (arg.pierce * (1 + b / 100)).toFixed(2),
                 func: (wpn, b) => { wpn.pierce = (wpn.pierce * (1 + b / 100)).toFixed(2); },
             });
         } else if (player.weapon.action === WEAPON_ACTION.RIFLE) {
@@ -97,7 +97,7 @@ export function getChoices(wave, player) {
                 getBonus: (mult) => rand(5 * mult, 10 * mult),
                 arg: player.weapon,
                 getCurr: (arg) => arg.rifle,
-                getNew: (arg, b) => (arg.rifle * (1 + b / 100).toFixed(2)),
+                getNew: (arg, b) => (arg.rifle * (1 + b / 100)).toFixed(2),
                 func: (wpn, b) => { wpn.rifle = (wpn.rifle * (1 + b / 100)).toFixed(2); },
             });
         } else if (player.weapon.action === WEAPON_ACTION.TRANSFER) {
@@ -106,7 +106,7 @@ export function getChoices(wave, player) {
                 getBonus: (mult) => rand(5 * mult, 10 * mult),
                 arg: player.weapon,
                 getCurr: (arg) => arg.transferRadius,
-                getNew: (arg, b) => (arg.transferRadius * (1 + b / 100).toFixed(2)),
+                getNew: (arg, b) => (arg.transferRadius * (1 + b / 100)).toFixed(2),
                 func: (wpn, b) => { wpn.transferRadius = (wpn.transferRadius * (1 + b / 100)).toFixed(2); },
             });
             possibleChoices.push({
@@ -114,7 +114,7 @@ export function getChoices(wave, player) {
                 getBonus: (mult) => rand(5 * mult, 10 * mult),
                 arg: player.weapon,
                 getCurr: (arg) => arg.transferTime,
-                getNew: (arg, b) => (arg.transferTime * (1 + b / 100).toFixed(2)),
+                getNew: (arg, b) => (arg.transferTime * (1 + b / 100)).toFixed(2),
                 func: (wpn, b) => { wpn.transferTime = (wpn.transferRadius * (1 + b / 100)).toFixed(2); },
             });
         }
@@ -141,6 +141,45 @@ export function getChoices(wave, player) {
                 type: CHOICE_TYPE.AUGMENT,
                 arg: choice.arg,
                 func: choice.func
+            };
+        });
+
+    return choices;
+}
+
+export function getWeaponChoices(wave, player) {
+    let possibleChoices = wave > 0 ? [player.weapon] : [];
+
+    Object.values(WEAPON_TYPE).forEach(type => {
+        if (wave > 0) {
+            Object.values(WEAPON_ACTION).forEach(action => {
+                let weapon = createWeapon(type, action);
+                possibleChoices.push(weapon);
+            });
+        }
+        possibleChoices.push(createWeapon(type, undefined));
+    });
+
+    let rarity;
+    if (wave <= 0) {
+        rarity = RARITIES.COMMON;
+    } else {
+        rarity = getRandomRarity();
+    }
+
+    const choices = possibleChoices
+        .sort(() => 0.5 - Math.random())
+        .slice(0, 3)
+        .map((wpn, index) => {
+            return {
+                id: index,
+                attr: wpn.type + ' · ' + wpn.action ?? '',
+                wpn,
+                rarityName: rarity.name,
+                rarityColor: rarity.color,
+                type: CHOICE_TYPE.WEAPON,
+                arg: player,
+                func: equipWeapon,
             };
         });
 

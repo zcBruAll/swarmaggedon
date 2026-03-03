@@ -9,7 +9,7 @@ export function createPlayer(canvasWidth, canvasHeight) {
         hp: 100,
         maxHp: 100,
         speed: 200,
-        weapon: createWeapon(),
+        weapon: undefined,
         bullets: [],
         type: 'player',
         items: [],
@@ -46,4 +46,8 @@ export function increaseMaxHp(player, percent) {
     const lifePercent = player.hp / player.maxHp * 100;
     player.maxHp = Math.round(player.maxHp * (1 + (percent / 100)));
     player.hp = Math.round(player.maxHp * lifePercent / 100);
+}
+
+export function equipWeapon(player, weapon) {
+    player.weapon = weapon;
 }

@@ -137,7 +137,7 @@ function Game() {
             {hudRawRef.current.choices.map((choice) => (
               <div
                 className='choice-card'
-                onClick={() => { choice.func(choice.arg, choice.bonus); engineRef.current.madeChoice() }}
+                onClick={() => { choice.func(choice.arg, choice.type === CHOICE_TYPE.AUGMENT ? choice.bonus : choice.wpn); engineRef.current.madeChoice() }}
                 key={choice.id}
                 style={{ borderColor: choice.rarityColor }}
               >
@@ -158,6 +158,16 @@ function Game() {
                       {choice.bonus > 0 ? '+' : ''}{choice.bonus}%
                     </span>
                     <span className="choice-new">➔ {choice.new}</span>
+                  </div>
+                }
+                {choice.type === CHOICE_TYPE.WEAPON &&
+                  <div className="choice-stats-container weapon">
+                    {choice.wpn.props.map(prop => (
+                      <div className='choice-wpn-attr' key={prop}>
+                        <span className='choice-wpn-attr-title'>{prop}</span>
+                        <span className='choice-wpn-attr-value'>{choice.wpn[prop]}</span>
+                      </div>
+                    ))}
                   </div>
                 }
               </div>

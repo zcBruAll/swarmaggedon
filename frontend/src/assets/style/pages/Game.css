@@ -231,6 +231,10 @@
   gap: 4px;
 }
 
+.choice-stats-container.weapon {
+  flex-direction: row;
+}
+
 .choice-curr {
   font-size: 14px;
   color: #777;
@@ -248,6 +252,22 @@
   font-size: 16px;
   color: #2a2318;
   font-weight: 600;
+}
+
+.choice-wpn-attr {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: center;
+  flex: 1;
+}
+
+.choice-wpn-attr-title {
+  font-size: 20px;
+}
+
+.choice-wpn-attr-value {
+  font-size: 24px;
 }
 
 .wave-time {
