@@ -7,6 +7,7 @@ import { gql } from '@apollo/client';
 import { useMutation } from '@apollo/client/react';
 import { useAuth } from '../context/AuthContext';
 import { WEAPON_TYPE, WEAPON_ACTION } from '../game/weapon';
+import { CHOICE_TYPE } from '../game/choice';
 
 const MUTATION_ADD_RUN = gql`
   mutation AddRun($score: Int!, $duration: Int!, $wave: Int!, $kills: Int!) {
@@ -150,13 +151,15 @@ function Game() {
                 <img className='choice-img' src={choice.icon || "temp.png"} alt="icon" />
                 <span className='choice-attr'>{choice.attr}</span>
 
-                <div className="choice-stats-container">
-                  <span className="choice-curr">current: {choice.curr}</span>
-                  <span className="choice-bonus">
-                    {choice.bonus > 0 ? '+' : ''}{choice.bonus}%
-                  </span>
-                  <span className="choice-new">➔ {choice.new}</span>
-                </div>
+                {choice.type === CHOICE_TYPE.AUGMENT &&
+                  <div className="choice-stats-container">
+                    <span className="choice-curr">current: {choice.curr}</span>
+                    <span className="choice-bonus">
+                      {choice.bonus > 0 ? '+' : ''}{choice.bonus}%
+                    </span>
+                    <span className="choice-new">➔ {choice.new}</span>
+                  </div>
+                }
               </div>
             ))}
           </div>

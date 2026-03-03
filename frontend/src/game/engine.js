@@ -1,4 +1,4 @@
-import { createPlayer, updatePlayer, damagePlayer, healPlayer, increaseMaxHp } from './player.js';
+import { createPlayer, updatePlayer, damagePlayer, healPlayer } from './player.js';
 import { createWave, updateEnemies, damageEnemy, ENEMY_TYPE } from './enemies.js';
 import { initInput, destroyInput, flushInput, input } from './input.js';
 import {
@@ -8,6 +8,7 @@ import {
 } from './renderer.js';
 import { WEAPON_ACTION, WEAPON_TYPE, fireBullet } from './weapon.js';
 import { createBullet, updateBullets } from './bullet.js';
+import { getChoices } from './choice.js';
 
 export const GAME_STATE = {
     RUNNING: 'running',
@@ -261,96 +262,7 @@ export function createEngine(canvas, onHUDUpdate) {
     function augment() {
         state = GAME_STATE.CHOICE;
 
-        const rand = (min, max) => Math.floor(Math.random() * (max - min + 1) + min);
-
-        const RARITIES = {
-            COMMON: { name: 'Common', color: '#bdc3c7', weight: 60, mult: 1.0 },
-            RARE: { name: 'Rare', color: '#3498db', weight: 30, mult: 1.5 },
-            EPIC: { name: 'Epic', color: '#9b59b6', weight: 8, mult: 2.0 },
-            LEGENDARY: { name: 'Legendary', color: '#f1c40f', weight: 2, mult: 3.0 }
-        };
-
-        function getRandomRarity() {
-            const totalWeight = Object.values(RARITIES).reduce((sum, r) => sum + r.weight, 0);
-            let random = Math.random() * totalWeight;
-
-            for (const key in RARITIES) {
-                if (random < RARITIES[key].weight) return RARITIES[key];
-                random -= RARITIES[key].weight;
-            }
-            return RARITIES.COMMON;
-        }
-
-        const possibleChoices = [
-            {
-                id: 1,
-                attr: "Damage",
-                getBonus: (mult) => rand(10 * mult, 17 * mult),
-                arg: player.weapon,
-                getCurr: (arg) => arg.damage,
-                getNew: (arg, b) => Math.round(arg.damage * (1 + b / 100)),
-                func: (wpn, b) => { wpn.damage = Math.round(wpn.damage * (1 + b / 100)); },
-            },
-            {
-                id: 2,
-                attr: "Range",
-                getBonus: (mult) => rand(5 * mult, 15 * mult),
-                arg: player.weapon,
-                getCurr: (arg) => arg.range,
-                getNew: (arg, b) => Math.round(arg.range * (1 + b / 100)),
-                func: (wpn, b) => { wpn.range = Math.round(wpn.range * (1 + b / 100)); },
-            },
-            {
-                id: 3,
-                attr: "Max HP",
-                getBonus: (mult) => rand(10 * mult, 15 * mult),
-                arg: player,
-                getCurr: (arg) => arg.maxHp,
-                getNew: (arg, b) => Math.round(arg.maxHp * (1 + b / 100)),
-                func: increaseMaxHp,
-            },
-            {
-                id: 4,
-                attr: "Move Speed",
-                getBonus: (mult) => rand(5 * mult, 12 * mult),
-                arg: player,
-                getCurr: (arg) => arg.speed,
-                getNew: (arg, b) => Math.round(arg.speed * (1 + b / 100)),
-                func: (p, b) => { p.speed = Math.round(p.speed * (1 + b / 100)); },
-            },
-            {
-                id: 5,
-                attr: "Cooldown",
-                getBonus: (mult) => -1 * rand(5 * mult, 10 * mult),
-                arg: player.weapon,
-                getCurr: (arg) => arg.cooldownTime,
-                getNew: (arg, b) => (arg.cooldownTime * (1 + b / 100)).toFixed(2),
-                func: (wpn, b) => { wpn.cooldownTime = (wpn.cooldownTime * (1 + b / 100)).toFixed(2); },
-            }
-        ];
-
-        choices = possibleChoices
-            .sort(() => 0.5 - Math.random())
-            .slice(0, 3)
-            .map(choice => {
-                const rarity = getRandomRarity();
-                const bonus = choice.getBonus(rarity.mult);
-
-                const currentVal = choice.getCurr(choice.arg);
-                const newVal = choice.getNew(choice.arg, bonus);
-
-                return {
-                    id: choice.id,
-                    attr: choice.attr,
-                    bonus: bonus,
-                    rarityName: rarity.name,
-                    rarityColor: rarity.color,
-                    curr: currentVal,
-                    new: newVal,
-                    arg: choice.arg,
-                    func: choice.func
-                };
-            });
+        choices = getChoices(wave, player);
 
         onHUDUpdate?.({
             score,
