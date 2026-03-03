@@ -82,3 +82,11 @@ export const formatTotalToHours = (duration) => {
     const hours = duration / 3600
     return hours.toFixed(1)
 }
+
+export const formatToRealTime = (duration) => {
+    const hours = Math.floor(duration / 3600)
+    const minutes = Math.floor((duration % 3600) / 60)
+    const seconds = duration % 60
+
+    return (hours != 0 ? hours.toString() + "h" : "") + (minutes != 0 ? minutes.toString() + "m" : "") + seconds + "s"
+}

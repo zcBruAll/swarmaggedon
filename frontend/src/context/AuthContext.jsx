@@ -14,6 +14,9 @@ const ME_QUERY = gql`
       rank
       last_run {
         date
+        score
+        duration
+        wave
       }
       stats {
         total_games
