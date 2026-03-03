@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { gql } from '@apollo/client';
 import { useMutation } from '@apollo/client/react';
 import { sha256 } from 'js-sha256';
+import { AccountDelete } from '../components/AccountDelete'
 
 const MUTATION_CHANGEUSERNAME = gql`
   mutation UserChange($newUsername: String!) {
@@ -30,6 +31,7 @@ const Account = () => {
   const [status, setStatus] = useState({ type: '', text: '' });
   const [changeUsername, { loading: newUsernameLoading }] = useMutation(MUTATION_CHANGEUSERNAME)
   const [changePassword, { loading: passwordLoading }] = useMutation(MUTATION_CHANGEPASSWORD)
+  const [showDeleteAccountPanel, setShowDeleteAcccountPanel] = useState(false)
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -98,6 +100,19 @@ const Account = () => {
     }
   }
 
+  const handleDeleteAccount = (e) => {
+    e.preventDefault()
+    setShowDeleteAcccountPanel(true)
+  }
+
+  /**
+   * 
+   * @param {boolean} deleted 
+   */
+  const onReturnFromDeleteAccountPanel = async (deleted) => {
+    setShowDeleteAcccountPanel(false)
+  }
+
   const Message = ({ type, text }) => (
     <div style={{ 
       backgroundColor: type === 'success' ? 'rgba(0, 255, 0, 0.1)' : 'rgba(255, 0, 0, 0.1)', 
@@ -123,6 +138,7 @@ const Account = () => {
   }
   return (
     <div id="section-account" className="section-content active" style={{ position: 'relative' }}>
+      <AccountDelete user={user} show={showDeleteAccountPanel} onClose={onReturnFromDeleteAccountPanel}>
       <div className="main account-main">
         <div className="panel" style={{ gridColumn: '1/-1' }}>
           <div className="panel-header">
@@ -156,7 +172,7 @@ const Account = () => {
               <hr className="divider" />
               <div className="label" style={{ fontSize: '14px', color: 'var(--red)', }}>— danger zone —</div>
               <div style={{ marginTop: '8px', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                <button className="btn btn-danger btn-sm">Delete account</button>
+                <button className="btn btn-danger btn-sm" onClick={handleDeleteAccount}>Delete account</button>
                 <button className="btn btn-outline btn-sm" onClick={logout}>Log out</button>
               </div>
             </div>
@@ -201,6 +217,7 @@ const Account = () => {
           </div>
         </div>
       </div>
+      </AccountDelete>
     </div>
   )
 };

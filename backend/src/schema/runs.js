@@ -5,7 +5,7 @@ import { ObjectId } from 'mongodb'
 export const runTypeDefs = gql`
     type Run {
         id: ID!
-        user_id: ID!
+        user_id: ID
         date: String!
         score: Int!
         duration: Int!

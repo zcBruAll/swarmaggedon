@@ -35,6 +35,7 @@ export const userTypeDefs = gql`
         deleteFriend(userId: ID!): String
         changeUsername(newUsername: String!): String
         changePassword(oldPassword: String!, newPassword: String!): String
+        deleteAccount: String
     }
 `
 
@@ -213,6 +214,7 @@ export const userResolvers = {
             if (userBest.length === 0) return null;
 
             const betterPlayers = await getDB().collection(COLLECTION_RUNS).aggregate([
+                { $match: { user_id: { $ne: null } } },
                 { $group: { _id: "$user_id", maxScore: { $max: "$score" } } },
                 { $match: { maxScore: { $gt: userBest[0].maxScore } } },
                 { $count: "count" }
@@ -316,6 +318,36 @@ export const userResolvers = {
             })
             
             return "Password changed successfully"
+        },
+        deleteAccount: async (_, __, {user}) => {
+            // delete user from collection
+            const result = await getDB().collection(COLLECTION_USERS).findOneAndDelete({
+                _id: new ObjectId(user.id)
+            })
+
+            if (!result) return "Error while deleting user"
+
+            // Delete all friends
+            const fres = await getDB().collection(COLLECTION_FRIENDS).deleteMany({
+                $or: [
+                    {
+                        requester_id: user.id
+                    },
+                    {
+                        accepter_id: user.id
+                    }
+                ]
+            })
+
+            if (!fres) return "Error while deleting user's friends"
+
+            // Set run user id to null
+            const runres = await getDB().collection(COLLECTION_RUNS).updateMany(
+                { user_id: user.id },
+                { $set: { user_id: null }}
+            )
+
+            return "Account deleted successfully"
         }
     }
 }

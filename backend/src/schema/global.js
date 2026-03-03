@@ -64,6 +64,8 @@ export const globalResolvers = {
         },
         leaderboard: async (_, __, {}) => {
             return await getDB().collection(COLLECTION_RUNS).aggregate([
+                // Filter out runs where user_id is null (deleted accounts)
+                { $match: { user_id: { $ne: null } } },
                 // Sort by score descending first to ensure we get the best score for each user in the next step
                 { $sort: { score: -1 } },
                 // Group by user_id and take the first (highest) score

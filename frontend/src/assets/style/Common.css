@@ -147,9 +147,16 @@ select option {
   box-shadow: 2px 2px 0 rgba(192, 57, 43, 0.2);
 }
 
-.btn-danger:hover {
-  background: var(--red);
-  color: #fff;
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.btn-primary:disabled:hover,
+.btn-outline:disabled:hover,
+.btn-danger:disabled:hover {
+  transform: none;
 }
 
 .btn-sm {
