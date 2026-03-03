@@ -1,6 +1,7 @@
 import { gql } from 'graphql-tag'
 import { COLLECTION_USERS, COLLECTION_FRIENDS, COLLECTION_RUNS, getDB } from '../config/db.js'
 import { ObjectId } from 'mongodb'
+import { checkScoreValidity, setCheater } from '../utils.js'
 
 export const runTypeDefs = gql`
     type Run {
@@ -46,7 +47,16 @@ export const runResolvers = {
     },
     Mutation: {
         addRun: async (_, {score, duration, wave, kills}, {user}) => {
+            if (score < 0 || duration < 0 || wave <= 0 || kills < 0) {
+                await setCheater(user)
+                throw new Error("Invalid run")
+            }
             if (!user) throw new Error("You are not logged in")
+
+            if (!checkScoreValidity(score, wave, kills)) {
+                await setCheater(user)
+                throw new Error("Invalid run")
+            }
 
             const result = await getDB().collection(COLLECTION_RUNS).insertOne({
                 user_id: user.id.toString(),
