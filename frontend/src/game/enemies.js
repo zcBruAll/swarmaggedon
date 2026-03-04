@@ -15,6 +15,7 @@ const BASE_STATS = {
         hp: 10,
         speed: 140,
         damage: 12,
+        range: 50,
         cooldownInterval: 1,
         score: 8,
         color: '#e74c3c',
@@ -24,6 +25,7 @@ const BASE_STATS = {
         hp: 45,
         speed: 55,
         damage: 35,
+        range: 48,
         cooldownInterval: 2,
         score: 25,
         color: '#8e44ad',
@@ -33,6 +35,7 @@ const BASE_STATS = {
         hp: 18,
         speed: 80,
         score: 20,
+        range: 280,
         cooldownInterval: 4,
         damage: 30,
         bullets: [],
@@ -43,6 +46,7 @@ const BASE_STATS = {
         hp: 150,
         speed: 70,
         damage: 50,
+        range: 45,
         cooldownInterval: 4,
         score: 300,
         color: '#c0392b',
@@ -54,21 +58,25 @@ const WAVE_SCALE = {
         hp: 1.07,
         speed: 1.02,
         damage: 1.06,
+        range: 1.03,
     },
     [ENEMY_TYPE.BRUTE]: {
         hp: 1.10,
         speed: 1.02,
         damage: 1.07,
+        range: 1.02,
     },
     [ENEMY_TYPE.SHOOTER]: {
         hp: 1.08,
         speed: 1.02,
         damage: 1.07,
+        range: 1.07
     },
     [ENEMY_TYPE.BOSS]: {
         hp: 1.15,
         speed: 1.03,
         damage: 1.08,
+        range: 1.01,
     },
 }
 
@@ -105,7 +113,7 @@ export function createEnemy(type, x, y, wave) {
     weapon.cooldown = base.cooldownInterval;
     weapon.cooldownTime = base.cooldownInterval;
     weapon.damage = scaleStats(base.damage, scale.damage, wave);
-    weapon.range *= 0.75;
+    weapon.range = scaleStats(base.range, scale.range, wave);
 
     return {
         x: x,
