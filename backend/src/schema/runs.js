@@ -49,13 +49,15 @@ export const runResolvers = {
         addRun: async (_, {score, duration, wave, kills}, {user}) => {
             if (score < 0 || duration < 0 || wave <= 0 || kills < 0) {
                 await setCheater(user)
-                throw new Error("Invalid run")
+                console.log("Detected", user, "as cheater for run", {score, duration, wave, kills}, "for negative values")
+                throw new Error("Invalid run" + JSON.stringify({score, duration, wave, kills}))
             }
             if (!user) throw new Error("You are not logged in")
 
             if (!checkScoreValidity(score, wave, kills)) {
                 await setCheater(user)
-                throw new Error("Invalid run")
+                console.log("Detected", user, "as cheater for run", {score, duration, wave, kills}, "for score validity")
+                throw new Error("Invalid run" + JSON.stringify({score, duration, wave, kills}))
             }
 
             const result = await getDB().collection(COLLECTION_RUNS).insertOne({
