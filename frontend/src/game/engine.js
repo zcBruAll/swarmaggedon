@@ -62,6 +62,7 @@ export function createEngine(canvas, onHUDUpdate) {
         state = GAME_STATE.RUNNING;
         choices = [];
         wave = 0;
+        kills = 0;
         augment(CHOICE_TYPE.WEAPON);
         wave = 1;
         enemies = createWave(wave, player, canvas.width, canvas.height);
