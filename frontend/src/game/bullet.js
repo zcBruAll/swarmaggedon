@@ -1,4 +1,4 @@
-import { damageEnemy } from "./enemies";
+import { damageEnemy } from "./enemies.js";
 
 export const BULLET_EXPLOS = {
     HIT: 'hit',

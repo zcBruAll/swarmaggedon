@@ -1,5 +1,6 @@
 import { ObjectId } from "mongodb"
 import { COLLECTION_USERS, getDB } from "./config/db.js"
+import { BASE_STATS, getEnemyCount } from "../../frontend/src/game/enemies.js"
 
 /**
  * Sends query to API to check if username contains profanity
@@ -21,39 +22,18 @@ export const checkProfanity = async (username) => {
     return !data.isProfanity
 }
 
-const BOSS_WAVE_INTERVAL = 10
-const ENEMY_RUNNER_SCORE = 8
-const ENEMY_BRUTE_SCORE = 25
-const ENEMY_SHOOTER_SCORE = 20
-const ENEMY_BOSS_SCORE = 300
-
 /**
  * 
  * @param {Number} wave_number
  * @returns [score, kills] for this round 
  */
 const calcValuesForWave = (wave_number) => {
-    let score = 0
-    let kills = 0
+    const enemy_data = getEnemyCount(wave_number)
 
-    // boss wave ?
-    if (wave_number % BOSS_WAVE_INTERVAL == 0) {
-        // boss points
-        score += ENEMY_BOSS_SCORE
-        kills += 1
-
-        // runners
-        const runner_number = 1 + Math.floor(wave_number / 10)
-        score += runner_number * ENEMY_RUNNER_SCORE
-        kills += runner_number
-    } else {
-        const runnerCount = Math.max(2, Math.floor(wave_number * 0.8) + 2);
-        const bruteCount = Math.max(0, Math.floor((wave_number - 3) / 3));
-        const shooterCount = Math.max(0, Math.floor((wave_number - 4) / 4));
-
-        score += (runnerCount * ENEMY_RUNNER_SCORE) + (bruteCount * ENEMY_BRUTE_SCORE) + (shooterCount * ENEMY_SHOOTER_SCORE)
-        kills += runnerCount + bruteCount + shooterCount
-    }
+    const score = Object.keys(enemy_data).map((x => 
+        Number(BASE_STATS[x].score * enemy_data[x])
+    )).reduce((a,b) => a + b, 0)
+    const kills = Object.values(enemy_data).reduce((a,b) => a + b, 0)
 
     return [score, kills]
 }

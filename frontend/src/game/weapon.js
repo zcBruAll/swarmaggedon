@@ -1,4 +1,4 @@
-import { createBullet } from "./bullet"
+import { createBullet } from "./bullet.js"
 
 export const WEAPON_TYPE = {
     MELEE: 'melee',

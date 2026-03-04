@@ -1,4 +1,4 @@
-import { WEAPON_TYPE, createWeapon } from "./weapon";
+import { WEAPON_TYPE, createWeapon } from "./weapon.js";
 
 export const ENEMY_TYPE = {
     RUNNER: 'runner',       // Fast, low hp
@@ -9,7 +9,7 @@ export const ENEMY_TYPE = {
 
 const BOSS_WAVE_INTERVAL = 10;
 
-const BASE_STATS = {
+export const BASE_STATS = {
     [ENEMY_TYPE.RUNNER]: {
         radius: 6,
         hp: 10,
@@ -19,6 +19,7 @@ const BASE_STATS = {
         cooldownInterval: 1,
         score: 8,
         color: '#e74c3c',
+        count: (wave) => wave % BOSS_WAVE_INTERVAL === 0 ? 1 + Math.floor(wave/10) : Math.max(2, Math.floor(wave * 0.8) + 2),
     },
     [ENEMY_TYPE.BRUTE]: {
         radius: 14,
@@ -29,6 +30,7 @@ const BASE_STATS = {
         cooldownInterval: 2,
         score: 25,
         color: '#8e44ad',
+        count: (wave) => wave % BOSS_WAVE_INTERVAL === 0 ? 0 : Math.max(0, Math.floor((wave - 3) / 3)),
     },
     [ENEMY_TYPE.SHOOTER]: {
         radius: 8,
@@ -40,6 +42,7 @@ const BASE_STATS = {
         damage: 30,
         bullets: [],
         color: '#e67e22',
+        count: (wave) => wave % BOSS_WAVE_INTERVAL === 0 ? 0 : Math.max(0, Math.floor((wave - 4) / 4)),
     },
     [ENEMY_TYPE.BOSS]: {
         radius: 32,
@@ -50,6 +53,7 @@ const BASE_STATS = {
         cooldownInterval: 4,
         score: 300,
         color: '#c0392b',
+        count: (wave) => wave % BOSS_WAVE_INTERVAL === 0 ? 1 : 0,
     }
 }
 
@@ -161,6 +165,21 @@ function updateEnemy(enemy, player, dt) {
     }
 }
 
+/**
+ * 
+ * @param {Number} wave
+ * @returns {Map<String, Number>} 
+ */
+export function getEnemyCount(wave) {
+    const dict = {}
+
+    for (const type of Object.values(ENEMY_TYPE)) {
+        dict[type] = BASE_STATS[type].count(wave)
+    }
+
+    return dict
+}
+
 export function createWave(wave, player, canvasWidth, canvasHeight) {
     const isBossWave = wave % BOSS_WAVE_INTERVAL == 0;
     const queue = [];
@@ -169,26 +188,10 @@ export function createWave(wave, player, canvasWidth, canvasHeight) {
     const startAngle = Math.random() * Math.PI * 2;
     const endAngle = startAngle + dangerArc;
 
-    if (isBossWave) {
-        queue.push(spawnEnemy(player, ENEMY_TYPE.BOSS, wave, startAngle, endAngle));
-
-        const runnerCount = 1 + Math.floor(wave / 10);
-        for (let i = 0; i < runnerCount; i++) {
-            queue.push(spawnEnemy(player, ENEMY_TYPE.RUNNER, wave, startAngle, endAngle));
-        }
-    } else {
-        const runnerCount = Math.max(2, Math.floor(wave * 0.8) + 2);
-        const bruteCount = Math.max(0, Math.floor((wave - 3) / 3));
-        const shooterCount = Math.max(0, Math.floor((wave - 4) / 4));
-
-        for (let i = 0; i < runnerCount; i++) {
-            queue.push(spawnEnemy(player, ENEMY_TYPE.RUNNER, wave, startAngle, endAngle));
-        }
-        for (let i = 0; i < bruteCount; i++) {
-            queue.push(spawnEnemy(player, ENEMY_TYPE.BRUTE, wave, startAngle, endAngle));
-        }
-        for (let i = 0; i < shooterCount; i++) {
-            queue.push(spawnEnemy(player, ENEMY_TYPE.SHOOTER, wave, startAngle, endAngle));
+    const enemy_count = getEnemyCount(wave)
+    for (const enemy_type of Object.keys(enemy_count)) {
+        for (let i = 0; i < enemy_count[enemy_type]; i++) {
+            queue.push(spawnEnemy(player, enemy_type, wave, startAngle, endAngle))
         }
     }
 
