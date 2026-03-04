@@ -36,15 +36,15 @@ const Dashboard = () => {
             <div className="play-title">Ready to survive? ✦</div>
             <div className="play-sub">
               {isLoggedIn ? (
-                !user.last_run.date ? "You've never played before" :
-                <>
-                  Last run <strong>{formatRelativeTime(user.last_run?.date)}</strong>, reached wave <strong>{user.last_run.wave}</strong> in <strong>{formatToRealTime(user.last_run.duration)}</strong> and scoring <strong>{formatNumberShort(user.last_run.score)}</strong> points.
-                </>
+                !user.last_run?.date ? "You've never played before" :
+                  <>
+                    Last run <strong>{formatRelativeTime(user.last_run?.date)}</strong>, reached wave <strong>{user.last_run.wave}</strong> in <strong>{formatToRealTime(user.last_run.duration)}</strong> and scoring <strong>{formatNumberShort(user.last_run.score)}</strong> points.
+                  </>
               ) : "Create an account to see your stats !"}
             </div>
           </div>
-          <button 
-            className="btn-play" 
+          <button
+            className="btn-play"
             onClick={() => navigate('/game')}
           >
             ▶ Start game
