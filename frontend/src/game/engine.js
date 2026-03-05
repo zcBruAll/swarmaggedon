@@ -304,7 +304,7 @@ export function createEngine(canvas, onHUDUpdate) {
         const w = canvas.width;
         const h = canvas.height;
 
-        drawBackground(ctx, w, h);
+        drawBackground(ctx, w, h, camera);
         drawEnemies(ctx, camera, enemies);
         drawPlayer(ctx, camera, player);
         drawWeapon(ctx, camera, player, false);

@@ -1,7 +1,28 @@
 import { ENEMY_TYPE } from "./enemies";
 
-export function drawBackground(ctx, width, height) {
+export function drawBackground(ctx, width, height, camera) {
     ctx.clearRect(0, 0, width, height);
+    const gridSize = 100;
+    ctx.strokeStyle = "#e0e0e0";
+    ctx.lineWidth = 1;
+
+    const offsetX = -camera?.x % gridSize;
+    const offsetY = -camera?.y % gridSize;
+
+    ctx.beginPath();
+
+    for (let x = offsetX; x <= width; x += gridSize) {
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, height);
+    }
+
+    for (let y = offsetY; y <= height; y += gridSize) {
+        ctx.moveTo(0, y);
+        ctx.lineTo(width, y);
+    }
+
+    ctx.setLineDash([]);
+    ctx.stroke();
 }
 
 export function drawPlayer(ctx, camera, player) {
