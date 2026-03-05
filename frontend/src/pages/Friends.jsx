@@ -16,7 +16,7 @@ const GET_FRIENDS = gql`
       in_game
       date_created
       stats {
-          avg_wave
+          total_time
           high_score
       }
     }

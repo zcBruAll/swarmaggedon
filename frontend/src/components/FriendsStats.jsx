@@ -49,7 +49,12 @@ function FriendsStats() {
               .sort((a, b) => {
                 const statusA = a.in_game ? 2 : isUserOnline(a.last_online) ? 1 : 0;
                 const statusB = b.in_game ? 2 : isUserOnline(b.last_online) ? 1 : 0;
-                return statusB - statusA;
+                if (statusB !== statusA) {
+                  return statusB - statusA;
+                }
+                const scoreA = a.stats?.high_score || 0;
+                const scoreB = b.stats?.high_score || 0;
+                return scoreB - scoreA;
               })
               .map(friend => (
               <div className="friend-stat-row" key={friend.id}>
