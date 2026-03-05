@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { formatNumberFull, formatNumberShort, formatDurationToHours, formatTotalToHours } from "../utils/Utils";
+import { formatNumberFull, formatNumberShort, formatTotalToHours } from "../utils/Utils";
 import { gql } from "@apollo/client";
 import { useQuery } from "@apollo/client/react";
 
@@ -42,7 +42,7 @@ function GlobalStats() {
             </div>
         </div>
         <div className="global-stat">
-            <div className="global-stat-value">{loading ? "???" : formatTotalToHours(data?.global.stats.total_survival_time)} hours</div>
+            <div className="global-stat-value">{loading ? "???" : formatTotalToHours(data?.global.stats.total_survival_time).toFixed(1)} hours</div>
             <div>
                 <div className="global-stat-title">Total survival time</div>
                 <div className="global-stat-sub">global</div>

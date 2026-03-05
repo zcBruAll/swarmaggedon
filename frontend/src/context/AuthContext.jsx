@@ -20,11 +20,11 @@ const ME_QUERY = gql`
       }
       stats {
         total_games
-        total_kills
-        best_time
-        avg_wave
         high_score
-        avg_duration
+        best_time
+        best_wave
+        total_kills
+        total_time
       }
     }
   }

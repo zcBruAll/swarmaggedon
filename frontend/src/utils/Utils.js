@@ -80,7 +80,7 @@ export const formatRelativeTime = (date) => {
 
 export const formatTotalToHours = (duration) => {
     const hours = duration / 3600
-    return hours.toFixed(1)
+    return hours
 }
 
 export const formatToRealTime = (duration) => {
