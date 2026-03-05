@@ -100,10 +100,12 @@ export const checkScoreValidity = (obtainedScore, endWave, obtainedKills) => {
     const maxFinalKills = lastCompletedWaveKills + lastWaveKills
 
     // return validity
-    return obtainedScore >= lastCompletedWaveScore && 
-        obtainedScore <= maxFinalScore &&
-        obtainedKills >= lastCompletedWaveKills &&
-        obtainedKills <= maxFinalKills
+    // return obtainedScore >= lastCompletedWaveScore && 
+    //     obtainedScore <= maxFinalScore &&
+    //     obtainedKills >= lastCompletedWaveKills &&
+    //     obtainedKills <= maxFinalKills
+    return obtainedScore <= maxFinalScore &&
+        obtainedScore <= maxFinalKills
 }
 
 export const setCheater = async (user) => {
