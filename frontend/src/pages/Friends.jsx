@@ -126,8 +126,8 @@ const Friends = () => {
     }
   }
 
-  const handleRemove = async (friendId) => {
-    if (confirmingId === friendId) {
+  const handleRemove = async (friendId, confirm = true) => {
+    if (!confirm || confirmingId === friendId) {
       try {
         await removeFriendMutation({ variables: { userId: friendId } });
         await refetchFriends();
@@ -210,7 +210,7 @@ const Friends = () => {
                         </div>
                         <div className="flex gap-8">
                           <button type="button" className="btn btn-primary btn-sm" onClick={() => handleAddFriend(f.id, false)}>Accept</button>
-                          <button type="button" className="btn btn-outline btn-sm" onClick={() => handleRemove(f.id)}>Decline</button>
+                          <button type="button" className="btn btn-outline btn-sm" onClick={() => handleRemove(f.id, false)}>Decline</button>
                         </div>
                       </div>
                     })
