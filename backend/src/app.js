@@ -22,7 +22,8 @@ const port = 2877
 import { typeDefs, resolvers } from './schema/index.js'
 const server = new ApolloServer({
     typeDefs,
-    resolvers
+    resolvers,
+    introspection: process.env.NODE_ENV !== 'production',
 })
 
 // use
@@ -34,6 +35,8 @@ app.use(cookieparser())
 
 await connectDB()
 await server.start()
+
+app.use('/', async (req, res) => res.status(200).send("ok"))
 
 app.use(
     '/graphql',
