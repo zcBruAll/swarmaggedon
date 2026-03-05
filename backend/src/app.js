@@ -8,6 +8,8 @@ import cookieparser from 'cookie-parser'
 import { ApolloServer } from '@apollo/server'
 import jwt from 'jsonwebtoken'
 import { expressMiddleware } from '@as-integrations/express5'
+import { ApolloServerPluginLandingPageDisabled } from '@apollo/server/plugin/disabled';
+import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
 
 // setup dotenv
 const __filename = fileURLToPath(import.meta.url)
@@ -24,6 +26,11 @@ const server = new ApolloServer({
     typeDefs,
     resolvers,
     introspection: process.env.NODE_ENV !== 'production',
+    plugins: [
+    process.env.NODE_ENV === 'production'
+        ? ApolloServerPluginLandingPageDisabled()
+        : ApolloServerPluginLandingPageLocalDefault({ footer: false }),
+    ],
 })
 
 // use
