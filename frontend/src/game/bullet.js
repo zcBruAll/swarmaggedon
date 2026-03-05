@@ -73,7 +73,7 @@ export function updateBullet(bullet, targets, dt) {
                 if (!bullet.transpierced.includes(target)) {
                     damageEnemy(target, bullet.damage);
                     bullet.transpierced.push(target);
-                    bullet.args.pierce -= 1;
+                    bullet.args.pierce = Math.floor(bullet.args.pierce - 1);
                 }
             } else {
                 damageEnemy(target, bullet.damage);

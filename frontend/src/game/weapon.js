@@ -108,7 +108,7 @@ export function createEnchant(enchant) {
 
 export function fireBullet(attacker, angle) {
     if (attacker.weapon.enchant === WEAPON_ENCHANT.RIFLE) {
-        attacker.weapon.bulletsToFire = attacker.weapon.rifle - 1;
+        attacker.weapon.bulletsToFire = Math.floor(attacker.weapon.rifle - 1);
         attacker.weapon.burstAngle = angle;
         attacker.weapon.nextBurstTime = attacker.weapon.burstInterval;
     }
