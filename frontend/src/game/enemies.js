@@ -58,25 +58,25 @@ const WAVE_SCALE = {
         hp: 1.07,
         speed: 1.02,
         damage: 1.06,
-        range: 1.03,
+        range: 1.008,
     },
     [ENEMY_TYPE.BRUTE]: {
         hp: 1.10,
         speed: 1.02,
         damage: 1.07,
-        range: 1.02,
+        range: 1.005,
     },
     [ENEMY_TYPE.SHOOTER]: {
         hp: 1.08,
         speed: 1.02,
         damage: 1.07,
-        range: 1.07
+        range: 1.01
     },
     [ENEMY_TYPE.BOSS]: {
         hp: 1.15,
         speed: 1.03,
         damage: 1.08,
-        range: 1.01,
+        range: 1.002,
     },
 }
 
