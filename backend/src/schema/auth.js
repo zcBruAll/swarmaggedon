@@ -3,7 +3,7 @@ import { COLLECTION_USERS, COLLECTION_FRIENDS, COLLECTION_RUNS, getDB } from '..
 import { ObjectId } from 'mongodb'
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
-import { checkProfanity } from '../utils.js'
+import { checkProfanity, checkOnlyAlphanumeric } from '../utils.js'
 
 export const authTypeDefs = gql`
     extend type Mutation {
@@ -36,6 +36,7 @@ export const authResolvers = {
         },
         register: async (_, { username, email, password }, { }) => {
             if (username.length > 16 || username.length < 3) return "Your new username is not correct"
+            if (!checkOnlyAlphanumeric(username)) return "Username must be alphanumeric"
 
             const existingUsername = await getDB().collection(COLLECTION_USERS).findOne({ username })
             if (existingUsername) return "Username already taken"

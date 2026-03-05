@@ -3,7 +3,7 @@ import { COLLECTION_USERS, COLLECTION_FRIENDS, COLLECTION_RUNS, getDB } from '..
 import { ObjectId } from 'mongodb'
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
-import { checkProfanity } from '../utils.js'
+import { checkOnlyAlphanumeric, checkProfanity } from '../utils.js'
 
 export const userTypeDefs = gql`
     type User {
@@ -289,7 +289,9 @@ export const userResolvers = {
             if (!user) throw new Error("You are not logged in")
             if (newUsername.length > 16 || newUsername.length < 3) throw new Error("Your new username is not correct")
             if (newUsername === user.username) throw new Error("New username must be different")
-            const existingUsername = await getDB().collection(COLLECTION_USERS).findOne({username: newUsername})
+            if (!checkOnlyAlphanumeric(newUsername)) throw new Error("Username must be alphanumeric")
+            
+                const existingUsername = await getDB().collection(COLLECTION_USERS).findOne({username: newUsername})
             if (existingUsername) throw new Error("Username already taken")
 
             if (!await checkProfanity(newUsername)) throw new Error("New username contains profanity")

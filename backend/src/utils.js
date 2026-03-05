@@ -21,6 +21,21 @@ export const checkProfanity = async (username) => {
     return !data.isProfanity
 }
 
+export const checkOnlyAlphanumeric = (str) => {
+    // faster than regex
+    var code, i, len;
+
+    for (i = 0, len = str.length; i < len; i++) {
+        code = str.charCodeAt(i);
+        if (!(code > 47 && code < 58) && // numeric (0-9)
+            !(code > 64 && code < 91) && // upper alpha (A-Z)
+            !(code > 96 && code < 123)) { // lower alpha (a-z)
+            return false;
+        }
+    }
+    return true;
+}
+
 const BOSS_WAVE_INTERVAL = 10
 const ENEMY_RUNNER_SCORE = 8
 const ENEMY_BRUTE_SCORE = 25
