@@ -141,8 +141,10 @@ export const userResolvers = {
         },
         search: async (_, {usernameSearch}, { user: loggedin_info }) => {
             if (!loggedin_info) throw new Error("You are not logged in")
+
+            const escaped = usernameSearch.replace(/[.*+?^${}()|[]\]/g, '\$&')
             
-            if (!usernameSearch) throw new Error("You must give a search keyword")
+            if (!usernameSearch || !escaped) throw new Error("You must give a search keyword")
 
             // Find all relationships initiated by the current user
             const initiatedRelations = await getDB().collection(COLLECTION_FRIENDS).find({
@@ -153,7 +155,7 @@ export const userResolvers = {
             excludedIds.push(new ObjectId(loggedin_info.id))
                 
             const results = await getDB().collection(COLLECTION_USERS).find({
-                "username": { $regex: usernameSearch, $options: 'i' },
+                "username": { $regex: escaped, $options: 'i' },
                 _id: { $nin: excludedIds }
             }, {
                 projection: {
