@@ -311,7 +311,7 @@ export function createEngine(canvas, onHUDUpdate) {
         drawBullets(ctx, camera, player.bullets);
 
         for (const enemy of enemies) {
-            drawWeapon(ctx, camera, enemy, false);
+            drawWeapon(ctx, camera, enemy, true);
             if (enemy.type === ENEMY_TYPE.SHOOTER) {
                 drawBullets(ctx, camera, enemy.bullets);
             }
