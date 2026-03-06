@@ -129,15 +129,22 @@ export function createEnemy(type, wave) {
 }
 
 export function updateEnemies(enemies, player, dt) {
-    enemies.map(enemy => {
+    enemies.forEach(enemy => {
+        if (enemy.spawnIn > 0) {
+            enemy.spawnIn -= Math.min(enemy.spawnIn, dt);
+
+            if (enemy.spawnIn <= 3 && !enemy.x && !enemy.y) {
+                const { minAngle, maxAngle, safeRadius } = enemy.spawnData;
+                spawnEnemy(player, enemy, minAngle, maxAngle, safeRadius);
+            }
+            return;
+        }
+
         updateEnemy(enemy, player, dt);
-    })
+    });
 }
 
 function updateEnemy(enemy, player, dt) {
-    enemy.spawnIn -= Math.min(dt, enemy.spawnIn);
-    if (enemy.spawnIn > 0) return;
-
     const dx = player.x - enemy.x;
     const dy = player.y - enemy.y;
 
@@ -162,7 +169,7 @@ function updateEnemy(enemy, player, dt) {
     }
 }
 
-export function createWave(wave, player, canvasWidth, canvasHeight) {
+export function createWave(wave) {
     const isBossWave = wave % BOSS_WAVE_INTERVAL == 0;
     const queue = [];
 
@@ -189,19 +196,28 @@ export function createWave(wave, player, canvasWidth, canvasHeight) {
         }
     }
 
-    // Shuffle enemies queue
-    /*for (let i = queue.length - 1; i > 0; i--) {
+    for (let i = queue.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [queue[i], queue[j]] = [queue[j], queue[i]];
-    }*/
+    }
 
-    const dangerArc = Math.PI * 1.5;
     const startAngle = Math.random() * Math.PI * 2;
-    const endAngle = startAngle + dangerArc;
-    queue.map((enemy) => {
-        spawnEnemy(player, enemy, startAngle, endAngle);
-        enemy.spawnIn = Math.random() * 15;
+    const baseArc = Math.PI * 0.5;
+
+    queue.forEach((enemy, index) => {
+        const squadSize = 3 + Math.floor(wave / 6);
+        const squadIndex = Math.floor(index / squadSize);
+
+        enemy.spawnIn = (squadIndex * 2) + (Math.random() * 1.5);
+
+        enemy.spawnData = {
+            minAngle: startAngle,
+            maxAngle: startAngle + Math.min(Math.PI * 2, baseArc + (squadIndex * 0.5)),
+            safeRadius: 250 + (squadIndex === 0 ? 100 : 0)
+        };
     });
+
+    if (queue.length > 0) queue[0].spawnIn = 0;
 
     return queue;
 }
