@@ -146,7 +146,7 @@ export function drawEnemy(ctx, camera, enemy, width, height) {
         ctx.closePath();
 
         ctx.fillStyle = enemy.color;
-        ctx.globalAlpha = Math.max(0, 0.75 - enemyAlpha);
+        ctx.globalAlpha = 0.75 * enemyAlpha;
         ctx.fill();
 
         ctx.strokeStyle = 'white';
