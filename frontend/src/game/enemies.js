@@ -84,19 +84,16 @@ function scaleStats(base, multiplier, wave) {
     return base * Math.pow(multiplier, wave - 1);
 }
 
-export function spawnEnemy(player, type, wave, minAngle = 0, maxAngle = Math.PI * 2) {
+export function spawnEnemy(player, enemy, minAngle = 0, maxAngle = Math.PI * 2, safeRadius = 250) {
     // Compute random spawn position
     const randAngle = minAngle + Math.random() * (maxAngle - minAngle);
     const randDist = Math.random() * 500;
-    const safeRadius = 250;
     const spawnRadius = safeRadius + randDist;
-    const x = player.x + Math.cos(randAngle) * spawnRadius;
-    const y = player.y + Math.sin(randAngle) * spawnRadius;
-
-    return createEnemy(type, x, y, wave);
+    enemy.x = player.x + Math.cos(randAngle) * spawnRadius;
+    enemy.y = player.y + Math.sin(randAngle) * spawnRadius;
 }
 
-export function createEnemy(type, x, y, wave) {
+export function createEnemy(type, wave) {
     const base = BASE_STATS[type];
     const scale = WAVE_SCALE[type];
 
@@ -116,8 +113,9 @@ export function createEnemy(type, x, y, wave) {
     weapon.range = scaleStats(base.range, scale.range, wave);
 
     return {
-        x: x,
-        y: y,
+        x: 0,
+        y: 0,
+        spawnIn: 0,
         radius: base.radius,
         hp: hp,
         maxHp: hp,
@@ -131,9 +129,19 @@ export function createEnemy(type, x, y, wave) {
 }
 
 export function updateEnemies(enemies, player, dt) {
-    for (const enemy of enemies) {
+    enemies.forEach(enemy => {
+        if (enemy.spawnIn > 0) {
+            enemy.spawnIn -= Math.min(enemy.spawnIn, dt);
+
+            if (enemy.spawnIn <= 3 && !enemy.x && !enemy.y) {
+                const { minAngle, maxAngle, safeRadius } = enemy.spawnData;
+                spawnEnemy(player, enemy, minAngle, maxAngle, safeRadius);
+            }
+            return;
+        }
+
         updateEnemy(enemy, player, dt);
-    }
+    });
 }
 
 function updateEnemy(enemy, player, dt) {
@@ -161,20 +169,16 @@ function updateEnemy(enemy, player, dt) {
     }
 }
 
-export function createWave(wave, player, canvasWidth, canvasHeight) {
+export function createWave(wave) {
     const isBossWave = wave % BOSS_WAVE_INTERVAL == 0;
     const queue = [];
 
-    const dangerArc = Math.PI * 1.5;
-    const startAngle = Math.random() * Math.PI * 2;
-    const endAngle = startAngle + dangerArc;
-
     if (isBossWave) {
-        queue.push(spawnEnemy(player, ENEMY_TYPE.BOSS, wave, startAngle, endAngle));
+        queue.push(createEnemy(ENEMY_TYPE.BOSS, wave));
 
         const runnerCount = 1 + Math.floor(wave / 10);
         for (let i = 0; i < runnerCount; i++) {
-            queue.push(spawnEnemy(player, ENEMY_TYPE.RUNNER, wave, startAngle, endAngle));
+            queue.push(createEnemy(ENEMY_TYPE.RUNNER, wave));
         }
     } else {
         const runnerCount = Math.max(2, Math.floor(wave * 0.8) + 2);
@@ -182,21 +186,38 @@ export function createWave(wave, player, canvasWidth, canvasHeight) {
         const shooterCount = Math.max(0, Math.floor((wave - 4) / 4));
 
         for (let i = 0; i < runnerCount; i++) {
-            queue.push(spawnEnemy(player, ENEMY_TYPE.RUNNER, wave, startAngle, endAngle));
+            queue.push(createEnemy(ENEMY_TYPE.RUNNER, wave));
         }
         for (let i = 0; i < bruteCount; i++) {
-            queue.push(spawnEnemy(player, ENEMY_TYPE.BRUTE, wave, startAngle, endAngle));
+            queue.push(createEnemy(ENEMY_TYPE.BRUTE, wave));
         }
         for (let i = 0; i < shooterCount; i++) {
-            queue.push(spawnEnemy(player, ENEMY_TYPE.SHOOTER, wave, startAngle, endAngle));
+            queue.push(createEnemy(ENEMY_TYPE.SHOOTER, wave));
         }
     }
 
-    // Shuffle enemies queue
     for (let i = queue.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [queue[i], queue[j]] = [queue[j], queue[i]];
     }
+
+    const startAngle = Math.random() * Math.PI * 2;
+    const baseArc = Math.PI * 0.5;
+
+    queue.forEach((enemy, index) => {
+        const squadSize = 3 + Math.floor(wave / 6);
+        const squadIndex = Math.floor(index / squadSize);
+
+        enemy.spawnIn = (squadIndex * 2) + (Math.random() * 1.5);
+
+        enemy.spawnData = {
+            minAngle: startAngle,
+            maxAngle: startAngle + Math.min(Math.PI * 2, baseArc + (squadIndex * 0.5)),
+            safeRadius: 250 + (squadIndex === 0 ? 100 : 0)
+        };
+    });
+
+    if (queue.length > 0) queue[0].spawnIn = 0;
 
     return queue;
 }

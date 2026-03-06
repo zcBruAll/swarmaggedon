@@ -21,7 +21,7 @@ const CAMERA_FREE_SPACE = 35;
 let CAMERA_PADDING = 150;
 
 // Time before next wave
-export const WAVE_INTERVAL = 40;
+export const WAVE_INTERVAL = 60;
 
 export function createEngine(canvas, onHUDUpdate) {
     let minValue = Math.min(canvas.width, canvas.height);
@@ -90,16 +90,18 @@ export function createEngine(canvas, onHUDUpdate) {
     function update(dt) {
         elapsed += dt;
 
+        let spawnedEnemies = enemies.filter(enemy => enemy.spawnIn <= 0);
+
         // Player movement
-        updatePlayer(player, input, dt, enemies, canvas.width, canvas.height);
+        updatePlayer(player, input, dt, spawnedEnemies, canvas.width, canvas.height);
 
         // Enemies movement
         updateEnemies(enemies, player, dt);
 
         updateCamera(camera, player, enemies, canvas.width, canvas.height);
 
-        updateBullets(player.bullets, enemies, dt);
-        for (const enemy of enemies) {
+        updateBullets(player.bullets, spawnedEnemies, dt);
+        for (const enemy of spawnedEnemies) {
             if (enemy.type === ENEMY_TYPE.SHOOTER) {
                 updateBullets(enemy.bullets, [player], dt);
             }
@@ -154,11 +156,12 @@ export function createEngine(canvas, onHUDUpdate) {
     }
 
     function PlayerAttackEnemies(dt) {
-        tryAttack(dt, player, enemies, damageEnemy);
+        tryAttack(dt, player, enemies.filter(enemy => enemy.spawnIn <= 0), damageEnemy);
     }
 
     function EnemiesAttackPlayer(dt) {
         for (const enemy of enemies) {
+            if (enemy.spawnIn > 0) continue;
             tryAttack(dt, enemy, [player], damagePlayer);
         }
     }
