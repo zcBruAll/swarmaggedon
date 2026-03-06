@@ -31,6 +31,9 @@ export function drawPlayer(ctx, camera, player) {
     playerRegion.closePath();
     ctx.fillStyle = "#000000";
     ctx.fill(playerRegion);
+
+    drawWeapon(ctx, camera, player, false);
+    drawBullets(ctx, camera, player.bullets);
 }
 
 export function drawWeapon(ctx, camera, bearer, debug = true) {
@@ -73,36 +76,78 @@ export function drawWeapon(ctx, camera, bearer, debug = true) {
     ctx.fill();
 }
 
-export function drawEnemies(ctx, camera, enemies) {
+export function drawEnemies(ctx, camera, enemies, width, height) {
     if (!enemies || enemies.length <= 0) return;
     for (const enemy of enemies) {
-        drawEnemy(ctx, camera, enemy);
+        drawEnemy(ctx, camera, enemy, width, height);
     }
 }
 
-export function drawEnemy(ctx, camera, enemy) {
-    let enemyRegion = new Path2D();
-    enemyRegion.ellipse(enemy.x - camera.x, enemy.y - camera.y, enemy.radius, enemy.radius, 0, 0, 2 * Math.PI);
-    enemyRegion.closePath();
-    ctx.fillStyle = enemy.color;
-    ctx.fill(enemyRegion);
+export function drawEnemy(ctx, camera, enemy, width, height) {
+    const dx = enemy.x - camera.x;
+    const dy = enemy.y - camera.y;
 
-    // Enemy HP bar
-    if (enemy.hp < enemy.maxHp) {
-        const barW = enemy.radius * 2.4;
-        const barH = enemy.type === ENEMY_TYPE.BOSS ? 6 : 3;
-        const bx = enemy.x - camera.x - barW / 2;
-        const by = enemy.y - camera.y - enemy.radius - (enemy.type === ENEMY_TYPE.BOSS ? 18 : 10);
-        const filled = (enemy.hp / enemy.maxHp) * barW;
+    if (dx > - (enemy.radius + enemy.weapon.range) && dx < width + enemy.radius + enemy.weapon.range && dy > - (enemy.radius + enemy.weapon.range) && dy < height + enemy.radius + enemy.weapon.range) {
+        let enemyRegion = new Path2D();
+        enemyRegion.ellipse(dx, dy, enemy.radius, enemy.radius, 0, 0, 2 * Math.PI);
+        enemyRegion.closePath();
+        ctx.fillStyle = enemy.color;
+        ctx.fill(enemyRegion);
 
-        ctx.fillStyle = 'rgba(0,0,0,0.35)';
-        ctx.fillRect(bx, by, barW, barH);
+        // Enemy HP bar
+        if (enemy.hp < enemy.maxHp) {
+            const barW = enemy.radius * 2.4;
+            const barH = enemy.type === ENEMY_TYPE.BOSS ? 6 : 3;
+            const bx = dx - barW / 2;
+            const by = dy - enemy.radius - (enemy.type === ENEMY_TYPE.BOSS ? 18 : 10);
+            const filled = (enemy.hp / enemy.maxHp) * barW;
 
-        const percent = enemy.hp / enemy.maxHp;
-        ctx.fillStyle = percent > 0.5
-            ? 'orange'
-            : 'red';
-        ctx.fillRect(bx, by, filled, barH);
+            ctx.fillStyle = 'rgba(0,0,0,0.35)';
+            ctx.fillRect(bx, by, barW, barH);
+
+            const percent = enemy.hp / enemy.maxHp;
+            ctx.fillStyle = percent > 0.5
+                ? 'orange'
+                : 'red';
+            ctx.fillRect(bx, by, filled, barH);
+        }
+        drawWeapon(ctx, camera, enemy, true);
+    } else {
+        const margin = 20;
+        const centerX = width / 2;
+        const centerY = height / 2;
+
+        let ix = Math.max(margin, Math.min(width - margin, dx));
+        let iy = Math.max(margin, Math.min(height - margin, dy));
+
+        const dist = Math.hypot(dx - centerX, dy - centerY);
+        const scale = Math.max(0.5, 1 - (dist / 2000));
+        const size = 16 * scale;
+
+        const angle = Math.atan2(dy - iy, dx - ix);
+
+        ctx.save();
+        ctx.translate(ix, iy);
+        ctx.rotate(angle);
+
+        ctx.beginPath();
+        ctx.moveTo(size, 0);
+        ctx.lineTo(-size, -size * 0.7);
+        ctx.lineTo(-size, size * 0.7);
+        ctx.closePath();
+
+        ctx.fillStyle = enemy.color;
+        ctx.globalAlpha = 0.75;
+        ctx.fill();
+
+        ctx.strokeStyle = 'white';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+
+        ctx.restore();
+    }
+    if (enemy.type === ENEMY_TYPE.SHOOTER) {
+        drawBullets(ctx, camera, enemy.bullets);
     }
 }
 

@@ -305,17 +305,8 @@ export function createEngine(canvas, onHUDUpdate) {
         const h = canvas.height;
 
         drawBackground(ctx, w, h, camera);
-        drawEnemies(ctx, camera, enemies);
+        drawEnemies(ctx, camera, enemies, w, h);
         drawPlayer(ctx, camera, player);
-        drawWeapon(ctx, camera, player, false);
-        drawBullets(ctx, camera, player.bullets);
-
-        for (const enemy of enemies) {
-            drawWeapon(ctx, camera, enemy, true);
-            if (enemy.type === ENEMY_TYPE.SHOOTER) {
-                drawBullets(ctx, camera, enemy.bullets);
-            }
-        }
     }
 
     return {
