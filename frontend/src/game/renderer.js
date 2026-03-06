@@ -79,6 +79,7 @@ export function drawWeapon(ctx, camera, bearer, debug = true) {
 export function drawEnemies(ctx, camera, enemies, width, height) {
     if (!enemies || enemies.length <= 0) return;
     for (const enemy of enemies) {
+        if (enemy.spawnIn > 5) continue;
         drawEnemy(ctx, camera, enemy, width, height);
     }
 }
@@ -87,12 +88,18 @@ export function drawEnemy(ctx, camera, enemy, width, height) {
     const dx = enemy.x - camera.x;
     const dy = enemy.y - camera.y;
 
+    const enemyAlpha = 1 - enemy.spawnIn / 5;
+
     if (dx > - (enemy.radius + enemy.weapon.range) && dx < width + enemy.radius + enemy.weapon.range && dy > - (enemy.radius + enemy.weapon.range) && dy < height + enemy.radius + enemy.weapon.range) {
         let enemyRegion = new Path2D();
         enemyRegion.ellipse(dx, dy, enemy.radius, enemy.radius, 0, 0, 2 * Math.PI);
         enemyRegion.closePath();
+
+        ctx.save();
         ctx.fillStyle = enemy.color;
+        ctx.globalAlpha = enemyAlpha;
         ctx.fill(enemyRegion);
+        ctx.restore();
 
         // Enemy HP bar
         if (enemy.hp < enemy.maxHp) {
@@ -102,6 +109,7 @@ export function drawEnemy(ctx, camera, enemy, width, height) {
             const by = dy - enemy.radius - (enemy.type === ENEMY_TYPE.BOSS ? 18 : 10);
             const filled = (enemy.hp / enemy.maxHp) * barW;
 
+            ctx.save();
             ctx.fillStyle = 'rgba(0,0,0,0.35)';
             ctx.fillRect(bx, by, barW, barH);
 
@@ -110,6 +118,7 @@ export function drawEnemy(ctx, camera, enemy, width, height) {
                 ? 'orange'
                 : 'red';
             ctx.fillRect(bx, by, filled, barH);
+            ctx.restore();
         }
         drawWeapon(ctx, camera, enemy, true);
     } else {

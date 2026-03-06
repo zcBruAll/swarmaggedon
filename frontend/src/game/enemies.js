@@ -200,7 +200,7 @@ export function createWave(wave, player, canvasWidth, canvasHeight) {
     const endAngle = startAngle + dangerArc;
     queue.map((enemy) => {
         spawnEnemy(player, enemy, startAngle, endAngle);
-        enemy.spawnIn = 0;
+        enemy.spawnIn = Math.random() * 15;
     });
 
     return queue;
