@@ -16,6 +16,10 @@
     border-bottom: 1px dashed var(--line);
 }
 
+.friend-stat-rows {
+    max-height: 350px;
+}
+
 .friend-stat-row:last-child {
     border-bottom: none;
 }

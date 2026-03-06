@@ -38,7 +38,7 @@ function FriendsStats() {
           <span className="label" style={{ margin: 0 }}>total time</span>
           <span className="label" style={{ margin: 0 }}>status</span>
         </div>
-        <div className="scroll-y">
+        <div className="scroll-y friend-stat-rows">
           {data?.friends.length === 0 ? (
             <div className='friend-stat-row'>
               <span></span>
@@ -57,19 +57,19 @@ function FriendsStats() {
                 return scoreB - scoreA;
               })
               .map(friend => (
-              <div className="friend-stat-row" key={friend.id}>
-                <div className="avatar">{friend.username?.substring(0, 2).toUpperCase()}</div>
-                <span>{friend.username}</span>
-                <span className="score">{friend.stats?.high_score?.toLocaleString() || 0}</span>
-                <span className="text-muted">{formatTotalToHours(friend.stats?.total_time).toFixed(friend.stats?.total_time / 3600 > 10 ? 0 : 1)}h</span>
-                <span className="game-state">
-                  <span className={`dot ${isUserOnline(friend.last_online) || friend.in_game ? 'dot-online' : 'dot-offline'}`}></span>
-                  <span className={isUserOnline(friend.last_online) || friend.in_game ? 'state-active' : 'text-muted'}>
-                    {friend.in_game ? 'in game' : isUserOnline(friend.last_online) ? "online" : 'offline'}
+                <div className="friend-stat-row" key={friend.id}>
+                  <div className="avatar">{friend.username?.substring(0, 2).toUpperCase()}</div>
+                  <span>{friend.username}</span>
+                  <span className="score">{friend.stats?.high_score?.toLocaleString() || 0}</span>
+                  <span className="text-muted">{formatTotalToHours(friend.stats?.total_time).toFixed(friend.stats?.total_time / 3600 > 10 ? 0 : 1)}h</span>
+                  <span className="game-state">
+                    <span className={`dot ${isUserOnline(friend.last_online) || friend.in_game ? 'dot-online' : 'dot-offline'}`}></span>
+                    <span className={isUserOnline(friend.last_online) || friend.in_game ? 'state-active' : 'text-muted'}>
+                      {friend.in_game ? 'in game' : isUserOnline(friend.last_online) ? "online" : 'offline'}
+                    </span>
                   </span>
-                </span>
-              </div>
-            ))
+                </div>
+              ))
           )}
         </div>
       </div>
