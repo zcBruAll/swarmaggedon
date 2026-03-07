@@ -7,10 +7,11 @@ export const BULLET_EXPLOS = {
     CHAIN: 'chain',
 }
 
-export function createBullet(x, y, angle, damage, range, type = BULLET_EXPLOS.HIT, args = null) {
+export function createBullet(x, y, width, angle, damage, range, type = BULLET_EXPLOS.HIT, args = null) {
     return {
         x,
         y,
+        width,
         angle,
         speed: 500,
         damage,
@@ -50,8 +51,8 @@ export function updateBullet(bullet, targets, dt) {
     }
 
     for (const target of targets) {
-        const dx = target.x - bullet.x;
-        const dy = target.y - bullet.y;
+        const dx = target.x - bullet.x - bullet.width;
+        const dy = target.y - bullet.y - bullet.width;
         const d = Math.hypot(dx, dy);
 
         if (d <= target.radius) {
@@ -66,23 +67,25 @@ export function updateBullet(bullet, targets, dt) {
                 for (const chainTarget of targets) {
                     if (chainTarget === target || chainTarget === bullet.chainFrom) continue;
 
-                    const adx = chainTarget.x - bullet.x;
-                    const ady = chainTarget.y - bullet.y;
+                    const adx = chainTarget.x - bullet.x - bullet.width;
+                    const ady = chainTarget.y - bullet.y - bullet.width;
                     const ad = Math.hypot(adx, ady);
 
-                    if (ad < nearestTargetDist && ad < chainRadius + chainTarget.radius) {
+                    if (ad < nearestTargetDist && ad < chainRadius + chainTarget.radius + bullet.width) {
                         nearestTargetDist = ad;
                         nextTarget = chainTarget;
                     }
                 }
 
                 if (nextTarget && (bullet.args.chain ?? 0) > 0) {
-                    const adx = nextTarget.x - bullet.x;
-                    const ady = nextTarget.y - bullet.y;
+                    const adx = nextTarget.x - bullet.x - bullet.width;
+                    const ady = nextTarget.y - bullet.y - bullet.width;
 
                     bullet.angle = Math.atan2(ady, adx);
                     bullet.args.chain = Math.floor(bullet.args.chain - 1);
                     bullet.chainFrom = target;
+
+                    bullet.dist = 0;
 
                     return;
                 } else {

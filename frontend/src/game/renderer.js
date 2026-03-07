@@ -167,8 +167,8 @@ export function drawBullets(ctx, camera, bullets) {
 }
 
 export function drawBullet(ctx, camera, bullet) {
-    ctx.fillStyle = "#00ff00";
+    ctx.fillStyle = "#007b00";
     ctx.beginPath();
-    ctx.ellipse(bullet.x - camera.x, bullet.y - camera.y, 6, 3, bullet.angle, 0, 2 * Math.PI);
+    ctx.ellipse(bullet.x - camera.x, bullet.y - camera.y, bullet.width * 1.5, bullet.width, bullet.angle, 0, 2 * Math.PI);
     ctx.fill();
 }

@@ -35,6 +35,7 @@ export function createWeapon(type, enchant) {
                 damage: 15,
                 type: WEAPON_TYPE.RANGE,
                 range: 350,
+                bulletWidth: 3,
                 props: ['cooldown', 'damage', 'range'],
             }
             break;
@@ -119,7 +120,7 @@ export function fireBullet(attacker, angle) {
         args = { pierce: attacker.weapon.pierce };
     else if (attacker.weapon.enchant === WEAPON_ENCHANT.CHAIN)
         args = { chainRadius: attacker.weapon.chainRadius, chain: attacker.weapon.chain };
-    attacker.bullets.push(createBullet(attacker.x, attacker.y, angle, attacker.weapon.damage, attacker.weapon.range, attacker.weapon.enchant, args));
+    attacker.bullets.push(createBullet(attacker.x, attacker.y, attacker.weapon.bulletWidth, angle, attacker.weapon.damage, attacker.weapon.range, attacker.weapon.enchant, args));
     attacker.weapon.cooldown = attacker.weapon.cooldownTime;
 }
 
