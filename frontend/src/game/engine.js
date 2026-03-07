@@ -121,6 +121,7 @@ export function createEngine(canvas, onHUDUpdate) {
         if (waveTimer <= 0 || enemies?.length === 0) {
             waveTimer = WAVE_INTERVAL;
             if (enemies?.length === 0) {
+                player.bullets = [];
                 healPlayer(player, 20);
                 if (wave === 20) {
                     augment(CHOICE_TYPE.ENCHANT);

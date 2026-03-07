@@ -101,22 +101,22 @@ export function getChoices(wave, player) {
                 getNew: (arg, b) => (arg.rifle * (1 + b / 100)).toFixed(2),
                 func: (wpn, b) => { wpn.rifle = (wpn.rifle * (1 + b / 100)).toFixed(2); },
             });
-        } else if (player.weapon.enchant === WEAPON_ENCHANT.TRANSFER) {
+        } else if (player.weapon.enchant === WEAPON_ENCHANT.CHAIN) {
             possibleChoices.push({
-                attr: "Transfer Radius",
+                attr: "Chain Radius",
                 getBonus: (mult) => rand(5 * mult, 10 * mult),
                 arg: player.weapon,
-                getCurr: (arg) => arg.transferRadius,
-                getNew: (arg, b) => (arg.transferRadius * (1 + b / 100)).toFixed(2),
-                func: (wpn, b) => { wpn.transferRadius = (wpn.transferRadius * (1 + b / 100)).toFixed(2); },
+                getCurr: (arg) => arg.chainRadius,
+                getNew: (arg, b) => (arg.chainRadius * (1 + b / 100)).toFixed(2),
+                func: (wpn, b) => { wpn.chainRadius = (wpn.chainRadius * (1 + b / 100)).toFixed(2); },
             });
             possibleChoices.push({
-                attr: "Transfer time",
+                attr: "Chain",
                 getBonus: (mult) => rand(5 * mult, 10 * mult),
                 arg: player.weapon,
-                getCurr: (arg) => arg.transferTime,
-                getNew: (arg, b) => (arg.transferTime * (1 + b / 100)).toFixed(2),
-                func: (wpn, b) => { wpn.transferTime = (wpn.transferRadius * (1 + b / 100)).toFixed(2); },
+                getCurr: (arg) => arg.chain,
+                getNew: (arg, b) => (arg.chain * (1 + b / 100)).toFixed(2),
+                func: (wpn, b) => { wpn.chain = (wpn.chain * (1 + b / 100)).toFixed(2); },
             });
         }
     }
