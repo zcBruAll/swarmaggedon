@@ -9,7 +9,7 @@ export const WEAPON_ENCHANT = {
     SINGLE: 'single',
     AOE: 'aoe',
     RIFLE: 'rifle',
-    TRANSFER: 'transfer',
+    CHAIN: 'chain',
     PIERCE: 'pierce',
 }
 
@@ -79,16 +79,16 @@ export function createEnchant(enchant) {
                 props: ['aoeRadius'],
                 bonusProps: ['cooldown', 'damage', 'range'],
             }
-        case WEAPON_ENCHANT.TRANSFER:
+        case WEAPON_ENCHANT.CHAIN:
             return {
-                name: WEAPON_ENCHANT.TRANSFER,
+                name: WEAPON_ENCHANT.CHAIN,
                 cooldown: 115,
                 damage: 95,
                 support: [WEAPON_TYPE.RANGE],
-                transferRadius: 150,
-                transfer: 3,
+                chainRadius: 150,
+                chain: 3,
                 range: 85,
-                props: ['transferRadius', 'transfer'],
+                props: ['chainRadius', 'chain'],
                 bonusProps: ['cooldown', 'damage', 'range'],
             }
         case WEAPON_ENCHANT.SINGLE:
@@ -117,8 +117,8 @@ export function fireBullet(attacker, angle) {
         args = { aoeRadius: attacker.weapon.aoeRadius };
     else if (attacker.weapon.enchant === WEAPON_ENCHANT.PIERCE)
         args = { pierce: attacker.weapon.pierce };
-    else if (attacker.weapon.enchant === WEAPON_ENCHANT.TRANSFER)
-        args = { transferRadius: attacker.weapon.transferRadius, transfer: attacker.weapon.transfer };
+    else if (attacker.weapon.enchant === WEAPON_ENCHANT.CHAIN)
+        args = { chainRadius: attacker.weapon.chainRadius, chain: attacker.weapon.chain };
     attacker.bullets.push(createBullet(attacker.x, attacker.y, angle, attacker.weapon.damage, attacker.weapon.range, attacker.weapon.enchant, args));
     attacker.weapon.cooldown = attacker.weapon.cooldownTime;
 }

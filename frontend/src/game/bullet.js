@@ -4,7 +4,7 @@ export const BULLET_EXPLOS = {
     HIT: 'hit',
     AOE: 'aoe',
     PIERCE: 'pierce',
-    TRANSFER: 'transfer',
+    CHAIN: 'chain',
 }
 
 export function createBullet(x, y, angle, damage, range, type = BULLET_EXPLOS.HIT, args = null) {
@@ -55,10 +55,44 @@ export function updateBullet(bullet, targets, dt) {
         const d = Math.hypot(dx, dy);
 
         if (d <= target.radius) {
-            if (bullet.explos == BULLET_EXPLOS.AOE) {
+            if (bullet.explos === BULLET_EXPLOS.CHAIN) {
+                if (target === bullet.chainFrom) continue;
+                damageEnemy(target, bullet.damage);
+
+                let nextTarget = null;
+                let nearestTargetDist = 1e6;
+                const chainRadius = bullet.args.chainRadius || 150;
+
+                for (const chainTarget of targets) {
+                    if (chainTarget === target || chainTarget === bullet.chainFrom) continue;
+
+                    const adx = chainTarget.x - bullet.x;
+                    const ady = chainTarget.y - bullet.y;
+                    const ad = Math.hypot(adx, ady);
+
+                    if (ad < nearestTargetDist && ad < chainRadius + chainTarget.radius) {
+                        nearestTargetDist = ad;
+                        nextTarget = chainTarget;
+                    }
+                }
+
+                if (nextTarget && (bullet.args.chain ?? 0) > 0) {
+                    const adx = nextTarget.x - bullet.x;
+                    const ady = nextTarget.y - bullet.y;
+
+                    bullet.angle = Math.atan2(ady, adx);
+                    bullet.args.chain = Math.floor(bullet.args.chain - 1);
+                    bullet.chainFrom = target;
+
+                    return;
+                } else {
+                    bullet.dead = true;
+                }
+            } else if (bullet.explos === BULLET_EXPLOS.AOE) {
                 const blastRadius = bullet.args.aoeRadius || 150;
 
                 for (const areaTarget of targets) {
+                    if (areaTarget === target) continue;
                     const adx = areaTarget.x - bullet.x;
                     const ady = areaTarget.y - bullet.y;
                     const ad = Math.hypot(adx, ady);
@@ -78,7 +112,7 @@ export function updateBullet(bullet, targets, dt) {
             } else {
                 damageEnemy(target, bullet.damage);
             }
-            if (bullet.explos !== BULLET_EXPLOS.PIERCE || bullet.args.pierce <= 0)
+            if ((bullet.explos !== BULLET_EXPLOS.PIERCE && bullet.explos !== BULLET_EXPLOS.CHAIN) || bullet.args.pierce <= 0 || bullet.args.chain <= 0)
                 bullet.dead = true;
             break;
         }
