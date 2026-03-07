@@ -151,7 +151,7 @@ export function enchantWeapon(weapon, enchant) {
 
     weapon.enchant = enchant.name;
     for (const prop of enchant.bonusProps) {
-        weapon[prop] = (weapon[prop] * enchant[prop] / 100).toFixed(2);
+        weapon[prop] = parseFloat(((weapon[prop] * enchant[prop] / 100)).toFixed(2));
     }
 
     for (const prop of enchant.props) {
