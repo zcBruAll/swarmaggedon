@@ -61,12 +61,15 @@ export function drawWeapon(ctx, camera, bearer, debug = true) {
     // Weapon angle 
     let width = 1;
     let angle = bearer.angle;
+    let weaponAngle = (bearer.weapon.angle ?? 0);
     if (bearer.weapon.enchant === WEAPON_ENCHANT.LASER && bearer.weapon.charging) {
         const perc = (1 - (bearer.weapon.laserCdTime / bearer.weapon.laserCd))
         width = bearer.weapon.bulletWidth * perc;
         strokeStyle = `rgba(237, 47, 50, ${perc})`;
         ctx.strokeStyle = strokeStyle;
         angle = bearer.weapon.laserAngle;
+    } else if (bearer.weapon.enchant === WEAPON_ENCHANT.SUBMACHINEGUN) {
+        weaponAngle = bearer.weapon.dispersion;
     }
 
     ctx.beginPath();
@@ -74,7 +77,7 @@ export function drawWeapon(ctx, camera, bearer, debug = true) {
     ctx.setLineDash(lineDash);
     ctx.moveTo(bearer.x - camera.x, bearer.y - camera.y);
 
-    const halfSpread = ((bearer.weapon.angle ?? 0) / 2) * (Math.PI / 180);
+    const halfSpread = (weaponAngle / 2) * (Math.PI / 180);
     const startAngle = angle - halfSpread;
     const endAngle = angle + halfSpread;
     const weaponRadius = bearer.radius + bearer.weapon.range;

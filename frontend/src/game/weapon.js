@@ -12,6 +12,7 @@ export const WEAPON_ENCHANT = {
     CHAIN: 'chain',
     PIERCE: 'pierce',
     LASER: 'laser',
+    SUBMACHINEGUN: 'submachinegun',
 }
 
 export function createWeapon(type, enchant) {
@@ -105,7 +106,17 @@ export function createEnchant(enchant) {
                 props: ['bulletWidth', 'laserCd'],
                 bonusProps: ['cooldown', 'damage', 'range']
             }
-
+        case WEAPON_ENCHANT.SUBMACHINEGUN:
+            return {
+                name: WEAPON_ENCHANT.SUBMACHINEGUN,
+                cooldown: 40,
+                damage: 45,
+                range: 65,
+                support: [WEAPON_TYPE.RANGE],
+                dispersion: 25,
+                props: ['dispersion'],
+                bonusProps: ['cooldown', 'damage', 'range']
+            }
         case WEAPON_ENCHANT.SINGLE:
         default:
             return {
@@ -141,6 +152,8 @@ export function fireBullet(attacker, angle) {
         args = { pierce: attacker.weapon.pierce };
     else if (attacker.weapon.enchant === WEAPON_ENCHANT.CHAIN)
         args = { chainRadius: attacker.weapon.chainRadius, chain: attacker.weapon.chain };
+    else if (attacker.weapon.enchant === WEAPON_ENCHANT.SUBMACHINEGUN)
+        angle += (Math.random() >= 0.5 ? 1 : -1) * (Math.random() * (attacker.weapon.dispersion / 2)) * (Math.PI / 180);
 
     attacker.bullets.push(createBullet(attacker.x, attacker.y, attacker.weapon.bulletWidth, angle, attacker.weapon.damage, attacker.weapon.range, attacker.weapon.enchant, args));
     attacker.weapon.cooldownTime = attacker.weapon.cooldown;
