@@ -118,6 +118,23 @@ export function getChoices(wave, player) {
                 getNew: (arg, b) => (arg.chain * (1 + b / 100)).toFixed(2),
                 func: (wpn, b) => { wpn.chain = (wpn.chain * (1 + b / 100)).toFixed(2); },
             });
+        } else if (player.weapon.enchant === WEAPON_ENCHANT.LASER) {
+            possibleChoices.push({
+                attr: "Laser width",
+                getBonus: (mult) => rand(1 * mult, 5 * mult),
+                arg: player.weapon,
+                getCurr: (arg) => arg.bulletWidth,
+                getNew: (arg, b) => (arg.bulletWidth * (1 + b / 100)).toFixed(2),
+                func: (wpn, b) => { wpn.bulletWidth = (wpn.bulletWidth * (1 + b / 100)).toFixed(2); },
+            });
+            possibleChoices.push({
+                attr: "Laser cooldown",
+                getBonus: (mult) => rand(2 * mult, 7 * mult),
+                arg: player.weapon,
+                getCurr: (arg) => arg.laserCd,
+                getNew: (arg, b) => (arg.laserCd * (1 - b / 100)).toFixed(2),
+                func: (wpn, b) => { wpn.laserCd = (wpn.laserCd * (1 - b / 100)).toFixed(2); },
+            });
         }
     }
 
@@ -152,7 +169,7 @@ export function getEnchantChoices(wave, player) {
     let possibleChoices = [];
 
     Object.values(WEAPON_ENCHANT).forEach(enchant => {
-        if (enchant !== WEAPON_ENCHANT.TRANSFER && enchant !== player.weapon.enchant) {
+        if (enchant !== player.weapon.enchant) {
             let weapon = createEnchant(enchant);
             possibleChoices.push(weapon);
         }
@@ -188,7 +205,7 @@ export function getWeaponChoices(wave, player) {
                 possibleChoices.push(weapon);
             });
         }
-        possibleChoices.push(createWeapon(type, undefined));
+        possibleChoices.push(createWeapon(type, WEAPON_ENCHANT.LASER));
     });
 
     const choices = possibleChoices

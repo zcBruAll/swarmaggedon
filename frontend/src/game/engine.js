@@ -185,6 +185,44 @@ export function createEngine(canvas, onHUDUpdate) {
             }
         }
 
+        if (attacker.weapon.enchant === WEAPON_ENCHANT.LASER && attacker.weapon.charging) {
+            attacker.weapon.laserCdTime -= Math.min(dt, attacker.weapon.laserCdTime);
+            if (attacker.weapon.laserCdTime > 0) return;
+
+            const range = attacker.weapon.range;
+            const angle = attacker.weapon.laserAngle;
+            const width = attacker.weapon.bulletWidth;
+
+            for (const target of targets) {
+                // Relative position of the target from the attacker
+                const relX = target.x - attacker.x;
+                const relY = target.y - attacker.y;
+
+                // Rotate target's position by negative laser angle
+                // Aligns the laser with the X-axis -> easier math
+                const cosA = Math.cos(-angle);
+                const sinA = Math.sin(-angle);
+                const localX = relX * cosA - relY * sinA;
+                const localY = relX * sinA + relY * cosA;
+
+                // Closest point on the rectangle to the circle center
+                const closestX = Math.max(0, Math.min(localX, range));
+                const closestY = Math.max(-width / 2, Math.min(localY, width / 2));
+
+                // Distance from closest to local circle center
+                const dx = localX - closestX;
+                const dy = localY - closestY;
+                const distance = Math.hypot(dx, dy);
+
+                if (distance <= target.radius) {
+                    fun(target, attacker.weapon.damage);
+                }
+            }
+
+            attacker.weapon.charging = false;
+            return;
+        }
+
         attacker.weapon.cooldownTime -= Math.min(dt, attacker.weapon.cooldownTime);
         if (attacker.weapon.cooldownTime > 0) return;
 

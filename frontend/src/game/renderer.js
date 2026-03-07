@@ -1,4 +1,5 @@
 import { ENEMY_TYPE } from "./enemies";
+import { WEAPON_ENCHANT } from "./weapon";
 
 export function drawBackground(ctx, width, height, camera) {
     ctx.clearRect(0, 0, width, height);
@@ -40,6 +41,7 @@ export function drawWeapon(ctx, camera, bearer, debug = true) {
     if (!bearer.weapon) return;
 
     // Weapon radius
+    ctx.save();
     ctx.beginPath();
     const cooldownRadius = bearer.radius + (debug ? bearer.weapon.range : 3);
     ctx.ellipse(bearer.x - camera.x, bearer.y - camera.y, cooldownRadius, cooldownRadius, 0, bearer.weapon.cooldownTime / bearer.weapon.cooldown * 2 * Math.PI, 2 * Math.PI);
@@ -57,8 +59,16 @@ export function drawWeapon(ctx, camera, bearer, debug = true) {
     ctx.closePath();
 
     // Weapon angle 
+    let width = 1;
+    if (bearer.weapon.enchant === WEAPON_ENCHANT.LASER && bearer.weapon.charging) {
+        const perc = (1 - (bearer.weapon.laserCdTime / bearer.weapon.laserCd))
+        width = bearer.weapon.bulletWidth * perc;
+        strokeStyle = `rgba(237, 47, 50, ${perc})`;
+        ctx.strokeStyle = strokeStyle;
+    }
+
     ctx.beginPath();
-    ctx.lineWidth = 1;
+    ctx.lineWidth = width;
     ctx.setLineDash(lineDash);
     ctx.moveTo(bearer.x - camera.x, bearer.y - camera.y);
 
@@ -74,6 +84,7 @@ export function drawWeapon(ctx, camera, bearer, debug = true) {
     ctx.stroke();
     ctx.fillStyle = strokeStyle + '25';
     ctx.fill();
+    ctx.restore();
 }
 
 export function drawEnemies(ctx, camera, enemies, width, height) {
