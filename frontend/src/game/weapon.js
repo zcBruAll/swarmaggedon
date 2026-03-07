@@ -121,7 +121,7 @@ export function fireBullet(attacker, angle) {
     else if (attacker.weapon.enchant === WEAPON_ENCHANT.CHAIN)
         args = { chainRadius: attacker.weapon.chainRadius, chain: attacker.weapon.chain };
     attacker.bullets.push(createBullet(attacker.x, attacker.y, attacker.weapon.bulletWidth, angle, attacker.weapon.damage, attacker.weapon.range, attacker.weapon.enchant, args));
-    attacker.weapon.cooldown = attacker.weapon.cooldownTime;
+    attacker.weapon.cooldownTime = attacker.weapon.cooldown;
 }
 
 export function enchantWeapon(weapon, enchant) {

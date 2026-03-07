@@ -67,9 +67,9 @@ export function getChoices(wave, player) {
             attr: "Cooldown",
             getBonus: (mult) => -1 * rand(5 * mult, 10 * mult),
             arg: player.weapon,
-            getCurr: (arg) => arg.cooldownTime,
-            getNew: (arg, b) => (arg.cooldownTime * (1 + b / 100)).toFixed(2),
-            func: (wpn, b) => { wpn.cooldownTime = (wpn.cooldownTime * (1 + b / 100)).toFixed(2); },
+            getCurr: (arg) => arg.cooldown,
+            getNew: (arg, b) => (arg.cooldown * (1 + b / 100)).toFixed(2),
+            func: (wpn, b) => { wpn.cooldown = (wpn.cooldown * (1 + b / 100)).toFixed(2); },
         },
     ];
 

@@ -42,12 +42,12 @@ export function drawWeapon(ctx, camera, bearer, debug = true) {
     // Weapon radius
     ctx.beginPath();
     const cooldownRadius = bearer.radius + (debug ? bearer.weapon.range : 3);
-    ctx.ellipse(bearer.x - camera.x, bearer.y - camera.y, cooldownRadius, cooldownRadius, 0, bearer.weapon.cooldown / bearer.weapon.cooldownTime * 2 * Math.PI, 2 * Math.PI);
+    ctx.ellipse(bearer.x - camera.x, bearer.y - camera.y, cooldownRadius, cooldownRadius, 0, bearer.weapon.cooldownTime / bearer.weapon.cooldown * 2 * Math.PI, 2 * Math.PI);
     let strokeStyle = "#c9570b";
     ctx.lineWidth = 3;
     let lineDash = [8, 8];
     ctx.setLineDash([]);
-    if (bearer.weapon.cooldown <= 0) {
+    if (bearer.weapon.cooldownTime <= 0) {
         strokeStyle = "#169116";
         lineDash = [];
     }

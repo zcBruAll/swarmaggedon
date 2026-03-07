@@ -185,8 +185,8 @@ export function createEngine(canvas, onHUDUpdate) {
             }
         }
 
-        attacker.weapon.cooldown -= Math.min(dt, attacker.weapon.cooldown);
-        if (attacker.weapon.cooldown > 0) return;
+        attacker.weapon.cooldownTime -= Math.min(dt, attacker.weapon.cooldownTime);
+        if (attacker.weapon.cooldownTime > 0) return;
 
         let firstTargetAngle = undefined;
         let nearestTarget = 1e6;
@@ -217,7 +217,7 @@ export function createEngine(canvas, onHUDUpdate) {
                         continue;
                     }
                 }
-                attacker.weapon.cooldown = attacker.weapon.cooldownTime;
+                attacker.weapon.cooldownTime = attacker.weapon.cooldown;
 
                 if (attacker.weapon.type == WEAPON_TYPE.MELEE)
                     attackMelee(target, attacker.weapon.damage, fun);
