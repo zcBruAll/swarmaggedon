@@ -205,7 +205,7 @@ export function getWeaponChoices(wave, player) {
                 possibleChoices.push(weapon);
             });
         }
-        possibleChoices.push(createWeapon(type, WEAPON_ENCHANT.LASER));
+        possibleChoices.push(createWeapon(type, undefined));
     });
 
     const choices = possibleChoices
