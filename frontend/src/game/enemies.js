@@ -87,7 +87,7 @@ function scaleStats(base, multiplier, wave) {
 export function spawnEnemy(player, enemy, minAngle = 0, maxAngle = Math.PI * 2, safeRadius = 250) {
     // Compute random spawn position
     const randAngle = minAngle + Math.random() * (maxAngle - minAngle);
-    const randDist = Math.random() * 500;
+    const randDist = Math.random() * 300;
     const spawnRadius = safeRadius + randDist;
     enemy.x = player.x + Math.cos(randAngle) * spawnRadius;
     enemy.y = player.y + Math.sin(randAngle) * spawnRadius;
@@ -133,7 +133,7 @@ export function updateEnemies(enemies, player, dt) {
         if (enemy.spawnIn > 0) {
             enemy.spawnIn -= Math.min(enemy.spawnIn, dt);
 
-            if (enemy.spawnIn <= 3 && !enemy.x && !enemy.y) {
+            if (enemy.spawnIn <= 1.5 && !enemy.x && !enemy.y) {
                 const { minAngle, maxAngle, safeRadius } = enemy.spawnData;
                 spawnEnemy(player, enemy, minAngle, maxAngle, safeRadius);
             }
@@ -205,15 +205,15 @@ export function createWave(wave) {
     const baseArc = Math.PI * 0.5;
 
     queue.forEach((enemy, index) => {
-        const squadSize = 3 + Math.floor(wave / 6);
+        const squadSize = 4 + Math.floor(wave / 6);
         const squadIndex = Math.floor(index / squadSize);
 
-        enemy.spawnIn = (squadIndex * 2) + (Math.random() * 1.5);
+        enemy.spawnIn = (squadIndex * 2) + (Math.random() * 1);
 
         enemy.spawnData = {
             minAngle: startAngle,
             maxAngle: startAngle + Math.min(Math.PI * 2, baseArc + (squadIndex * 0.5)),
-            safeRadius: 250 + (squadIndex === 0 ? 100 : 0)
+            safeRadius: 250
         };
     });
 
