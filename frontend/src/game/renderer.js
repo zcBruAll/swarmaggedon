@@ -79,7 +79,7 @@ export function drawWeapon(ctx, camera, bearer, debug = true) {
 export function drawEnemies(ctx, camera, enemies, width, height) {
     if (!enemies || enemies.length <= 0) return;
     for (const enemy of enemies) {
-        if (enemy.spawnIn > 2.75) continue;
+        if (enemy.spawnIn > 1.5) continue;
         drawEnemy(ctx, camera, enemy, width, height);
     }
 }
@@ -88,7 +88,7 @@ export function drawEnemy(ctx, camera, enemy, width, height) {
     const dx = enemy.x - camera.x;
     const dy = enemy.y - camera.y;
 
-    const enemyAlpha = 1 - enemy.spawnIn / 2.75;
+    const enemyAlpha = Math.max(0, 1 - enemy.spawnIn / 1.25);
 
     if (dx > - (enemy.radius + enemy.weapon.range) && dx < width + enemy.radius + enemy.weapon.range && dy > - (enemy.radius + enemy.weapon.range) && dy < height + enemy.radius + enemy.weapon.range) {
         let enemyRegion = new Path2D();
