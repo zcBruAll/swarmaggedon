@@ -254,7 +254,7 @@ function Game() {
                 <div className="pc-weapon-stats">
                   <span className="pw-stat">
                     <span className="pw-label">cd</span>
-                    <span className="pw-value">{w.cooldownTime}</span>
+                    <span className="pw-value">{w.cooldown}</span>
                   </span>
                   <span className="pw-stat">
                     <span className="pw-label">dmg</span>
@@ -327,17 +327,17 @@ function Game() {
           <div className="items-grid">
             {slots.map((item, i) => {
               if (!item) return <div key={i} className="item-slot empty" />;
-              const cdPct = item.cooldownTime
-                ? Math.round((1 - item.cooldown / item.cooldownTime) * 100)
+              const cdPct = item.cooldown
+                ? Math.round((1 - item.cooldownTime / item.cooldown) * 100)
                 : 100;
-              const isReady = !item.cooldownTime || item.cooldown <= 0;
+              const isReady = !item.cooldown || item.cooldownTime <= 0;
               return (
                 <div key={i} className="item-slot">
                   <img src={item.icon || 'temp.png'} alt={item.name} />
-                  {item.cooldownTime && (
+                  {item.cooldown && (
                     <>
                       <span className="item-slot-cd">
-                        {item.cooldown > 0 ? Number(item.cooldown).toFixed(1) : ''}
+                        {item.cooldownTime > 0 ? Number(item.cooldownTime).toFixed(1) : ''}
                       </span>
                       <div
                         className={`item-slot-bar ${isReady ? 'ready' : ''}`}

@@ -1,4 +1,5 @@
 import { ENEMY_TYPE } from "./enemies";
+import { WEAPON_ENCHANT } from "./weapon";
 
 export function drawBackground(ctx, width, height, camera) {
     ctx.clearRect(0, 0, width, height);
@@ -26,28 +27,29 @@ export function drawBackground(ctx, width, height, camera) {
 }
 
 export function drawPlayer(ctx, camera, player) {
+    drawWeapon(ctx, camera, player, false);
+    drawBullets(ctx, camera, player.bullets);
+
     let playerRegion = new Path2D();
     playerRegion.ellipse(player.x - camera.x, player.y - camera.y, player.radius, player.radius, 0, 0, 2 * Math.PI);
     playerRegion.closePath();
     ctx.fillStyle = "#000000";
     ctx.fill(playerRegion);
-
-    drawWeapon(ctx, camera, player, false);
-    drawBullets(ctx, camera, player.bullets);
 }
 
 export function drawWeapon(ctx, camera, bearer, debug = true) {
     if (!bearer.weapon) return;
 
     // Weapon radius
+    ctx.save();
     ctx.beginPath();
     const cooldownRadius = bearer.radius + (debug ? bearer.weapon.range : 3);
-    ctx.ellipse(bearer.x - camera.x, bearer.y - camera.y, cooldownRadius, cooldownRadius, 0, bearer.weapon.cooldown / bearer.weapon.cooldownTime * 2 * Math.PI, 2 * Math.PI);
+    ctx.ellipse(bearer.x - camera.x, bearer.y - camera.y, cooldownRadius, cooldownRadius, 0, bearer.weapon.cooldownTime / bearer.weapon.cooldown * 2 * Math.PI, 2 * Math.PI);
     let strokeStyle = "#c9570b";
     ctx.lineWidth = 3;
     let lineDash = [8, 8];
     ctx.setLineDash([]);
-    if (bearer.weapon.cooldown <= 0) {
+    if (bearer.weapon.cooldownTime <= 0) {
         strokeStyle = "#169116";
         lineDash = [];
     }
@@ -57,14 +59,24 @@ export function drawWeapon(ctx, camera, bearer, debug = true) {
     ctx.closePath();
 
     // Weapon angle 
+    let width = 1;
+    let angle = bearer.angle;
+    if (bearer.weapon.enchant === WEAPON_ENCHANT.LASER && bearer.weapon.charging) {
+        const perc = (1 - (bearer.weapon.laserCdTime / bearer.weapon.laserCd))
+        width = bearer.weapon.bulletWidth * perc;
+        strokeStyle = `rgba(237, 47, 50, ${perc})`;
+        ctx.strokeStyle = strokeStyle;
+        angle = bearer.weapon.laserAngle;
+    }
+
     ctx.beginPath();
-    ctx.lineWidth = 1;
+    ctx.lineWidth = width;
     ctx.setLineDash(lineDash);
     ctx.moveTo(bearer.x - camera.x, bearer.y - camera.y);
 
     const halfSpread = ((bearer.weapon.angle ?? 0) / 2) * (Math.PI / 180);
-    const startAngle = bearer.angle - halfSpread;
-    const endAngle = bearer.angle + halfSpread;
+    const startAngle = angle - halfSpread;
+    const endAngle = angle + halfSpread;
     const weaponRadius = bearer.radius + bearer.weapon.range;
 
     ctx.arc(bearer.x - camera.x, bearer.y - camera.y, weaponRadius, startAngle, endAngle);
@@ -74,6 +86,7 @@ export function drawWeapon(ctx, camera, bearer, debug = true) {
     ctx.stroke();
     ctx.fillStyle = strokeStyle + '25';
     ctx.fill();
+    ctx.restore();
 }
 
 export function drawEnemies(ctx, camera, enemies, width, height) {
@@ -85,12 +98,17 @@ export function drawEnemies(ctx, camera, enemies, width, height) {
 }
 
 export function drawEnemy(ctx, camera, enemy, width, height) {
+    if (enemy.type === ENEMY_TYPE.SHOOTER) {
+        drawBullets(ctx, camera, enemy.bullets);
+    }
     const dx = enemy.x - camera.x;
     const dy = enemy.y - camera.y;
 
     const enemyAlpha = Math.max(0, 1 - enemy.spawnIn / 1.25);
 
     if (dx > - (enemy.radius + enemy.weapon.range) && dx < width + enemy.radius + enemy.weapon.range && dy > - (enemy.radius + enemy.weapon.range) && dy < height + enemy.radius + enemy.weapon.range) {
+        drawWeapon(ctx, camera, enemy, true);
+
         let enemyRegion = new Path2D();
         enemyRegion.ellipse(dx, dy, enemy.radius, enemy.radius, 0, 0, 2 * Math.PI);
         enemyRegion.closePath();
@@ -120,7 +138,6 @@ export function drawEnemy(ctx, camera, enemy, width, height) {
             ctx.fillRect(bx, by, filled, barH);
             ctx.restore();
         }
-        drawWeapon(ctx, camera, enemy, true);
     } else {
         const margin = 20;
         const centerX = width / 2;
@@ -155,9 +172,6 @@ export function drawEnemy(ctx, camera, enemy, width, height) {
 
         ctx.restore();
     }
-    if (enemy.type === ENEMY_TYPE.SHOOTER) {
-        drawBullets(ctx, camera, enemy.bullets);
-    }
 }
 
 export function drawBullets(ctx, camera, bullets) {
@@ -167,8 +181,8 @@ export function drawBullets(ctx, camera, bullets) {
 }
 
 export function drawBullet(ctx, camera, bullet) {
-    ctx.fillStyle = "#00ff00";
+    ctx.fillStyle = "#007b00";
     ctx.beginPath();
-    ctx.ellipse(bullet.x - camera.x, bullet.y - camera.y, 6, 3, bullet.angle, 0, 2 * Math.PI);
+    ctx.ellipse(bullet.x - camera.x, bullet.y - camera.y, bullet.width * 1.5, bullet.width, bullet.angle, 0, 2 * Math.PI);
     ctx.fill();
 }

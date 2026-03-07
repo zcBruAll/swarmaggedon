@@ -67,9 +67,9 @@ export function getChoices(wave, player) {
             attr: "Cooldown",
             getBonus: (mult) => -1 * rand(5 * mult, 10 * mult),
             arg: player.weapon,
-            getCurr: (arg) => arg.cooldownTime,
-            getNew: (arg, b) => (arg.cooldownTime * (1 + b / 100)).toFixed(2),
-            func: (wpn, b) => { wpn.cooldownTime = (wpn.cooldownTime * (1 + b / 100)).toFixed(2); },
+            getCurr: (arg) => arg.cooldown,
+            getNew: (arg, b) => (arg.cooldown * (1 + b / 100)).toFixed(2),
+            func: (wpn, b) => { wpn.cooldown = parseFloat((wpn.cooldown * (1 + b / 100)).toFixed(2)); },
         },
     ];
 
@@ -90,7 +90,7 @@ export function getChoices(wave, player) {
                 arg: player.weapon,
                 getCurr: (arg) => arg.pierce,
                 getNew: (arg, b) => (arg.pierce * (1 + b / 100)).toFixed(2),
-                func: (wpn, b) => { wpn.pierce = (wpn.pierce * (1 + b / 100)).toFixed(2); },
+                func: (wpn, b) => { wpn.pierce = parseFloat((wpn.pierce * (1 + b / 100)).toFixed(2)); },
             });
         } else if (player.weapon.enchant === WEAPON_ENCHANT.RIFLE) {
             possibleChoices.push({
@@ -99,7 +99,7 @@ export function getChoices(wave, player) {
                 arg: player.weapon,
                 getCurr: (arg) => arg.rifle,
                 getNew: (arg, b) => (arg.rifle * (1 + b / 100)).toFixed(2),
-                func: (wpn, b) => { wpn.rifle = (wpn.rifle * (1 + b / 100)).toFixed(2); },
+                func: (wpn, b) => { wpn.rifle = parseFloat((wpn.rifle * (1 + b / 100)).toFixed(2)); },
             });
         } else if (player.weapon.enchant === WEAPON_ENCHANT.CHAIN) {
             possibleChoices.push({
@@ -108,7 +108,7 @@ export function getChoices(wave, player) {
                 arg: player.weapon,
                 getCurr: (arg) => arg.chainRadius,
                 getNew: (arg, b) => (arg.chainRadius * (1 + b / 100)).toFixed(2),
-                func: (wpn, b) => { wpn.chainRadius = (wpn.chainRadius * (1 + b / 100)).toFixed(2); },
+                func: (wpn, b) => { wpn.chainRadius = parseFloat((wpn.chainRadius * (1 + b / 100)).toFixed(2)); },
             });
             possibleChoices.push({
                 attr: "Chain",
@@ -116,7 +116,24 @@ export function getChoices(wave, player) {
                 arg: player.weapon,
                 getCurr: (arg) => arg.chain,
                 getNew: (arg, b) => (arg.chain * (1 + b / 100)).toFixed(2),
-                func: (wpn, b) => { wpn.chain = (wpn.chain * (1 + b / 100)).toFixed(2); },
+                func: (wpn, b) => { wpn.chain = parseFloat((wpn.chain * (1 + b / 100)).toFixed(2)); },
+            });
+        } else if (player.weapon.enchant === WEAPON_ENCHANT.LASER) {
+            possibleChoices.push({
+                attr: "Laser width",
+                getBonus: (mult) => rand(1 * mult, 5 * mult),
+                arg: player.weapon,
+                getCurr: (arg) => arg.bulletWidth,
+                getNew: (arg, b) => (arg.bulletWidth * (1 + b / 100)).toFixed(2),
+                func: (wpn, b) => { wpn.bulletWidth = parseFloat((wpn.bulletWidth * (1 + b / 100)).toFixed(2)); },
+            });
+            possibleChoices.push({
+                attr: "Laser cooldown",
+                getBonus: (mult) => rand(2 * mult, 7 * mult),
+                arg: player.weapon,
+                getCurr: (arg) => arg.laserCd,
+                getNew: (arg, b) => (arg.laserCd * (1 - b / 100)).toFixed(2),
+                func: (wpn, b) => { wpn.laserCd = parseFloat((wpn.laserCd * (1 - b / 100)).toFixed(2)); },
             });
         }
     }
@@ -152,7 +169,7 @@ export function getEnchantChoices(wave, player) {
     let possibleChoices = [];
 
     Object.values(WEAPON_ENCHANT).forEach(enchant => {
-        if (enchant !== WEAPON_ENCHANT.TRANSFER && enchant !== player.weapon.enchant) {
+        if (enchant !== player.weapon.enchant) {
             let weapon = createEnchant(enchant);
             possibleChoices.push(weapon);
         }
