@@ -15,6 +15,7 @@ export const WEAPON_ENCHANT = {
     SUBMACHINEGUN: 'submachinegun',
     LIFESTEAL: 'lifesteal',
     LUNGE: 'lunge',
+    CLEAVE: 'cleave',
 }
 
 export function createWeapon(type, enchant) {
@@ -138,6 +139,17 @@ export function createEnchant(enchant) {
                 range: 90,
                 support: [WEAPON_TYPE.MELEE],
                 angle: 25,
+                props: ['angle'],
+                bonusProps: ['cooldown', 'damage', 'range'],
+            }
+        case WEAPON_ENCHANT.CLEAVE:
+            return {
+                name: WEAPON_ENCHANT.CLEAVE,
+                cooldown: 125,
+                damage: 70,
+                range: 90,
+                support: [WEAPON_TYPE.MELEE],
+                angle: 180,
                 props: ['angle'],
                 bonusProps: ['cooldown', 'damage', 'range'],
             }
