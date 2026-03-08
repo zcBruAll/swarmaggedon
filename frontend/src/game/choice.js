@@ -146,6 +146,31 @@ export function getChoices(wave, player) {
                 getNew: (arg, b) => (arg.lifesteal * (1 + b / 100)).toFixed(2),
                 func: (wpn, b) => { wpn.lifesteal = parseFloat((wpn.lifesteal * (1 + b / 100)).toFixed(2)); },
             });
+        } else if (player.weapon.enchant === WEAPON_ENCHANT.CHARGE) {
+            possibleChoices.push({
+                attr: "Damage Speed",
+                getBonus: (mult) => rand(5 * mult, 10 * mult),
+                arg: player.weapon,
+                getCurr: (arg) => arg.dmgSpeed,
+                getNew: (arg, b) => (arg.dmgSpeed * (1 + b / 100)).toFixed(2),
+                func: (wpn, b) => { wpn.dmgSpeed = parseFloat((wpn.dmgSpeed * (1 + b / 100)).toFixed(2)); },
+            });
+            possibleChoices.push({
+                attr: "Range Speed",
+                getBonus: (mult) => rand(5 * mult, 10 * mult),
+                arg: player.weapon,
+                getCurr: (arg) => arg.rngSpeed,
+                getNew: (arg, b) => (arg.rngSpeed * (1 + b / 100)).toFixed(2),
+                func: (wpn, b) => { wpn.rngSpeed = parseFloat((wpn.rngSpeed * (1 + b / 100)).toFixed(2)); },
+            });
+            possibleChoices.push({
+                attr: "Max charge",
+                getBonus: (mult) => rand(2 * mult, 7 * mult),
+                arg: player.weapon,
+                getCurr: (arg) => arg.maxCharge,
+                getNew: (arg, b) => (arg.maxCharge * (1 + b / 100)).toFixed(2),
+                func: (wpn, b) => { wpn.maxCharge = parseFloat((wpn.maxCharge * (1 + b / 100)).toFixed(2)); },
+            });
         }
     }
 

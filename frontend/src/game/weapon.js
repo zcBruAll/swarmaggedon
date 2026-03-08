@@ -17,6 +17,7 @@ export const WEAPON_ENCHANT = {
     LUNGE: 'lunge',
     CLEAVE: 'cleave',
     FRENZY: 'frenzy',
+    CHARGE: 'charge',
 }
 
 export function createWeapon(type, enchant) {
@@ -163,6 +164,21 @@ export function createEnchant(enchant) {
                 support: [WEAPON_TYPE.MELEE],
                 angle: 75,
                 props: ['angle'],
+                bonusProps: ['cooldown', 'damage', 'range'],
+            }
+        case WEAPON_ENCHANT.CHARGE:
+            return {
+                name: WEAPON_ENCHANT.CHARGE,
+                cooldown: 120,
+                damage: 20,
+                range: 30,
+                support: [WEAPON_TYPE.MELEE],
+                angle: 75,
+                dmgSpeed: 250,
+                rngSpeed: 250,
+                maxCharge: 2.5,
+                chargeTime: 0,
+                props: ['angle', 'dmgSpeed', 'rngSpeed', 'maxCharge', 'chargeTime'],
                 bonusProps: ['cooldown', 'damage', 'range'],
             }
         case WEAPON_ENCHANT.SINGLE:

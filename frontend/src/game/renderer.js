@@ -40,23 +40,26 @@ export function drawPlayer(ctx, camera, player) {
 export function drawWeapon(ctx, camera, bearer, debug = true) {
     if (!bearer.weapon) return;
 
-    // Weapon radius
-    ctx.save();
-    ctx.beginPath();
-    const cooldownRadius = bearer.radius + (debug ? bearer.weapon.range : 3);
-    ctx.ellipse(bearer.x - camera.x, bearer.y - camera.y, cooldownRadius, cooldownRadius, 0, bearer.weapon.cooldownTime / bearer.weapon.cooldown * 2 * Math.PI, 2 * Math.PI);
     let strokeStyle = "#c9570b";
-    ctx.lineWidth = 3;
     let lineDash = [8, 8];
-    ctx.setLineDash([]);
-    if (bearer.weapon.cooldownTime <= 0) {
+    if (bearer.weapon.cooldownTime <= 0 || (bearer.weapon.enchant === WEAPON_ENCHANT.CHARGE && bearer.weapon.charging)) {
         strokeStyle = "#169116";
         lineDash = [];
     }
 
-    ctx.strokeStyle = strokeStyle;
-    ctx.stroke();
-    ctx.closePath();
+    ctx.save();
+
+    // Weapon cooldown
+    if (bearer.weapon.enchant !== WEAPON_ENCHANT.CHARGE || !bearer.weapon.charging) {
+        const cooldownRadius = bearer.radius + (debug ? bearer.weapon.range : 3);
+        ctx.beginPath();
+        ctx.ellipse(bearer.x - camera.x, bearer.y - camera.y, cooldownRadius, cooldownRadius, 0, bearer.weapon.cooldownTime / bearer.weapon.cooldown * 2 * Math.PI, 2 * Math.PI);
+        ctx.strokeStyle = strokeStyle;
+        ctx.lineWidth = 3;
+        ctx.setLineDash([]);
+        ctx.stroke();
+        ctx.closePath();
+    }
 
     // Weapon angle 
     let width = 1;
@@ -66,7 +69,6 @@ export function drawWeapon(ctx, camera, bearer, debug = true) {
         const perc = (1 - (bearer.weapon.laserCdTime / bearer.weapon.laserCd))
         width = bearer.weapon.bulletWidth * perc;
         strokeStyle = `rgba(237, 47, 50, ${perc})`;
-        ctx.strokeStyle = strokeStyle;
         angle = bearer.weapon.laserAngle;
     } else if (bearer.weapon.enchant === WEAPON_ENCHANT.SUBMACHINEGUN) {
         weaponAngle = bearer.weapon.dispersion;
@@ -74,13 +76,18 @@ export function drawWeapon(ctx, camera, bearer, debug = true) {
 
     ctx.beginPath();
     ctx.lineWidth = width;
+    ctx.strokeStyle = strokeStyle;
     ctx.setLineDash(lineDash);
     ctx.moveTo(bearer.x - camera.x, bearer.y - camera.y);
 
     const halfSpread = (weaponAngle / 2) * (Math.PI / 180);
     const startAngle = angle - halfSpread;
     const endAngle = angle + halfSpread;
-    const weaponRadius = bearer.radius + bearer.weapon.range;
+    let weaponRange = bearer.weapon.range;
+    if (bearer.weapon.enchant === WEAPON_ENCHANT.CHARGE && bearer.weapon.charging) {
+        weaponRange = bearer.weapon.range * (bearer.weapon.chargeTime * bearer.weapon.rngSpeed) / 100
+    }
+    const weaponRadius = bearer.radius + weaponRange;
 
     ctx.arc(bearer.x - camera.x, bearer.y - camera.y, weaponRadius, startAngle, endAngle);
 
