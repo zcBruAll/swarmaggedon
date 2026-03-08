@@ -8,7 +8,7 @@ export function createPlayer(canvasWidth, canvasHeight) {
         angle: 0,
         hp: 100,
         maxHp: 100,
-        speed: 200,
+        speed: 180,
         weapon: undefined,
         bullets: [],
         type: 'player',

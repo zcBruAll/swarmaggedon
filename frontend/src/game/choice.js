@@ -11,10 +11,10 @@ export const CHOICE_TYPE = {
 const rand = (min, max) => Math.floor(Math.random() * (max - min + 1) + min);
 
 const RARITIES = {
-    COMMON: { name: 'Common', color: '#bdc3c7', weight: 60, mult: 1.0 },
+    COMMON: { name: 'Common', color: '#bdc3c7', weight: 61, mult: 1.0 },
     RARE: { name: 'Rare', color: '#3498db', weight: 30, mult: 1.5 },
     EPIC: { name: 'Epic', color: '#9b59b6', weight: 8, mult: 2.0 },
-    LEGENDARY: { name: 'Legendary', color: '#f1c40f', weight: 2, mult: 3.0 }
+    LEGENDARY: { name: 'Legendary', color: '#f1c40f', weight: 1, mult: 3.0 }
 };
 
 function getRandomRarity() {
