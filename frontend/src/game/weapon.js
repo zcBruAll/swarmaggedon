@@ -14,6 +14,7 @@ export const WEAPON_ENCHANT = {
     LASER: 'laser',
     SUBMACHINEGUN: 'submachinegun',
     LIFESTEAL: 'lifesteal',
+    LUNGE: 'lunge',
 }
 
 export function createWeapon(type, enchant) {
@@ -127,6 +128,17 @@ export function createEnchant(enchant) {
                 support: [WEAPON_TYPE.MELEE],
                 lifesteal: 3,
                 props: ['lifesteal'],
+                bonusProps: ['cooldown', 'damage', 'range'],
+            }
+        case WEAPON_ENCHANT.LUNGE:
+            return {
+                name: WEAPON_ENCHANT.LUNGE,
+                cooldown: 175,
+                damage: 150,
+                range: 90,
+                support: [WEAPON_TYPE.MELEE],
+                angle: 25,
+                props: ['angle'],
                 bonusProps: ['cooldown', 'damage', 'range'],
             }
         case WEAPON_ENCHANT.SINGLE:
