@@ -75,7 +75,7 @@ function onMouseDown(e) {
 }
 
 function onMouseUp(e) {
-    input.mouseDown = !(input.mouseDown && (e.buttons & 1) === 1);
+    input.mouseDown = !(input.mouseDown && !((e.buttons & 1) === 1));
 }
 
 export function initInput(canvas) {

@@ -223,8 +223,50 @@ export function createEngine(canvas, onHUDUpdate) {
             return;
         }
 
-        attacker.weapon.cooldownTime -= Math.min(dt, attacker.weapon.cooldownTime);
-        if (attacker.weapon.cooldownTime > 0) return;
+        if (attacker.weapon.enchant === WEAPON_ENCHANT.CHARGE) {
+            if (input.mouseDown) {
+                attacker.weapon.chargeTime += Math.min(dt, attacker.weapon.maxCharge - attacker.weapon.chargeTime);
+                attacker.weapon.charging = true;
+                return;
+            } else if (attacker.weapon.charging) {
+                const weaponRange = attacker.weapon.range * (1 + (attacker.weapon.chargeTime * attacker.weapon.rngSpeed) / 100);
+                const weaponDamage = attacker.weapon.damage * (1 + (attacker.weapon.chargeTime * attacker.weapon.dmgSpeed) / 100);
+                let firstTargetAngle = undefined;
+                for (const target of targets) {
+                    const dx = target.x - attacker.x;
+                    const dy = target.y - attacker.y;
+                    const d = Math.hypot(dx, dy);
+                    const angle = Math.atan2(dy, dx);
+                    if (d <= target.radius + attacker.radius + weaponRange) {
+                        if (firstTargetAngle == undefined) {
+                            firstTargetAngle = angle;
+                        } else {
+                            let diff = Math.abs(angle - firstTargetAngle);
+
+                            if (diff > Math.PI) {
+                                diff = Math.PI * 2 - diff;
+                            }
+
+                            if (diff > Math.PI / 180 * attacker.weapon.angle) {
+                                continue;
+                            }
+                        }
+                        attacker.weapon.cooldownTime = attacker.weapon.cooldown;
+
+                        attackMelee(target, weaponDamage, fun);
+                    }
+                }
+                attacker.weapon.charging = false;
+                attacker.weapon.chargeTime = 0;
+                attacker.weapon.cooldownTime = attacker.weapon.cooldown;
+                return;
+            }
+        }
+
+        if (attacker.weapon.enchant !== WEAPON_ENCHANT.CHARGE || !input.mouseDown) {
+            attacker.weapon.cooldownTime -= Math.min(dt, attacker.weapon.cooldownTime);
+            if (attacker.weapon.cooldownTime > 0) return;
+        }
 
         let firstTargetAngle = undefined;
         let nearestTarget = 1e6;
