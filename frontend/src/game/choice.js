@@ -136,6 +136,17 @@ export function getChoices(wave, player) {
                 func: (wpn, b) => { wpn.laserCd = parseFloat((wpn.laserCd * (1 - b / 100)).toFixed(2)); },
             });
         }
+    } else if (player.weapon.type === WEAPON_TYPE.MELEE) {
+        if (player.weapon.enchant === WEAPON_ENCHANT.LIFESTEAL) {
+            possibleChoices.push({
+                attr: "Lifesteal",
+                getBonus: (mult) => rand(2 * mult, 7 * mult),
+                arg: player.weapon,
+                getCurr: (arg) => arg.lifesteal,
+                getNew: (arg, b) => (arg.lifesteal * (1 + b / 100)).toFixed(2),
+                func: (wpn, b) => { wpn.lifesteal = parseFloat((wpn.lifesteal * (1 + b / 100)).toFixed(2)); },
+            });
+        }
     }
 
     const choices = possibleChoices
@@ -168,10 +179,11 @@ export function getChoices(wave, player) {
 export function getEnchantChoices(wave, player) {
     let possibleChoices = [];
 
-    Object.values(WEAPON_ENCHANT).forEach(enchant => {
-        if (enchant !== player.weapon.enchant) {
-            let weapon = createEnchant(enchant);
-            possibleChoices.push(weapon);
+    Object.values(WEAPON_ENCHANT).forEach(enchant_type => {
+        if (enchant_type !== player.weapon.enchant) {
+            let enchant = createEnchant(enchant_type);
+            if (enchant.support.includes(player.weapon.type))
+                possibleChoices.push(enchant);
         }
     });
 
@@ -204,8 +216,9 @@ export function getWeaponChoices(wave, player) {
                 let weapon = createWeapon(type, enchant);
                 possibleChoices.push(weapon);
             });
+        } else {
+            possibleChoices.push(createWeapon(type, undefined));
         }
-        possibleChoices.push(createWeapon(type, undefined));
     });
 
     const choices = possibleChoices
