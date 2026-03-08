@@ -257,8 +257,12 @@ export function createEngine(canvas, onHUDUpdate) {
                 }
                 attacker.weapon.cooldownTime = attacker.weapon.cooldown;
 
-                if (attacker.weapon.type == WEAPON_TYPE.MELEE)
+                if (attacker.weapon.type === WEAPON_TYPE.MELEE) {
+                    if (attacker.weapon.enchant === WEAPON_ENCHANT.LIFESTEAL) {
+                        lifesteal(attacker, attacker.weapon.damage, attacker.weapon.lifesteal);
+                    }
                     attackMelee(target, attacker.weapon.damage, fun);
+                }
             }
         }
 
@@ -272,6 +276,11 @@ export function createEngine(canvas, onHUDUpdate) {
 
     function attackMelee(target, damage, fun) {
         fun(target, damage);
+    }
+
+    function lifesteal(attacker, damage, lifesteal) {
+        const heal = (damage * lifesteal / 100);
+        attacker.hp += Math.min(heal, attacker.maxHp - attacker.hp);
     }
 
     function updateCamera(camera, player, enemies, w, h) {
@@ -318,11 +327,7 @@ export function createEngine(canvas, onHUDUpdate) {
                 choices = getWeaponChoices(wave, player);
                 break;
             case CHOICE_TYPE.ENCHANT:
-                if (player.weapon.type === WEAPON_TYPE.MELEE) {
-                    choices = getChoices(wave, player);
-                } else {
-                    choices = getEnchantChoices(wave, player);
-                }
+                choices = getEnchantChoices(wave, player);
                 break;
             default:
                 choices = getChoices(wave, player);

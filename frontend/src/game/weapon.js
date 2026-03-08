@@ -13,6 +13,7 @@ export const WEAPON_ENCHANT = {
     PIERCE: 'pierce',
     LASER: 'laser',
     SUBMACHINEGUN: 'submachinegun',
+    LIFESTEAL: 'lifesteal',
 }
 
 export function createWeapon(type, enchant) {
@@ -116,6 +117,17 @@ export function createEnchant(enchant) {
                 dispersion: 25,
                 props: ['dispersion'],
                 bonusProps: ['cooldown', 'damage', 'range']
+            }
+        case WEAPON_ENCHANT.LIFESTEAL:
+            return {
+                name: WEAPON_ENCHANT.LIFESTEAL,
+                cooldown: 115,
+                damage: 85,
+                range: 90,
+                support: [WEAPON_TYPE.MELEE],
+                lifesteal: 3,
+                props: ['lifesteal'],
+                bonusProps: ['cooldown', 'damage', 'range'],
             }
         case WEAPON_ENCHANT.SINGLE:
         default:
