@@ -129,7 +129,7 @@ export function createEnchant(enchant) {
                 damage: 85,
                 range: 90,
                 support: [WEAPON_TYPE.MELEE],
-                lifesteal: 3,
+                lifesteal: 1.5,
                 props: ['lifesteal'],
                 bonusProps: ['cooldown', 'damage', 'range'],
             }

@@ -56,7 +56,7 @@ const BASE_STATS = {
 const WAVE_SCALE = {
     [ENEMY_TYPE.RUNNER]: {
         hp: 1.07,
-        speed: 1.02,
+        speed: 1.04,
         damage: 1.06,
         range: 1.008,
     },
@@ -73,7 +73,7 @@ const WAVE_SCALE = {
         range: 1.01
     },
     [ENEMY_TYPE.BOSS]: {
-        hp: 1.15,
+        hp: 1.12,
         speed: 1.03,
         damage: 1.08,
         range: 1.002,
@@ -84,7 +84,7 @@ function scaleStats(base, multiplier, wave) {
     return base * Math.pow(multiplier, wave - 1);
 }
 
-export function spawnEnemy(player, enemy, minAngle = 0, maxAngle = Math.PI * 2, safeRadius = 250) {
+export function spawnEnemy(player, enemy, minAngle = 0, maxAngle = Math.PI * 2, safeRadius = 180) {
     // Compute random spawn position
     const randAngle = minAngle + Math.random() * (maxAngle - minAngle);
     const randDist = Math.random() * 300;
@@ -213,7 +213,7 @@ export function createWave(wave) {
         enemy.spawnData = {
             minAngle: startAngle,
             maxAngle: startAngle + Math.min(Math.PI * 2, baseArc + (squadIndex * 0.5)),
-            safeRadius: 250
+            safeRadius: 180
         };
     });
 
