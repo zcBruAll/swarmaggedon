@@ -16,6 +16,7 @@ export const WEAPON_ENCHANT = {
     LIFESTEAL: 'lifesteal',
     LUNGE: 'lunge',
     CLEAVE: 'cleave',
+    FRENZY: 'frenzy',
 }
 
 export function createWeapon(type, enchant) {
@@ -150,6 +151,17 @@ export function createEnchant(enchant) {
                 range: 90,
                 support: [WEAPON_TYPE.MELEE],
                 angle: 180,
+                props: ['angle'],
+                bonusProps: ['cooldown', 'damage', 'range'],
+            }
+        case WEAPON_ENCHANT.FRENZY:
+            return {
+                name: WEAPON_ENCHANT.FRENZY,
+                cooldown: 50,
+                damage: 60,
+                range: 90,
+                support: [WEAPON_TYPE.MELEE],
+                angle: 75,
                 props: ['angle'],
                 bonusProps: ['cooldown', 'damage', 'range'],
             }
