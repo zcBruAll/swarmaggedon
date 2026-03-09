@@ -74,6 +74,16 @@ export function getChoices(wave, player) {
     ];
 
     if (player.weapon.type === WEAPON_TYPE.RANGE) {
+        if (player.weapon.enchant !== WEAPON_ENCHANT.LASER) {
+            possibleChoices.push({
+                attr: "Bullet speed",
+                getBonus: (mult) => rand(1 * mult, 5 * mult),
+                arg: player.weapon,
+                getCurr: (arg) => arg.bulletSpeed,
+                getNew: (arg, b) => Math.round(arg.bulletSpeed * (1 + b / 100)),
+                func: (wpn, b) => { wpn.bulletSpeed = Math.round(wpn.bulletSpeed * (1 + b / 100)); },
+            });
+        }
         if (player.weapon.enchant === WEAPON_ENCHANT.AOE) {
             possibleChoices.push({
                 attr: "AOE Radius",

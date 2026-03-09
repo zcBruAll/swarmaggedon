@@ -39,6 +39,7 @@ export function createWeapon(type, enchant) {
             weapon = {
                 cooldownTime: 0.6,
                 cooldown: 0.6,
+                bulletSpeed: 500,
                 damage: 15,
                 range: 350,
                 bulletWidth: 3,
@@ -219,7 +220,7 @@ export function fireBullet(attacker, angle) {
     else if (attacker.weapon.enchant === WEAPON_ENCHANT.SUBMACHINEGUN)
         angle += (Math.random() >= 0.5 ? 1 : -1) * (Math.random() * (attacker.weapon.dispersion / 2)) * (Math.PI / 180);
 
-    attacker.bullets.push(createBullet(attacker.x, attacker.y, attacker.weapon.bulletWidth, angle, attacker.weapon.damage, attacker.weapon.range, attacker.weapon.enchant, args));
+    attacker.bullets.push(createBullet(attacker.x, attacker.y, attacker.weapon.bulletWidth, angle, attacker.weapon.bulletSpeed, attacker.weapon.damage, attacker.weapon.range, attacker.weapon.enchant, args));
     attacker.weapon.cooldownTime = attacker.weapon.cooldown;
 }
 
