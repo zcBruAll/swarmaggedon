@@ -19,8 +19,17 @@ export function createPlayer(canvasWidth, canvasHeight) {
 export function updatePlayer(player, input, dt, enemies, canvasWidth, canvasHeight) {
     const dirY = input.keys.up ? -1 : input.keys.down ? 1 : 0;
     const dirX = input.keys.left ? -1 : input.keys.right ? 1 : 0;
-    player.x += player.speed * dt * dirX;
-    player.y += player.speed * dt * dirY;
+
+    let moveX = 0;
+    let moveY = 0;
+    const length = Math.hypot(dirX, dirY);
+    if (length > 0) {
+        moveX = dirX / length;
+        moveY = dirY / length;
+    }
+
+    player.x += player.speed * dt * moveX;
+    player.y += player.speed * dt * moveY;
 
     let nearestEnemy = 1e6;
     for (const enemy of enemies) {
