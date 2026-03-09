@@ -142,6 +142,8 @@ export function updateEnemies(enemies, player, dt) {
 
         updateEnemy(enemy, player, dt);
     });
+
+    separateEnemies(enemies);
 }
 
 function updateEnemy(enemy, player, dt) {
@@ -165,6 +167,38 @@ function updateEnemy(enemy, player, dt) {
         if (distance > 0) {
             enemy.x += (dx / distance) * enemy.speed * dt;
             enemy.y += (dy / distance) * enemy.speed * dt;
+        }
+    }
+}
+
+function separateEnemies(enemies) {
+    for (const a of enemies) {
+        if (a.spawnIn > 0) continue;
+        for (const b of enemies) {
+            if (b.spawnIn > 0) continue;
+
+            const dx = b.x - a.x;
+            const dy = b.y - a.y;
+            const dist = Math.hypot(dx, dy);
+            const minDist = a.radius + b.radius + 3;
+            if (dist < minDist && dist > 0) {
+                // Overlap ratio between 0 and 1
+                const overlap = (minDist - dist) / minDist;
+                // Push enemies proportional to overlap
+                const force = overlap * 0.5;
+                const nx = (dx / dist) * force;
+                const ny = (dy / dist) * force;
+
+                // Heavier enemies yield less
+                const massA = a.radius * a.radius;
+                const massB = b.radius * b.radius;
+                const totalMass = massA + massB;
+
+                a.x -= nx * (massB / totalMass);
+                a.y -= ny * (massB / totalMass);
+                b.x += nx * (massA / totalMass);
+                b.y += ny * (massA / totalMass);
+            }
         }
     }
 }
