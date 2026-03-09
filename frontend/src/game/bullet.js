@@ -64,7 +64,9 @@ export function updateBullet(bullet, targets, dt) {
         const c = fx * fx + fy * fy - (target.radius + bullet.width) * (target.radius + bullet.width);
 
         let hit = false;
-        if (a > 0) {
+        if (c <= 0) {
+            hit = true;
+        } else if (a > 0) {
             const disc = b * b - 4 * a * c;
             if (disc >= 0) {
                 const t = (-b - Math.sqrt(disc)) / (2 * a);
@@ -109,6 +111,8 @@ export function updateBullet(bullet, targets, dt) {
                     bullet.dead = true;
                 }
             } else if (bullet.explos === BULLET_EXPLOS.AOE) {
+                damageEnemy(target, bullet.damage);
+
                 const blastRadius = bullet.args.aoeRadius || 150;
 
                 for (const areaTarget of targets) {
