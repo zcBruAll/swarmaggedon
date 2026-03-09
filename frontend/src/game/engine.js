@@ -65,7 +65,7 @@ export function createEngine(canvas, onHUDUpdate) {
         kills = 0;
         augment(CHOICE_TYPE.WEAPON);
         wave = 1;
-        enemies = createWave(wave, player, canvas.width, canvas.height);
+        enemies = createWave(wave, player);
         waveState = {
             waveTitle: "WAVE " + wave,
             waveSubtitle: "",
@@ -130,7 +130,7 @@ export function createEngine(canvas, onHUDUpdate) {
                 }
             }
             wave += 1;
-            enemies.push(...createWave(wave, player, canvas.width, canvas.height));
+            enemies.push(...createWave(wave, player));
             waveState = {
                 waveTitle: "WAVE " + wave,
                 waveSubtitle: "",

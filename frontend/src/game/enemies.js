@@ -203,7 +203,7 @@ function separateEnemies(enemies) {
     }
 }
 
-export function createWave(wave) {
+export function createWave(wave, player) {
     const isBossWave = wave % BOSS_WAVE_INTERVAL == 0;
     const queue = [];
 
@@ -251,7 +251,11 @@ export function createWave(wave) {
         };
     });
 
-    if (queue.length > 0) queue[0].spawnIn = 0;
+    if (queue.length > 0) {
+        queue[0].spawnIn = 0;
+        const { minAngle, maxAngle, safeRadius } = queue[0].spawnData;
+        spawnEnemy(player, queue[0], minAngle, maxAngle, safeRadius);
+    }
 
     return queue;
 }
