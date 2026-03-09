@@ -51,25 +51,53 @@ export function updateBullet(bullet, targets, dt) {
     }
 
     for (const target of targets) {
+        // Continuous Collision Detection (CCD) via Ray-Circle Intersection
+        // We treat the bullet's movement this frame as a line segment (a ray)
+        // and check exactly when it mathematically intersects the enemy's circular hitbox
+
+        // Current / new frame position
         const stepX = Math.cos(bullet.angle) * bullet.speed * dt;
         const stepY = Math.sin(bullet.angle) * bullet.speed * dt;
+
+        // Previous frame position
         const prevX = bullet.x - stepX;
         const prevY = bullet.y - stepY;
 
+        // Calculate the vector from the bullet's starting position to the enemy's center
         const fx = prevX - target.x;
         const fy = prevY - target.y;
 
+        // Setup the quadratic equation: at² + bt + c = 0
+        // 't' represents the fraction of the current frame (0.0 to 1.0) when the hit occurs.
+
+        // 'a' is the bullet's squared speed (the squared distnace traveled this frame)
         const a = stepX * stepX + stepY * stepY;
+
+        // 'b' evaluates the dot product to see if the bullet is moving towards or away from the enemy
         const b = 2 * (fx * stepX + fy * stepY);
+
+        // 'c' represents the starting distance between the bullet and the enemy's edge
+        // (target.radius + bullet.width) is used as the combined collision radius
         const c = fx * fx + fy * fy - (target.radius + bullet.width) * (target.radius + bullet.width);
 
         let hit = false;
+        // Evaluate the collision result
         if (c <= 0) {
+            // If c <= 0, the bullet's starting point was already inside the enemy's hitbox
+            // The hit happeneed immediately at the exact start of the frame (t = 0)
             hit = true;
         } else if (a > 0) {
+            // if 'a' > 0, the bullet actually moved this frame (safely preventing Divide-by-Zero)
+
+            // Calculate the Discriminant to see if the bullet's infinite line crosses the circle
             const disc = b * b - 4 * a * c;
             if (disc >= 0) {
+                // disc >= means the path does intersect the circle at some point in time
+                // We use the quadratic formula to solve for 't', the exact moment of first impact
                 const t = (-b - Math.sqrt(disc)) / (2 * a);
+
+                // Ensure the collision only happened during the exact frame
+                // t < 0 means it hit in the past. t > 1 means it will hit in the future
                 hit = t >= 0 && t <= 1;
             }
         }

@@ -11,10 +11,10 @@ export const CHOICE_TYPE = {
 const rand = (min, max) => Math.floor(Math.random() * (max - min + 1) + min);
 
 const RARITIES = {
-    COMMON: { name: 'Common', color: '#bdc3c7', weight: 61, mult: 1.0 },
-    RARE: { name: 'Rare', color: '#3498db', weight: 30, mult: 1.5 },
-    EPIC: { name: 'Epic', color: '#9b59b6', weight: 8, mult: 2.0 },
-    LEGENDARY: { name: 'Legendary', color: '#f1c40f', weight: 1, mult: 3.0 }
+    COMMON: { name: 'Common', color: '#bdc3c7', weight: 72 },
+    RARE: { name: 'Rare', color: '#3498db', weight: 22 },
+    EPIC: { name: 'Epic', color: '#9b59b6', weight: 5.5 },
+    LEGENDARY: { name: 'Legendary', color: '#f1c40f', weight: 0.5 }
 };
 
 function getRandomRarity() {
@@ -28,12 +28,27 @@ function getRandomRarity() {
     return RARITIES.COMMON;
 }
 
+function getTieredBonus(baseMin, baseMax, rarityName) {
+    switch (rarityName) {
+        case 'Common':
+            return rand(baseMin, baseMax);
+        case 'Rare':
+            return rand(baseMax + 1, Math.floor(baseMax * 1.8));
+        case 'Epic':
+            return rand(Math.floor(baseMax * 1.8) + 1, Math.floor(baseMax * 3.0));
+        case 'Legendary':
+            return rand(Math.floor(baseMax * 3.0) + 1, Math.floor(baseMax * 5.5));
+        default:
+            return rand(baseMin, baseMax);
+    }
+}
+
 export function getChoices(wave, player) {
 
     let possibleChoices = [
         {
             attr: "Damage",
-            getBonus: (mult) => rand(10 * mult, 17 * mult),
+            getBonus: (r) => getTieredBonus(10, 15, r.name),
             arg: player.weapon,
             getCurr: (arg) => arg.damage,
             getNew: (arg, b) => Math.round(arg.damage * (1 + b / 100)),
@@ -41,7 +56,7 @@ export function getChoices(wave, player) {
         },
         {
             attr: "Range",
-            getBonus: (mult) => rand(5 * mult, 15 * mult),
+            getBonus: (r) => getTieredBonus(5, 15, r.name),
             arg: player.weapon,
             getCurr: (arg) => arg.range,
             getNew: (arg, b) => Math.round(arg.range * (1 + b / 100)),
@@ -49,7 +64,7 @@ export function getChoices(wave, player) {
         },
         {
             attr: "Max HP",
-            getBonus: (mult) => rand(10 * mult, 15 * mult),
+            getBonus: (r) => getTieredBonus(10, 15, r.name),
             arg: player,
             getCurr: (arg) => arg.maxHp,
             getNew: (arg, b) => Math.round(arg.maxHp * (1 + b / 100)),
@@ -57,7 +72,7 @@ export function getChoices(wave, player) {
         },
         {
             attr: "Move Speed",
-            getBonus: (mult) => rand(5 * mult, 12 * mult),
+            getBonus: (r) => getTieredBonus(5, 12, r.name),
             arg: player,
             getCurr: (arg) => arg.speed,
             getNew: (arg, b) => Math.round(arg.speed * (1 + b / 100)),
@@ -65,7 +80,7 @@ export function getChoices(wave, player) {
         },
         {
             attr: "Cooldown",
-            getBonus: (mult) => -1 * rand(5 * mult, 10 * mult),
+            getBonus: (r) => -1 * getTieredBonus(5, 10, r.name),
             arg: player.weapon,
             getCurr: (arg) => arg.cooldown,
             getNew: (arg, b) => (arg.cooldown * (1 + b / 100)).toFixed(2),
@@ -77,7 +92,7 @@ export function getChoices(wave, player) {
         if (player.weapon.enchant !== WEAPON_ENCHANT.LASER) {
             possibleChoices.push({
                 attr: "Bullet speed",
-                getBonus: (mult) => rand(1 * mult, 5 * mult),
+                getBonus: (r) => getTieredBonus(2, 6, r.name),
                 arg: player.weapon,
                 getCurr: (arg) => arg.bulletSpeed,
                 getNew: (arg, b) => Math.round(arg.bulletSpeed * (1 + b / 100)),
@@ -87,7 +102,7 @@ export function getChoices(wave, player) {
         if (player.weapon.enchant === WEAPON_ENCHANT.AOE) {
             possibleChoices.push({
                 attr: "AOE Radius",
-                getBonus: (mult) => rand(5 * mult, 10 * mult),
+                getBonus: (r) => getTieredBonus(5, 10, r.name),
                 arg: player.weapon,
                 getCurr: (arg) => arg.aoeRadius,
                 getNew: (arg, b) => Math.round(arg.aoeRadius * (1 + b / 100)),
@@ -96,7 +111,7 @@ export function getChoices(wave, player) {
         } else if (player.weapon.enchant === WEAPON_ENCHANT.PIERCE) {
             possibleChoices.push({
                 attr: "Pierce",
-                getBonus: (mult) => rand(5 * mult, 10 * mult),
+                getBonus: (r) => getTieredBonus(5, 10, r.name),
                 arg: player.weapon,
                 getCurr: (arg) => arg.pierce,
                 getNew: (arg, b) => (arg.pierce * (1 + b / 100)).toFixed(2),
@@ -105,7 +120,7 @@ export function getChoices(wave, player) {
         } else if (player.weapon.enchant === WEAPON_ENCHANT.RIFLE) {
             possibleChoices.push({
                 attr: "Rifle",
-                getBonus: (mult) => rand(5 * mult, 10 * mult),
+                getBonus: (r) => getTieredBonus(5, 10, r.name),
                 arg: player.weapon,
                 getCurr: (arg) => arg.rifle,
                 getNew: (arg, b) => (arg.rifle * (1 + b / 100)).toFixed(2),
@@ -114,7 +129,7 @@ export function getChoices(wave, player) {
         } else if (player.weapon.enchant === WEAPON_ENCHANT.CHAIN) {
             possibleChoices.push({
                 attr: "Chain Radius",
-                getBonus: (mult) => rand(5 * mult, 10 * mult),
+                getBonus: (r) => getTieredBonus(5, 10, r.name),
                 arg: player.weapon,
                 getCurr: (arg) => arg.chainRadius,
                 getNew: (arg, b) => (arg.chainRadius * (1 + b / 100)).toFixed(2),
@@ -122,7 +137,7 @@ export function getChoices(wave, player) {
             });
             possibleChoices.push({
                 attr: "Chain",
-                getBonus: (mult) => rand(5 * mult, 10 * mult),
+                getBonus: (r) => getTieredBonus(5, 10, r.name),
                 arg: player.weapon,
                 getCurr: (arg) => arg.chain,
                 getNew: (arg, b) => (arg.chain * (1 + b / 100)).toFixed(2),
@@ -131,7 +146,7 @@ export function getChoices(wave, player) {
         } else if (player.weapon.enchant === WEAPON_ENCHANT.LASER) {
             possibleChoices.push({
                 attr: "Laser width",
-                getBonus: (mult) => rand(1 * mult, 5 * mult),
+                getBonus: (r) => getTieredBonus(1, 5, r.name),
                 arg: player.weapon,
                 getCurr: (arg) => arg.bulletWidth,
                 getNew: (arg, b) => (arg.bulletWidth * (1 + b / 100)).toFixed(2),
@@ -139,7 +154,7 @@ export function getChoices(wave, player) {
             });
             possibleChoices.push({
                 attr: "Laser cooldown",
-                getBonus: (mult) => rand(2 * mult, 7 * mult),
+                getBonus: (r) => getTieredBonus(2, 7, r.name),
                 arg: player.weapon,
                 getCurr: (arg) => arg.laserCd,
                 getNew: (arg, b) => (arg.laserCd * (1 - b / 100)).toFixed(2),
@@ -150,7 +165,7 @@ export function getChoices(wave, player) {
         if (player.weapon.enchant === WEAPON_ENCHANT.LIFESTEAL) {
             possibleChoices.push({
                 attr: "Lifesteal",
-                getBonus: (mult) => rand(2 * mult, 7 * mult),
+                getBonus: (r) => getTieredBonus(2, 7, r.name),
                 arg: player.weapon,
                 getCurr: (arg) => arg.lifesteal,
                 getNew: (arg, b) => (arg.lifesteal * (1 + b / 100)).toFixed(2),
@@ -159,7 +174,7 @@ export function getChoices(wave, player) {
         } else if (player.weapon.enchant === WEAPON_ENCHANT.CHARGE) {
             possibleChoices.push({
                 attr: "Damage Speed",
-                getBonus: (mult) => rand(5 * mult, 10 * mult),
+                getBonus: (r) => getTieredBonus(5, 10, r.name),
                 arg: player.weapon,
                 getCurr: (arg) => arg.dmgSpeed,
                 getNew: (arg, b) => (arg.dmgSpeed * (1 + b / 100)).toFixed(2),
@@ -167,7 +182,7 @@ export function getChoices(wave, player) {
             });
             possibleChoices.push({
                 attr: "Range Speed",
-                getBonus: (mult) => rand(5 * mult, 10 * mult),
+                getBonus: (r) => getTieredBonus(5, 10, r.name),
                 arg: player.weapon,
                 getCurr: (arg) => arg.rngSpeed,
                 getNew: (arg, b) => (arg.rngSpeed * (1 + b / 100)).toFixed(2),
@@ -175,7 +190,7 @@ export function getChoices(wave, player) {
             });
             possibleChoices.push({
                 attr: "Max charge",
-                getBonus: (mult) => rand(2 * mult, 7 * mult),
+                getBonus: (r) => getTieredBonus(2, 7, r.name),
                 arg: player.weapon,
                 getCurr: (arg) => arg.maxCharge,
                 getNew: (arg, b) => (arg.maxCharge * (1 + b / 100)).toFixed(2),
@@ -189,7 +204,7 @@ export function getChoices(wave, player) {
         .slice(0, 3)
         .map((choice, index) => {
             const rarity = getRandomRarity();
-            const bonus = choice.getBonus(rarity.mult);
+            const bonus = choice.getBonus(rarity);
 
             const currentVal = choice.getCurr(choice.arg);
             const newVal = choice.getNew(choice.arg, bonus);
@@ -226,7 +241,15 @@ export function getEnchantChoices(wave, player) {
         .sort(() => 0.5 - Math.random())
         .slice(0, 3)
         .map((enchant, index) => {
-            const rarity = RARITIES.EPIC;//getRandomRarity();
+            const isLegendary = Math.random() <= 0.01;
+            const rarity = isLegendary ? RARITIES.LEGENDARY : RARITIES.EPIC;
+
+            if (isLegendary) {
+                if (enchant.damage) enchant.damage = Math.round(enchant.damage * 1.5);
+                if (enchant.cooldown) enchant.cooldown = Math.round(enchant.cooldown * 0.75);
+                if (enchant.range) enchant.range = Math.round(enchant.range * 1.3);
+            }
+
             return {
                 id: index,
                 attr: enchant.name,
