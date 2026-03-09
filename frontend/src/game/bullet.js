@@ -51,11 +51,29 @@ export function updateBullet(bullet, targets, dt) {
     }
 
     for (const target of targets) {
-        const dx = target.x - bullet.x - bullet.width;
-        const dy = target.y - bullet.y - bullet.width;
-        const d = Math.hypot(dx, dy);
+        const stepX = Math.cos(bullet.angle) * bullet.speed * dt;
+        const stepY = Math.sin(bullet.angle) * bullet.speed * dt;
+        const prevX = bullet.x - stepX;
+        const prevY = bullet.y - stepY;
 
-        if (d <= target.radius) {
+        const fx = prevX - target.x;
+        const fy = prevY - target.y;
+
+        const a = stepX * stepX + stepY * stepY;
+        const b = 2 * (fx * stepX + fy * stepY);
+        const c = fx * fx + fy * fy - (target.radius + bullet.width) * (target.radius + bullet.width);
+
+        let hit = false;
+        if (a > 0) {
+            const disc = b * b - 4 * a * c;
+            if (disc >= 0) {
+                const t = (-b - Math.sqrt(disc)) / (2 * a);
+                hit = t >= 0 && t <= 1;
+                console.log(hit, t);
+            }
+        }
+
+        if (hit) {
             if (bullet.explos === BULLET_EXPLOS.CHAIN) {
                 if (target === bullet.chainFrom) continue;
                 damageEnemy(target, bullet.damage);
