@@ -1,4 +1,4 @@
-import { WEAPON_TYPE, createWeapon } from "./weapon";
+import { WEAPON_ENCHANT, WEAPON_TYPE, createWeapon } from "./weapon";
 
 export const ENEMY_TYPE = {
     RUNNER: 'runner',       // Fast, low hp
@@ -46,8 +46,8 @@ const BASE_STATS = {
         hp: 150,
         speed: 70,
         damage: 50,
-        range: 45,
-        cooldownInterval: 4,
+        range: 350,
+        cooldownInterval: 1,
         score: 300,
         color: '#c0392b',
     }
@@ -76,7 +76,7 @@ const WAVE_SCALE = {
         hp: 1.12,
         speed: 1.03,
         damage: 1.08,
-        range: 1.002,
+        range: 1.01,
     },
 }
 
@@ -103,6 +103,9 @@ export function createEnemy(type, wave) {
 
     if (type === ENEMY_TYPE.SHOOTER) {
         weapon = createWeapon(WEAPON_TYPE.RANGE);
+    } else if (type === ENEMY_TYPE.BOSS) {
+        weapon = createWeapon(WEAPON_TYPE.RANGE, WEAPON_ENCHANT.LASER);
+        weapon.bulletWidth = base.radius / 1.4;
     } else {
         weapon = createWeapon(WEAPON_TYPE.MELEE);
     }
