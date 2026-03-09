@@ -176,7 +176,9 @@ export function createEngine(canvas, onHUDUpdate) {
                 attacker.bullets.push(createBullet(
                     attacker.x,
                     attacker.y,
+                    attacker.weapon.bulletWidth,
                     attacker.weapon.burstAngle,
+                    attacker.weapon.bulletSpeed,
                     attacker.weapon.damage,
                     attacker.weapon.range,
                 ));
