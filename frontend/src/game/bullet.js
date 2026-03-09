@@ -7,13 +7,13 @@ export const BULLET_EXPLOS = {
     CHAIN: 'chain',
 }
 
-export function createBullet(x, y, width, angle, damage, range, type = BULLET_EXPLOS.HIT, args = null) {
+export function createBullet(x, y, width, angle, speed, damage, range, type = BULLET_EXPLOS.HIT, args = null) {
     return {
         x,
         y,
         width,
         angle,
-        speed: 500,
+        speed,
         damage,
         range,
         transpierced: [],
@@ -69,7 +69,6 @@ export function updateBullet(bullet, targets, dt) {
             if (disc >= 0) {
                 const t = (-b - Math.sqrt(disc)) / (2 * a);
                 hit = t >= 0 && t <= 1;
-                console.log(hit, t);
             }
         }
 
