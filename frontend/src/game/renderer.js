@@ -42,7 +42,7 @@ export function drawWeapon(ctx, camera, bearer, debug = true) {
 
     let strokeStyle = "#c9570b";
     let lineDash = [8, 8];
-    if (bearer.weapon.cooldownTime <= 0 || (bearer.weapon.enchant === WEAPON_ENCHANT.CHARGE && bearer.weapon.charging)) {
+    if (bearer.weapon.cooldownTime <= 0 || ((bearer.weapon.enchant === WEAPON_ENCHANT.CHARGE || bearer.weapon.enchant === WEAPON_ENCHANT.LASER) && bearer.weapon.charging)) {
         strokeStyle = "#169116";
         lineDash = [];
     }
