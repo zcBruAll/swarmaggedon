@@ -9,7 +9,7 @@ const Auth = () => {
       <NavBar />
       <PatchNotes />
       <div className="section-content active">
-        <div className="main">
+        <div className='auth-grid'>
           <AccountLogin />
         </div>
       </div>
