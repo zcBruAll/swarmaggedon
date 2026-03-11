@@ -1,2 +1,2 @@
 git --no-pager log --grep="^[^(merge\())].*:" --date=format-local:'%d-%m-%Y' --format="%cd|%s" | \
-jq -Rn '[inputs | split("|") | {date: .[0], type: (.[1] | split("(") | .[0] ), message: (.[1] | split("): ") | .[1])}]' > frontend/public/commits.json
+jq -Rn '[inputs | split("|") | {date: .[0], type: (.[1] | split("(") | .[0] ), message: (.[1] | split("): ") | .[1])}]' > frontend/src/commits.json

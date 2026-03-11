@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect, useRef } from 'react';
 import '../assets/style/components/NavBar.css';
 import '../assets/style/components/PatchNotes.css';
-import commitData from '../../public/commits.json';
+import commitData from "../commits.json"
 import { sha256 } from 'js-sha256';
 
 const LOCAL_STORAGE_ITEM = "swarm_last_update"
