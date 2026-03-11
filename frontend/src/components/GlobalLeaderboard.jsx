@@ -126,7 +126,7 @@ function GlobalLeaderboard() {
       </div>
       <div className="panel-body">
         {timeLeft && (
-          <div style={{ fontSize: '0.8rem', opacity: 0.7, textAlign: 'right', padding: '0 10px 5px' }}>
+          <div style={{ fontSize: '0.8rem', opacity: 0.7, textAlign: 'right', margin: "-15px 0 -5px" }}>
             resets in {timeLeft}
           </div>
         )}
