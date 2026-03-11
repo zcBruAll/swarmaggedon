@@ -113,8 +113,10 @@ function _drawWeaponArc(ctx, camera, bearer, subtleArea = true) {
     let strokeStyle = "#c9570b";
     let lineDash = [8, 8];
 
+    const laserCharging = weapon.enchant === WEAPON_ENCHANT.LASER && weapon.charging;
+
     const ready = weapon.cooldownTime <= 0
-        || ((weapon.enchant === WEAPON_ENCHANT.CHARGE || weapon.enchant === WEAPON_ENCHANT.LASER)
+        || ((weapon.enchant === WEAPON_ENCHANT.CHARGE || laserCharging)
             && weapon.charging);
 
     if (ready) { strokeStyle = '#169116'; lineDash = []; }
@@ -153,7 +155,9 @@ function _drawWeaponArc(ctx, camera, bearer, subtleArea = true) {
         weaponRange = weapon.range * (weapon.chargeTime * weapon.rngSpeed) / 100;
     }
 
-    const readyRatio = 1 - (Math.max(0, weapon.cooldownTime) / weapon.cooldown);
+    const readyRatio = laserCharging
+        ? 1
+        : 1 - (Math.max(0, weapon.cooldownTime) / weapon.cooldown);
 
     const halfSpread = (weaponAngle / 2) * (Math.PI / 180);
     const arcRadius = bearer.radius + weaponRange;
@@ -165,9 +169,9 @@ function _drawWeaponArc(ctx, camera, bearer, subtleArea = true) {
     ctx.moveTo(sx, sy);
     ctx.arc(sx, sy, arcRadius, angle - halfSpread, angle + halfSpread);
     ctx.lineTo(sx, sy);
-    ctx.globalAlpha = (subtleArea ? 0.075 : 0.75) * readyRatio;
+    ctx.globalAlpha = (subtleArea && !laserCharging ? 0.075 : 0.75) * readyRatio;
     ctx.stroke();
-    ctx.globalAlpha = (subtleArea ? 0.035 : 0.25) * readyRatio;
+    ctx.globalAlpha = (subtleArea && !laserCharging ? 0.035 : 0.25) * readyRatio;
     ctx.fillStyle = strokeStyle;
     ctx.fill();
 
