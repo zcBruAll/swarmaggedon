@@ -1,5 +1,4 @@
-import { equipWeapon, increaseMaxHp } from "./player.js";
-import { createEnchant, createWeapon, enchantWeapon, WEAPON_ENCHANT, WEAPON_TYPE } from "./weapon.js";
+import { createEnchant, createWeapon, enchantWeapon, WEAPON_ENCHANT, WEAPON_TYPE } from './weapon.js';
 
 export const CHOICE_TYPE = {
     AUGMENT: 'augment',
@@ -11,10 +10,10 @@ export const CHOICE_TYPE = {
 const rand = (min, max) => Math.floor(Math.random() * (max - min + 1) + min);
 
 const RARITIES = {
-    COMMON: { name: 'Common', color: '#bdc3c7', weight: 72 },
-    RARE: { name: 'Rare', color: '#3498db', weight: 22 },
-    EPIC: { name: 'Epic', color: '#9b59b6', weight: 5.5 },
-    LEGENDARY: { name: 'Legendary', color: '#f1c40f', weight: 0.5 }
+    COMMON: { name: 'Common', color: '#bdc3c7', weight: 75 },
+    RARE: { name: 'Rare', color: '#3498db', weight: 22.34 },
+    EPIC: { name: 'Epic', color: '#9b59b6', weight: 2.5 },
+    LEGENDARY: { name: 'Legendary', color: '#f1c40f', weight: 0.16 }
 };
 
 function getRandomRarity() {
@@ -30,214 +29,70 @@ function getRandomRarity() {
 
 function getTieredBonus(baseMin, baseMax, rarityName) {
     switch (rarityName) {
-        case 'Common':
-            return rand(baseMin, baseMax);
-        case 'Rare':
-            return rand(baseMax + 1, Math.floor(baseMax * 1.8));
-        case 'Epic':
-            return rand(Math.floor(baseMax * 1.8) + 1, Math.floor(baseMax * 3.0));
-        case 'Legendary':
-            return rand(Math.floor(baseMax * 3.0) + 1, Math.floor(baseMax * 5.5));
-        default:
-            return rand(baseMin, baseMax);
+        case 'Common': return rand(baseMin, baseMax);
+        case 'Rare': return rand(baseMax + 1, Math.floor(baseMax * 1.8));
+        case 'Epic': return rand(Math.floor(baseMax * 1.8) + 1, Math.floor(baseMax * 3.0));
+        case 'Legendary': return rand(Math.floor(baseMax * 3.0) + 1, Math.floor(baseMax * 5.5));
+        default: return rand(baseMin, baseMax);
     }
 }
 
 export function getChoices(wave, player) {
+    const wpn = player.weapon;
 
     let possibleChoices = [
         {
-            attr: "Damage",
+            attr: 'Max HP',
             getBonus: (r) => getTieredBonus(10, 15, r.name),
-            arg: player.weapon,
-            getCurr: (arg) => arg.damage,
-            getNew: (arg, b) => Math.round(arg.damage * (1 + b / 100)),
-            func: (wpn, b) => { wpn.damage = Math.round(wpn.damage * (1 + b / 100)); },
-        },
-        {
-            attr: "Range",
-            getBonus: (r) => getTieredBonus(5, 15, r.name),
-            arg: player.weapon,
-            getCurr: (arg) => arg.range,
-            getNew: (arg, b) => Math.round(arg.range * (1 + b / 100)),
-            func: (wpn, b) => { wpn.range = Math.round(wpn.range * (1 + b / 100)); },
-        },
-        {
-            attr: "Max HP",
-            getBonus: (r) => getTieredBonus(10, 15, r.name),
-            arg: player,
-            getCurr: (arg) => arg.maxHp,
-            getNew: (arg, b) => Math.round(arg.maxHp * (1 + b / 100)),
-            func: increaseMaxHp,
-        },
-        {
-            attr: "Move Speed",
-            getBonus: (r) => getTieredBonus(5, 12, r.name),
-            arg: player,
-            getCurr: (arg) => arg.speed,
-            getNew: (arg, b) => Math.round(arg.speed * (1 + b / 100)),
-            func: (p, b) => { p.speed = Math.round(p.speed * (1 + b / 100)); },
-        },
-        {
-            attr: "Cooldown",
-            getBonus: (r) => -1 * getTieredBonus(5, 10, r.name),
-            arg: player.weapon,
-            getCurr: (arg) => arg.cooldown,
-            getNew: (arg, b) => (arg.cooldown * (1 + b / 100)).toFixed(2),
-            func: (wpn, b) => { wpn.cooldown = parseFloat((wpn.cooldown * (1 + b / 100)).toFixed(2)); },
+            arg: player, getCurr: (a) => a.maxHp,
+            getNew: (a, b) => Math.round(a.maxHp * (1 + b / 100)),
+            func: (a, b) => a.increaseMaxHp(b),
         },
     ];
 
-    if (player.weapon.type === WEAPON_TYPE.RANGE) {
-        if (player.weapon.enchant !== WEAPON_ENCHANT.LASER) {
-            possibleChoices.push({
-                attr: "Bullet speed",
-                getBonus: (r) => getTieredBonus(2, 6, r.name),
-                arg: player.weapon,
-                getCurr: (arg) => arg.bulletSpeed,
-                getNew: (arg, b) => Math.round(arg.bulletSpeed * (1 + b / 100)),
-                func: (wpn, b) => { wpn.bulletSpeed = Math.round(wpn.bulletSpeed * (1 + b / 100)); },
-            });
+    possibleChoices.push(_pct('Damage', wpn, 'damage', 10, 15));
+    possibleChoices.push(_pct('Range', wpn, 'range', 5, 15));
+    possibleChoices.push(_pct('Move Speed', player, 'speed', 5, 12));
+    possibleChoices.push(_pct('Cooldown', wpn, 'cooldown', -10, -5));
+
+    if (wpn?.type === WEAPON_TYPE.RANGE) {
+        if (wpn.enchant !== WEAPON_ENCHANT.LASER) {
+            possibleChoices.push(_pct('Bullet Speed', wpn, 'bulletSpeed', 2, 6));
         }
-        if (player.weapon.enchant === WEAPON_ENCHANT.AOE) {
-            possibleChoices.push({
-                attr: "AOE Radius",
-                getBonus: (r) => getTieredBonus(5, 10, r.name),
-                arg: player.weapon,
-                getCurr: (arg) => arg.aoeRadius,
-                getNew: (arg, b) => Math.round(arg.aoeRadius * (1 + b / 100)),
-                func: (wpn, b) => { wpn.aoeRadius = Math.round(wpn.aoeRadius * (1 + b / 100)); },
-            });
-        } else if (player.weapon.enchant === WEAPON_ENCHANT.PIERCE) {
-            possibleChoices.push({
-                attr: "Pierce",
-                getBonus: (r) => getTieredBonus(5, 10, r.name),
-                arg: player.weapon,
-                getCurr: (arg) => arg.pierce,
-                getNew: (arg, b) => (arg.pierce * (1 + b / 100)).toFixed(2),
-                func: (wpn, b) => { wpn.pierce = parseFloat((wpn.pierce * (1 + b / 100)).toFixed(2)); },
-            });
-        } else if (player.weapon.enchant === WEAPON_ENCHANT.RIFLE) {
-            possibleChoices.push({
-                attr: "Rifle",
-                getBonus: (r) => getTieredBonus(5, 10, r.name),
-                arg: player.weapon,
-                getCurr: (arg) => arg.rifle,
-                getNew: (arg, b) => (arg.rifle * (1 + b / 100)).toFixed(2),
-                func: (wpn, b) => { wpn.rifle = parseFloat((wpn.rifle * (1 + b / 100)).toFixed(2)); },
-            });
-        } else if (player.weapon.enchant === WEAPON_ENCHANT.CHAIN) {
-            possibleChoices.push({
-                attr: "Chain Radius",
-                getBonus: (r) => getTieredBonus(5, 10, r.name),
-                arg: player.weapon,
-                getCurr: (arg) => arg.chainRadius,
-                getNew: (arg, b) => (arg.chainRadius * (1 + b / 100)).toFixed(2),
-                func: (wpn, b) => { wpn.chainRadius = parseFloat((wpn.chainRadius * (1 + b / 100)).toFixed(2)); },
-            });
-            possibleChoices.push({
-                attr: "Chain",
-                getBonus: (r) => getTieredBonus(5, 10, r.name),
-                arg: player.weapon,
-                getCurr: (arg) => arg.chain,
-                getNew: (arg, b) => (arg.chain * (1 + b / 100)).toFixed(2),
-                func: (wpn, b) => { wpn.chain = parseFloat((wpn.chain * (1 + b / 100)).toFixed(2)); },
-            });
-        } else if (player.weapon.enchant === WEAPON_ENCHANT.LASER) {
-            possibleChoices.push({
-                attr: "Laser width",
-                getBonus: (r) => getTieredBonus(1, 5, r.name),
-                arg: player.weapon,
-                getCurr: (arg) => arg.bulletWidth,
-                getNew: (arg, b) => (arg.bulletWidth * (1 + b / 100)).toFixed(2),
-                func: (wpn, b) => { wpn.bulletWidth = parseFloat((wpn.bulletWidth * (1 + b / 100)).toFixed(2)); },
-            });
-            possibleChoices.push({
-                attr: "Laser cooldown",
-                getBonus: (r) => getTieredBonus(2, 7, r.name),
-                arg: player.weapon,
-                getCurr: (arg) => arg.laserCd,
-                getNew: (arg, b) => (arg.laserCd * (1 - b / 100)).toFixed(2),
-                func: (wpn, b) => { wpn.laserCd = parseFloat((wpn.laserCd * (1 - b / 100)).toFixed(2)); },
-            });
+        if (wpn.enchant === WEAPON_ENCHANT.AOE)
+            possibleChoices.push(_pct('AOE Radius', wpn, 'aoeRadius', 5, 10));
+        if (wpn.enchant === WEAPON_ENCHANT.PIERCE)
+            possibleChoices.push(_pct('Pierce', wpn, 'pierce', 5, 10));
+        if (wpn.enchant === WEAPON_ENCHANT.RIFLE)
+            possibleChoices.push(_pct('Rifle', wpn, 'rifle', 5, 10));
+        if (wpn.enchant === WEAPON_ENCHANT.CHAIN) {
+            possibleChoices.push(_pct('Chain Radius', wpn, 'chainRadius', 5, 10));
+            possibleChoices.push(_pct('Chain', wpn, 'chain', 5, 10));
         }
-    } else if (player.weapon.type === WEAPON_TYPE.MELEE) {
-        if (player.weapon.enchant === WEAPON_ENCHANT.LIFESTEAL) {
-            possibleChoices.push({
-                attr: "Lifesteal",
-                getBonus: (r) => getTieredBonus(2, 7, r.name),
-                arg: player.weapon,
-                getCurr: (arg) => arg.lifesteal,
-                getNew: (arg, b) => (arg.lifesteal * (1 + b / 100)).toFixed(2),
-                func: (wpn, b) => { wpn.lifesteal = parseFloat((wpn.lifesteal * (1 + b / 100)).toFixed(2)); },
-            });
-        } else if (player.weapon.enchant === WEAPON_ENCHANT.CHARGE) {
-            possibleChoices.push({
-                attr: "Damage Speed",
-                getBonus: (r) => getTieredBonus(5, 10, r.name),
-                arg: player.weapon,
-                getCurr: (arg) => arg.dmgSpeed,
-                getNew: (arg, b) => (arg.dmgSpeed * (1 + b / 100)).toFixed(2),
-                func: (wpn, b) => { wpn.dmgSpeed = parseFloat((wpn.dmgSpeed * (1 + b / 100)).toFixed(2)); },
-            });
-            possibleChoices.push({
-                attr: "Range Speed",
-                getBonus: (r) => getTieredBonus(5, 10, r.name),
-                arg: player.weapon,
-                getCurr: (arg) => arg.rngSpeed,
-                getNew: (arg, b) => (arg.rngSpeed * (1 + b / 100)).toFixed(2),
-                func: (wpn, b) => { wpn.rngSpeed = parseFloat((wpn.rngSpeed * (1 + b / 100)).toFixed(2)); },
-            });
-            possibleChoices.push({
-                attr: "Max charge",
-                getBonus: (r) => getTieredBonus(2, 7, r.name),
-                arg: player.weapon,
-                getCurr: (arg) => arg.maxCharge,
-                getNew: (arg, b) => (arg.maxCharge * (1 + b / 100)).toFixed(2),
-                func: (wpn, b) => { wpn.maxCharge = parseFloat((wpn.maxCharge * (1 + b / 100)).toFixed(2)); },
-            });
+        if (wpn.enchant === WEAPON_ENCHANT.LASER) {
+            possibleChoices.push(_pct('Laser Width', wpn, 'bulletWidth', 1, 5));
+            possibleChoices.push(_pct('Laser Cooldown', wpn, 'laserCd', -7, -2));
+        }
+    } else if (wpn?.type === WEAPON_TYPE.MELEE) {
+        if (wpn.enchant === WEAPON_ENCHANT.LIFESTEAL)
+            possibleChoices.push(_pct('Lifesteal', wpn, 'lifesteal', 2, 7));
+        if (wpn.enchant === WEAPON_ENCHANT.CHARGE) {
+            possibleChoices.push(_pct('Damage Speed', wpn, 'dmgSpeed', 5, 10));
+            possibleChoices.push(_pct('Range Speed', wpn, 'rngSpeed', 5, 10));
+            possibleChoices.push(_pct('Max Charge', wpn, 'maxCharge', 2, 7));
         }
     }
 
-    const choices = possibleChoices
-        .sort(() => 0.5 - Math.random())
-        .slice(0, 3)
-        .map((choice, index) => {
-            const rarity = getRandomRarity();
-            const bonus = choice.getBonus(rarity);
-
-            const currentVal = choice.getCurr(choice.arg);
-            const newVal = choice.getNew(choice.arg, bonus);
-
-            return {
-                id: index,
-                attr: choice.attr,
-                bonus: bonus,
-                rarityName: rarity.name,
-                rarityColor: rarity.color,
-                curr: currentVal,
-                new: newVal,
-                type: CHOICE_TYPE.AUGMENT,
-                arg: choice.arg,
-                func: choice.func
-            };
-        });
-
-    return choices;
+    return _buildChoices(possibleChoices, CHOICE_TYPE.AUGMENT);
 }
 
 export function getEnchantChoices(wave, player) {
-    let possibleChoices = [];
+    const possibleChoices = Object.values(WEAPON_ENCHANT)
+        .filter(e => e !== player.weapon?.enchant)
+        .map(e => createEnchant(e))
+        .filter(e => e.support.includes(player.weapon?.type));
 
-    Object.values(WEAPON_ENCHANT).forEach(enchant_type => {
-        if (enchant_type !== player.weapon.enchant) {
-            let enchant = createEnchant(enchant_type);
-            if (enchant.support.includes(player.weapon.type))
-                possibleChoices.push(enchant);
-        }
-    });
-
-    const choices = possibleChoices
+    return possibleChoices
         .sort(() => 0.5 - Math.random())
         .slice(0, 3)
         .map((enchant, index) => {
@@ -261,8 +116,6 @@ export function getEnchantChoices(wave, player) {
                 func: enchantWeapon,
             };
         });
-
-    return choices;
 }
 
 export function getWeaponChoices(wave, player) {
@@ -271,24 +124,18 @@ export function getWeaponChoices(wave, player) {
     Object.values(WEAPON_TYPE).forEach(type => {
         if (wave > 0) {
             Object.values(WEAPON_ENCHANT).forEach(enchant => {
-                let weapon = createWeapon(type, enchant);
-                possibleChoices.push(weapon);
+                possibleChoices.push(createWeapon(type, enchant));
             });
         } else {
             possibleChoices.push(createWeapon(type, undefined));
         }
     });
 
-    const choices = possibleChoices
+    return possibleChoices
         .sort(() => 0.5 - Math.random())
         .slice(0, 3)
         .map((wpn, index) => {
-            let rarity;
-            if (wave <= 0) {
-                rarity = RARITIES.COMMON;
-            } else {
-                rarity = getRandomRarity();
-            }
+            const rarity = wave <= 0 ? RARITIES.COMMON : getRandomRarity();
 
             return {
                 id: index,
@@ -298,9 +145,40 @@ export function getWeaponChoices(wave, player) {
                 rarityColor: rarity.color,
                 type: CHOICE_TYPE.WEAPON,
                 arg: player,
-                func: equipWeapon,
+                func: (p, w) => p.equipWeapon(w),
             };
         });
+}
 
-    return choices;
+function _pct(attr, arg, prop, baseMin, baseMax) {
+    return {
+        attr,
+        getBonus: (r) => getTieredBonus(baseMin, baseMax, r.name),
+        arg,
+        getCurr: (a) => a?.[prop],
+        getNew: (a, b) => parseFloat((a?.[prop] * (1 + b / 100)).toFixed(2)),
+        func: (a, b) => { a[prop] = parseFloat((a?.[prop] * (1 + b / 100)).toFixed(2)); },
+    };
+}
+
+function _buildChoices(possibleChoices, type) {
+    return possibleChoices
+        .sort(() => 0.5 - Math.random())
+        .slice(0, 3)
+        .map((choice, index) => {
+            const rarity = getRandomRarity();
+            const bonus = choice.getBonus(rarity);
+            return {
+                id: index,
+                attr: choice.attr,
+                bonus,
+                rarityName: rarity.name,
+                rarityColor: rarity.color,
+                curr: choice.getCurr(choice.arg),
+                new: choice.getNew(choice.arg, bonus),
+                type,
+                arg: choice.arg,
+                func: choice.func,
+            };
+        });
 }

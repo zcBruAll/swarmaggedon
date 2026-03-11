@@ -1,4 +1,5 @@
-import { createBullet } from "./bullet.js"
+import { createBullet, BULLET_EXPLOS } from './bullet.js';
+import { TEAM } from './world.js';
 
 export const WEAPON_TYPE = {
     MELEE: 'melee',
@@ -48,6 +49,7 @@ export function createWeapon(type, enchant) {
             }
             break;
     }
+
     enchantWeapon(weapon, createEnchant(enchant));
     return weapon;
 }
@@ -197,42 +199,213 @@ export function createEnchant(enchant) {
     }
 }
 
-export function fireBullet(attacker, angle) {
-    if (attacker.weapon.enchant === WEAPON_ENCHANT.RIFLE) {
-        attacker.weapon.bulletsToFire = Math.floor(attacker.weapon.rifle - 1);
-        attacker.weapon.burstAngle = angle;
-        attacker.weapon.nextBurstTime = attacker.weapon.burstInterval;
-    }
-    if (attacker.weapon.enchant === WEAPON_ENCHANT.LASER) {
-        attacker.weapon.cooldownTime = attacker.weapon.cooldown;
-        attacker.weapon.laserCdTime = attacker.weapon.laserCd;
-        attacker.weapon.laserAngle = angle;
-        attacker.weapon.charging = true;
-        return;
-    }
-    let args;
-    if (attacker.weapon.enchant === WEAPON_ENCHANT.AOE)
-        args = { aoeRadius: attacker.weapon.aoeRadius };
-    else if (attacker.weapon.enchant === WEAPON_ENCHANT.PIERCE)
-        args = { pierce: attacker.weapon.pierce };
-    else if (attacker.weapon.enchant === WEAPON_ENCHANT.CHAIN)
-        args = { chainRadius: attacker.weapon.chainRadius, chain: attacker.weapon.chain };
-    else if (attacker.weapon.enchant === WEAPON_ENCHANT.SUBMACHINEGUN)
-        angle += (Math.random() >= 0.5 ? 1 : -1) * (Math.random() * (attacker.weapon.dispersion / 2)) * (Math.PI / 180);
-
-    attacker.bullets.push(createBullet(attacker.x, attacker.y, attacker.weapon.bulletWidth, angle, attacker.weapon.bulletSpeed, attacker.weapon.damage, attacker.weapon.range, attacker.weapon.enchant, args));
-    attacker.weapon.cooldownTime = attacker.weapon.cooldown;
-}
-
 export function enchantWeapon(weapon, enchant) {
-    if (!enchant.support.includes(weapon.type)) return;
-
+    if (!enchant?.support?.includes(weapon.type)) return;
     weapon.enchant = enchant.name;
     for (const prop of enchant.bonusProps) {
         weapon[prop] = parseFloat(((weapon[prop] * enchant[prop] / 100)).toFixed(2));
     }
-
     for (const prop of enchant.props) {
         weapon[prop] = enchant[prop];
+    }
+}
+
+export function tryAttack(weapon, attacker, world, dt, inputState = null) {
+    if (!weapon) return;
+
+    const targetTeam = attacker.team === TEAM.PLAYER ? TEAM.ENEMY : TEAM.PLAYER;
+
+    if (weapon.enchant === WEAPON_ENCHANT.RIFLE && (weapon.bulletsToFire ?? 0) > 0) {
+        weapon.nextBurstTime -= Math.min(weapon.nextBurstTime, dt);
+        if (weapon.nextBurstTime <= 0) {
+            _spawnBullet(attacker, weapon, weapon.burstAngle, null, world);
+            weapon.bulletsToFire--;
+            weapon.nextBurstTime = weapon.burstInterval;
+        }
+        return;
+    }
+
+    if (weapon.enchant === WEAPON_ENCHANT.LASER && weapon.charging) {
+        weapon.laserCdTime -= Math.min(dt, weapon.laserCdTime);
+        if (weapon.laserCdTime > 0) return;
+
+        _resolveLaser(weapon, attacker, targetTeam, world);
+        weapon.charging = false;
+        return;
+    }
+
+    if (weapon.enchant === WEAPON_ENCHANT.CHARGE) {
+        if (inputState?.mouseDown) {
+            weapon.chargeTime += Math.min(dt, weapon.maxCharge - weapon.chargeTime);
+            weapon.charging = true;
+            return;
+        } else if (weapon.charging) {
+            _resolveCharge(weapon, attacker, targetTeam, world);
+            weapon.charging = false;
+            weapon.chargeTime = 0;
+            weapon.cooldownTime = weapon.cooldown;
+            return;
+        }
+    }
+
+    weapon.cooldownTime -= Math.min(dt, weapon.cooldownTime);
+    if (weapon.cooldownTime > 0) return;
+
+
+    const candidates = world.actorsOnTeam(targetTeam)
+        .filter(a => a.targetable !== false);
+
+    let nearest = null;
+    let nearestDist = Infinity;
+    let angleToNearest;
+    let firstAngle;
+    let didHit = false;
+
+    for (const target of candidates) {
+        const dx = target.x - attacker.x;
+        const dy = target.y - attacker.y;
+        const d = Math.hypot(dx, dy);
+        const inRange = d <= target.radius + (attacker.radius ?? 0) + weapon.range;
+
+        if (!inRange) continue;
+
+        const angle = Math.atan2(dy, dx);
+
+        if (d < nearestDist) {
+            nearestDist = d;
+            angleToNearest = angle;
+            nearest = target;
+        }
+
+        if (firstAngle === undefined) {
+            firstAngle = angle;
+        } else {
+            let diff = Math.abs(angle - firstAngle);
+            if (diff > Math.PI) diff = Math.PI * 2 - diff;
+            if (diff > Math.PI / 180 * (weapon.angle ?? 360)) continue;
+        }
+
+        if (weapon.type === WEAPON_TYPE.MELEE) {
+            if (weapon.enchant === WEAPON_ENCHANT.LIFESTEAL) {
+                const heal = weapon.damage * weapon.lifesteal / 100;
+                attacker.hp = Math.min(attacker.maxHp, attacker.hp + heal);
+            }
+            target.takeDamage(weapon.damage, attacker, world);
+            didHit = true;
+        }
+    }
+
+    if (didHit && weapon.type === WEAPON_TYPE.MELEE) {
+        weapon.cooldownTime = weapon.cooldown;
+    }
+
+    if (nearest && weapon.type === WEAPON_TYPE.RANGE) {
+        _fireRanged(weapon, attacker, angleToNearest, world);
+    }
+}
+
+function _fireRanged(weapon, attacker, angle, world) {
+    if (weapon.enchant === WEAPON_ENCHANT.RIFLE) {
+        weapon.bulletsToFire = Math.floor(weapon.rifle - 1);
+        weapon.burstAngle = angle;
+        weapon.nextBurstTime = weapon.burstInterval;
+    }
+
+    if (weapon.enchant === WEAPON_ENCHANT.LASER) {
+        weapon.cooldownTime = weapon.cooldown;
+        weapon.laserCdTime = weapon.laserCd;
+        weapon.laserAngle = angle;
+        weapon.charging = true;
+        return;
+    }
+
+    let bulletType = BULLET_EXPLOS.HIT;
+    let args;
+
+    switch (weapon.enchant) {
+        case WEAPON_ENCHANT.AOE:
+            bulletType = BULLET_EXPLOS.AOE;
+            args = { aoeRadius: weapon.aoeRadius };
+            break;
+        case WEAPON_ENCHANT.PIERCE:
+            bulletType = BULLET_EXPLOS.PIERCE;
+            args = { pierce: weapon.pierce };
+            break;
+        case WEAPON_ENCHANT.CHAIN:
+            bulletType = BULLET_EXPLOS.CHAIN;
+            args = { chainRadius: weapon.chainRadius, chain: weapon.chain };
+            break;
+        case WEAPON_ENCHANT.SUBMACHINEGUN:
+            angle += (Math.random() >= 0.5 ? 1 : -1)
+                * (Math.random() * (weapon.dispersion / 2))
+                * (Math.PI / 180);
+            break;
+    }
+
+    _spawnBullet(attacker, weapon, angle, { type: bulletType, args }, world);
+    weapon.cooldownTime = weapon.cooldown;
+}
+
+function _spawnBullet(attacker, weapon, angle, overrides, world) {
+    const type = overrides?.type ?? BULLET_EXPLOS.HIT;
+    const args = overrides?.args ?? null;
+
+    world.spawnActor(createBullet(
+        attacker.x, attacker.y,
+        weapon.bulletWidth ?? 3,
+        angle,
+        weapon.bulletSpeed ?? 500,
+        weapon.damage,
+        weapon.range,
+        type, args,
+        attacker.team,
+    ));
+}
+
+function _resolveLaser(weapon, attacker, targetTeam, world) {
+    const range = weapon.range;
+    const angle = weapon.laserAngle;
+    const width = weapon.bulletWidth;
+    const cosA = Math.cos(-angle);
+    const sinA = Math.sin(-angle);
+
+    for (const target of world.actorsOnTeam(targetTeam)) {
+        const relX = target.x - attacker.x;
+        const relY = target.y - attacker.y;
+        const localX = relX * cosA - relY * sinA;
+        const localY = relX * sinA + relY * cosA;
+
+        const closestX = Math.max(0, Math.min(localX, range));
+        const closestY = Math.max(-width / 2, Math.min(localY, width / 2));
+        const dist = Math.hypot(localX - closestX, localY - closestY);
+
+        if (dist <= target.radius) {
+            target.takeDamage(weapon.damage, attacker, world);
+        }
+    }
+}
+
+function _resolveCharge(weapon, attacker, targetTeam, world) {
+    const weaponRange = weapon.range * (1 + weapon.chargeTime * weapon.rngSpeed / 100);
+    const weaponDamage = weapon.damage * (1 + weapon.chargeTime * weapon.dmgSpeed / 100);
+    let firstAngle;
+
+    for (const target of world.actorsOnTeam(targetTeam)) {
+        const dx = target.x - attacker.x;
+        const dy = target.y - attacker.y;
+        const d = Math.hypot(dx, dy);
+        const angle = Math.atan2(dy, dx);
+
+        if (d > target.radius + (attacker.radius ?? 0) + weaponRange) continue;
+
+        if (firstAngle === undefined) {
+            firstAngle = angle;
+        } else {
+            let diff = Math.abs(angle - firstAngle);
+            if (diff > Math.PI) diff = Math.PI * 2 - diff;
+            if (diff > Math.PI / 180 * weaponRange) continue;
+        }
+
+        target.takeDamage(weaponDamage, attacker, world);
     }
 }

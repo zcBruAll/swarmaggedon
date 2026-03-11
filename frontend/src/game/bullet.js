@@ -1,4 +1,4 @@
-import { damageEnemy } from "./enemies.js";
+import { TEAM } from "./world.js";
 
 export const BULLET_EXPLOS = {
     HIT: 'hit',
@@ -7,166 +7,159 @@ export const BULLET_EXPLOS = {
     CHAIN: 'chain',
 }
 
-export function createBullet(x, y, width, angle, speed, damage, range, type = BULLET_EXPLOS.HIT, args = null) {
+const MAX_BULLET_DIST = 900;
+
+export function createBullet(x, y, width, angle, speed, damage, range, type = BULLET_EXPLOS.HIT, args = null, sourceTeam = TEAM.PLAYER) {
     return {
-        x,
-        y,
-        width,
-        angle,
-        speed,
-        damage,
+        isActor: true,
+        team: sourceTeam,
+        targetTeam: sourceTeam === TEAM.PLAYER ? TEAM.ENEMY : TEAM.PLAYER,
+        targetable: false,
+        x, y,
+        hp: 1,
+        dead: false,
+        radius: width,
+        score: 0,
+        persistent: false,
+
+        width, angle, speed, damage,
         range,
+        dist: 0,
         transpierced: [],
         explos: type,
         args,
-    }
-}
 
-const MAX_BULLET_DIST = 900;
+        update(dt, world) {
+            if (this.dead) return;
 
-export function updateBullets(bullets, targets, dt) {
-    for (const bullet of bullets) {
-        if (!bullet.dead) {
-            updateBullet(bullet, targets, dt);
-        }
-    }
+            const stepX = Math.cos(this.angle) * this.speed * dt;
+            const stepY = Math.sin(this.angle) * this.speed * dt;
 
-    let w = 0;
-    for (let r = 0; r < bullets.length; r++) {
-        if (!bullets[r].dead) {
-            bullets[w++] = bullets[r];
-        }
-    }
-    bullets.length = w;
-}
+            this.x += stepX;
+            this.y += stepY;
+            this.dist += this.speed * dt;
 
-export function updateBullet(bullet, targets, dt) {
-    bullet.x = bullet.x + Math.cos(bullet.angle) * bullet.speed * dt;
-    bullet.y = bullet.y + Math.sin(bullet.angle) * bullet.speed * dt;
-
-    bullet.dist = (bullet.dist ?? 0) + bullet.speed * dt;
-    if (bullet.dist > MAX_BULLET_DIST + bullet.range) {
-        bullet.dead = true;
-        return;
-    }
-
-    for (const target of targets) {
-        // Continuous Collision Detection (CCD) via Ray-Circle Intersection
-        // We treat the bullet's movement this frame as a line segment (a ray)
-        // and check exactly when it mathematically intersects the enemy's circular hitbox
-
-        // Current / new frame position
-        const stepX = Math.cos(bullet.angle) * bullet.speed * dt;
-        const stepY = Math.sin(bullet.angle) * bullet.speed * dt;
-
-        // Previous frame position
-        const prevX = bullet.x - stepX;
-        const prevY = bullet.y - stepY;
-
-        // Calculate the vector from the bullet's starting position to the enemy's center
-        const fx = prevX - target.x;
-        const fy = prevY - target.y;
-
-        // Setup the quadratic equation: at² + bt + c = 0
-        // 't' represents the fraction of the current frame (0.0 to 1.0) when the hit occurs.
-
-        // 'a' is the bullet's squared speed (the squared distnace traveled this frame)
-        const a = stepX * stepX + stepY * stepY;
-
-        // 'b' evaluates the dot product to see if the bullet is moving towards or away from the enemy
-        const b = 2 * (fx * stepX + fy * stepY);
-
-        // 'c' represents the starting distance between the bullet and the enemy's edge
-        // (target.radius + bullet.width) is used as the combined collision radius
-        const c = fx * fx + fy * fy - (target.radius + bullet.width) * (target.radius + bullet.width);
-
-        let hit = false;
-        // Evaluate the collision result
-        if (c <= 0) {
-            // If c <= 0, the bullet's starting point was already inside the enemy's hitbox
-            // The hit happeneed immediately at the exact start of the frame (t = 0)
-            hit = true;
-        } else if (a > 0) {
-            // if 'a' > 0, the bullet actually moved this frame (safely preventing Divide-by-Zero)
-
-            // Calculate the Discriminant to see if the bullet's infinite line crosses the circle
-            const disc = b * b - 4 * a * c;
-            if (disc >= 0) {
-                // disc >= means the path does intersect the circle at some point in time
-                // We use the quadratic formula to solve for 't', the exact moment of first impact
-                const t = (-b - Math.sqrt(disc)) / (2 * a);
-
-                // Ensure the collision only happened during the exact frame
-                // t < 0 means it hit in the past. t > 1 means it will hit in the future
-                hit = t >= 0 && t <= 1;
+            if (this.dist > MAX_BULLET_DIST + this.range) {
+                this.dead = true;
+                return;
             }
-        }
 
-        if (hit) {
-            if (bullet.explos === BULLET_EXPLOS.CHAIN) {
-                if (target === bullet.chainFrom) continue;
-                damageEnemy(target, bullet.damage);
+            const targets = world.actorsOnTeam(this.targetTeam)
+                .filter(a => !a.isActor || a.targetable !== false);
 
-                let nextTarget = null;
-                let nearestTargetDist = 1e6;
-                const chainRadius = bullet.args.chainRadius || 150;
+            for (const target of targets) {
+                if (!checkHit(this, target, stepX, stepY)) continue;
+                this._resolveHit(target, targets, world);
+                break;
+            }
+        },
 
-                for (const chainTarget of targets) {
-                    if (chainTarget === target || chainTarget === bullet.chainFrom) continue;
+        _resolveHit(target, allTargets, world) {
+            switch (this.explos) {
+                case BULLET_EXPLOS.CHAIN: this._chainHit(target, allTargets, world); break;
+                case BULLET_EXPLOS.AOE: this._aoeHit(target, world); break;
+                case BULLET_EXPLOS.PIERCE: this._pierceHit(target); break;
+                default:
+                    target.takeDamage(this.damage, this, world);
+                    this.dead = true;
+                    break;
+            }
+        },
 
-                    const adx = chainTarget.x - bullet.x - bullet.width;
-                    const ady = chainTarget.y - bullet.y - bullet.width;
-                    const ad = Math.hypot(adx, ady);
+        _chainHit(target, allTargets, world) {
+            if (target === this.chainFrom) return;
+            target.takeDamage(this.damage, this, world);
 
-                    if (ad < nearestTargetDist && ad < chainRadius + chainTarget.radius + bullet.width) {
-                        nearestTargetDist = ad;
-                        nextTarget = chainTarget;
-                    }
+            const chainRadius = this.args?.chainRadius ?? 150;
+            let next = null;
+            let nearestDist = Infinity;
+
+            for (const t of allTargets) {
+                if (t === target || t === this.chainFrom) continue;
+                const d = Math.hypot(t.x - this.x, t.y - this.y);
+                if (d < nearestDist && d < chainRadius + t.radius + this.width) {
+                    nearestDist = d;
+                    next = t;
                 }
+            }
 
-                if (nextTarget && (bullet.args.chain ?? 0) > 0) {
-                    const adx = nextTarget.x - bullet.x - bullet.width;
-                    const ady = nextTarget.y - bullet.y - bullet.width;
-
-                    bullet.angle = Math.atan2(ady, adx);
-                    bullet.args.chain = Math.floor(bullet.args.chain - 1);
-                    bullet.chainFrom = target;
-
-                    bullet.dist = 0;
-
-                    return;
-                } else {
-                    bullet.dead = true;
-                }
-            } else if (bullet.explos === BULLET_EXPLOS.AOE) {
-                damageEnemy(target, bullet.damage);
-
-                const blastRadius = bullet.args.aoeRadius || 150;
-
-                for (const areaTarget of targets) {
-                    if (areaTarget === target) continue;
-                    const adx = areaTarget.x - bullet.x;
-                    const ady = areaTarget.y - bullet.y;
-                    const ad = Math.hypot(adx, ady);
-                    if (ad <= blastRadius + areaTarget.radius) {
-                        const falloff = Math.max(0, 1 - (ad / blastRadius));
-
-                        const finalDamage = bullet.damage * falloff;
-                        damageEnemy(areaTarget, finalDamage);
-                    }
-                }
-            } else if (bullet.explos == BULLET_EXPLOS.PIERCE) {
-                if (!bullet.transpierced.includes(target)) {
-                    damageEnemy(target, bullet.damage);
-                    bullet.transpierced.push(target);
-                    bullet.args.pierce = Math.floor(bullet.args.pierce - 1);
-                }
+            if (next && (this.args?.chain ?? 0) > 0) {
+                this.angle = Math.atan2(next.y - this.y, next.x - this.x);
+                this.args.chain = Math.floor(this.args.chain - 1);
+                this.chainFrom = target;
+                this.dist = 0;
             } else {
-                damageEnemy(target, bullet.damage);
+                this.dead = true;
             }
-            if ((bullet.explos !== BULLET_EXPLOS.PIERCE && bullet.explos !== BULLET_EXPLOS.CHAIN) || bullet.args.pierce <= 0 || bullet.args.chain <= 0)
-                bullet.dead = true;
-            break;
+        },
+
+        _aoeHit(target, world) {
+            target.takeDamage(this.damage, this, world);
+            const blastRadius = this.args?.aoeRadius ?? 150;
+            world.aoeBlast(this.x, this.y, blastRadius, this.damage, this.targetTeam, target);
+            this.dead = true;
+        },
+
+        _pierceHit(target) {
+            if (!this.transpierced.includes(target)) {
+                target.takeDamage(this.damage, this, null);
+                this.transpierced.push(target);
+                this.args.pierce = Math.floor(this.args.pierce - 1);
+            }
+            if (this.args.pierce <= 0) this.dead = true;
+        },
+
+        drawType: 'bullet',
+
+        takeDamage() { },
+        onDeath() { },
+    }
+}
+
+// CCD ray-circle intersection
+function checkHit(bullet, target, stepX, stepY) {
+    // Previous frame position
+    const prevX = bullet.x - stepX;
+    const prevY = bullet.y - stepY;
+
+    // Calculate the vector from the bullet's starting position to the enemy's center
+    const fx = prevX - target.x;
+    const fy = prevY - target.y;
+
+    // Setup the quadratic equation: at² + bt + c = 0
+    // 't' represents the fraction of the current frame (0.0 to 1.0) when the hit occurs.
+
+    // 'a' is the bullet's squared speed (the squared distnace traveled this frame)
+    const a = stepX * stepX + stepY * stepY;
+
+    // 'b' evaluates the dot product to see if the bullet is moving towards or away from the enemy
+    const b = 2 * (fx * stepX + fy * stepY);
+
+    // 'c' represents the starting distance between the bullet and the enemy's edge
+    // (target.radius + bullet.width) is used as the combined collision radius
+    const c = fx * fx + fy * fy - (target.radius + bullet.width) * (target.radius + bullet.width);
+
+    // Evaluate the collision result
+    if (c <= 0) {
+        // If c <= 0, the bullet's starting point was already inside the enemy's hitbox
+        // The hit happened immediately at the exact start of the frame (t = 0)
+        return true;
+    } else if (a > 0) {
+        // if 'a' > 0, the bullet actually moved this frame (safely preventing Divide-by-Zero)
+
+        // Calculate the Discriminant to see if the bullet's infinite line crosses the circle
+        const disc = b * b - 4 * a * c;
+        if (disc >= 0) {
+            // disc >= means the path does intersect the circle at some point in time
+            // We use the quadratic formula to solve for 't', the exact moment of first impact
+            const t = (-b - Math.sqrt(disc)) / (2 * a);
+
+            // Ensure the collision only happened during the exact frame
+            // t < 0 means it hit in the past. t > 1 means it will hit in the future
+            return t >= 0 && t <= 1;
         }
     }
+
+    // a <= 0 || disc < 0
+    return false;
 }
