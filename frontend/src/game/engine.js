@@ -115,7 +115,7 @@ export function createEngine(canvas, onHUDUpdate) {
 
                 player.heal(20);
 
-                const choiceType = wave === 1 ? CHOICE_TYPE.ENCHANT : undefined;
+                const choiceType = wave === 20 ? CHOICE_TYPE.ENCHANT : undefined;
                 _openChoiceScreen(choiceType);
             }
 
