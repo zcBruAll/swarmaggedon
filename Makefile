@@ -1,5 +1,7 @@
 start:
 	git pull
+	chmod +x ./create_patch_notes.sh
+	bash ./create_patch_notes.sh
 	docker compose pull
 	docker compose up -d --build --remove-orphans
 	docker image prune -f

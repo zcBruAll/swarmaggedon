@@ -1,0 +1,105 @@
+.patch-notes-container {
+    position: fixed;
+    bottom: 15px;
+    left: 15px;
+    z-index: 1000;
+}
+
+.patch-notes-button {
+    background: var(--paper2);
+    color: var(--ink);
+    border: 2px solid var(--line);
+    padding: 6px 14px;
+    border-radius: 4px;
+    width: 105px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 1rem;
+    box-shadow: 2px 2px 0 var(--line);
+    transition: transform 0.1s;
+}
+
+.patch-notes-button:hover {
+    transform: translateY(-1px);
+}
+
+.patch-notes-button:active {
+    transform: translateY(1px);
+    box-shadow: 1px 1px 0 var(--line);
+}
+
+.patch-notes-modal {
+    position: absolute;
+    bottom: 45px;
+    left: 0;
+    width: 500px;
+    max-height: 450px;
+    background: var(--paper);
+    border: 2px solid var(--line);
+    border-radius: 4px;
+    padding: 12px;
+    box-shadow: 4px 4px 0 var(--line);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.patch-notes-title {
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: var(--red);
+    border-bottom: 2px solid var(--line);
+    padding-bottom: 4px;
+}
+
+.patch-notes-content {
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.patch-date-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.patch-date-header {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--ink-mid);
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 2px;
+    margin-bottom: 4px;
+}
+
+.patch-type-subgroup {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-left: 5px;
+}
+
+.patch-type-header {
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    opacity: 0.8;
+}
+
+.patch-type-header.feat\! { color: var(--red); }
+.patch-type-header.feat { color: var(--blue); }
+.patch-type-header.fix { color: var(--ink-mid); }
+.patch-type-header.ref { color: var(--ink-faint); }
+
+.patch-item {
+    padding-left: 10px;
+}
+
+.patch-message {
+    font-size: 1.1rem;
+    line-height: 1.3;
+    color: var(--ink);
+    display: block;
+}

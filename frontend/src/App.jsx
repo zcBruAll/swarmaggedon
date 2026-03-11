@@ -8,6 +8,7 @@ import Account from './pages/Account'
 import Friends from './pages/Friends'
 import Auth from './pages/Auth'
 import { AuthProvider } from './context/AuthContext'
+import { PatchNotes } from './components/PatchNotes'
 
 function App() {
   return (
@@ -23,6 +24,8 @@ function App() {
             <Route path="/game" element={<Game />} />
             <Route path="/auth" element={<Auth />} />
           </Routes>
+
+          <PatchNotes />
         </div>
       </Router>
     </AuthProvider>

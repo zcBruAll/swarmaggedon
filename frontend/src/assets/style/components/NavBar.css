@@ -145,6 +145,7 @@ nav button.active,
   min-width: 18px;
   text-align: center;
   pointer-events: none;
+  z-index: 10;
 }
 
 .header-right {
