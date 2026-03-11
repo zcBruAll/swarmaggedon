@@ -1,4 +1,5 @@
-import { WEAPON_ENCHANT, WEAPON_TYPE, createWeapon } from "./weapon";
+import { createWeapon, tryAttack, WEAPON_TYPE, WEAPON_ENCHANT } from '../weapon.js';
+import { TEAM } from '../world.js';
 
 export const ENEMY_TYPE = {
     RUNNER: 'runner',       // Fast, low hp
@@ -80,8 +81,8 @@ const WAVE_SCALE = {
     },
 }
 
-function scaleStats(base, multiplier, wave) {
-    return base * Math.pow(multiplier, wave - 1);
+function scaleStats(base, mult, wave) {
+    return base * Math.pow(mult, wave - 1);
 }
 
 export function spawnEnemy(player, enemy, minAngle = 0, maxAngle = Math.PI * 2, safeRadius = 180) {
@@ -100,7 +101,6 @@ export function createEnemy(type, wave) {
     const hp = scaleStats(base.hp, scale.hp, wave);
 
     let weapon;
-
     if (type === ENEMY_TYPE.SHOOTER) {
         weapon = createWeapon(WEAPON_TYPE.RANGE);
     } else if (type === ENEMY_TYPE.BOSS) {
@@ -116,103 +116,88 @@ export function createEnemy(type, wave) {
     weapon.range = scaleStats(base.range, scale.range, wave);
 
     return {
-        x: 0,
-        y: 0,
+        isActor: true,
+        team: TEAM.ENEMY,
+        targetable: false,
+        persistent: false,
+        drawType: 'enemy',
+        score: base.score,
+
+        x: 0, y: 0,
         spawnIn: 0,
+        spawnData: null,
+
         radius: base.radius,
-        hp: hp,
+        hp,
         maxHp: hp,
         speed: scaleStats(base.speed, scale.speed, wave),
-        score: base.score,
-        weapon: weapon,
-        type: type,
+        weapon,
+        type,
         color: base.color,
-        bullets: [],
+        angle: 0,
+
+        dead: false,
+
+        update(dt, world) {
+            if (this.spawnIn > 0) {
+                this.spawnIn -= Math.min(this.spawnIn, dt);
+
+                if (this.spawnIn <= 1.5 && !this.x && !this.y) {
+                    const anchor = world.nearestActor(0, 0, TEAM.PLAYER) ?? { x: 0, y: 0 };
+                    _spawnAt(this, anchor, this.spawnData);
+                }
+                return;
+            }
+
+            if (!this.targetable) this.targetable = true;
+
+            const target = world.nearestActor(this.x, this.y, TEAM.PLAYER);
+            if (!target) return;
+
+            this._moveToward(target, dt);
+            this.angle = Math.atan2(target.y - this.y, target.x - this.x);
+
+            tryAttack(this.weapon, this, world, dt);
+        },
+
+        _moveToward(target, dt) {
+            const dx = target.x - this.x;
+            const dy = target.y - this.y;
+            const dist = Math.hypot(dx, dy);
+            if (dist <= 0) return;
+
+            if (this.type === ENEMY_TYPE.SHOOTER) {
+                const ideal = this.weapon.range * 0.85;
+                const diff = dist - ideal;
+                if (Math.abs(diff) > 20) {
+                    const sign = diff > 0 ? 1 : -1;
+                    this.x += (dx / dist) * this.speed * sign * dt;
+                    this.y += (dy / dist) * this.speed * sign * dt;
+                } else {
+                    this.x += (-dy / dist) * this.speed * 0.5 * dt;
+                    this.y += (dx / dist) * this.speed * 0.5 * dt;
+                }
+            } else {
+                this.x += (dx / dist) * this.speed * dt;
+                this.y += (dy / dist) * this.speed * dt;
+            }
+        },
+
+        takeDamage(amount) {
+            this.hp -= Math.min(amount, this.hp);
+        },
+
+        onDeath() { },
+        draw() { },
     };
 }
 
-export function updateEnemies(enemies, player, dt) {
-    enemies.forEach(enemy => {
-        if (enemy.spawnIn > 0) {
-            enemy.spawnIn -= Math.min(enemy.spawnIn, dt);
-
-            if (enemy.spawnIn <= 1.5 && !enemy.x && !enemy.y) {
-                const { minAngle, maxAngle, safeRadius } = enemy.spawnData;
-                spawnEnemy(player, enemy, minAngle, maxAngle, safeRadius);
-            }
-            return;
-        }
-
-        updateEnemy(enemy, player, dt);
-    });
-
-    separateEnemies(enemies);
-}
-
-function updateEnemy(enemy, player, dt) {
-    const dx = player.x - enemy.x;
-    const dy = player.y - enemy.y;
-
-    const distance = Math.hypot(dx, dy);
-
-    // Shooters remain at a specific distance from the player
-    if (enemy.type === ENEMY_TYPE.SHOOTER) {
-        const diff = distance - (enemy.weapon.range * 0.85);
-        if (Math.abs(diff) > 20) {
-            const sign = diff > 0 ? 1 : -1;
-            enemy.x += (dx / distance) * enemy.speed * sign * dt;
-            enemy.y += (dy / distance) * enemy.speed * sign * dt;
-        } else {
-            enemy.x += (-dy / distance) * enemy.speed * 0.5 * dt;
-            enemy.y += (dx / distance) * enemy.speed * 0.5 * dt;
-        }
-    } else {
-        if (distance > 0) {
-            enemy.x += (dx / distance) * enemy.speed * dt;
-            enemy.y += (dy / distance) * enemy.speed * dt;
-        }
-    }
-}
-
-function separateEnemies(enemies) {
-    for (const a of enemies) {
-        if (a.spawnIn > 0) continue;
-        for (const b of enemies) {
-            if (b.spawnIn > 0) continue;
-
-            const dx = b.x - a.x;
-            const dy = b.y - a.y;
-            const dist = Math.hypot(dx, dy);
-            const minDist = a.radius + b.radius + 3;
-            if (dist < minDist && dist > 0) {
-                // Overlap ratio between 0 and 1
-                const overlap = (minDist - dist) / minDist;
-                // Push enemies proportional to overlap
-                const force = overlap * 0.5;
-                const nx = (dx / dist) * force;
-                const ny = (dy / dist) * force;
-
-                // Heavier enemies yield less
-                const massA = a.radius * a.radius;
-                const massB = b.radius * b.radius;
-                const totalMass = massA + massB;
-
-                a.x -= nx * (massB / totalMass);
-                a.y -= ny * (massB / totalMass);
-                b.x += nx * (massA / totalMass);
-                b.y += ny * (massA / totalMass);
-            }
-        }
-    }
-}
-
-export function createWave(wave, player) {
+export function createWave(wave, anchorActor) {
     const isBossWave = wave % BOSS_WAVE_INTERVAL == 0;
     const queue = [];
 
     if (isBossWave) {
         queue.push(createEnemy(ENEMY_TYPE.BOSS, wave));
-
         const runnerCount = 1 + Math.floor(wave / 10);
         for (let i = 0; i < runnerCount; i++) {
             queue.push(createEnemy(ENEMY_TYPE.RUNNER, wave));
@@ -245,7 +230,7 @@ export function createWave(wave, player) {
         const squadSize = 4 + Math.floor(wave / 6);
         const squadIndex = Math.floor(index / squadSize);
 
-        enemy.spawnIn = (squadIndex * 2) + (Math.random() * 1);
+        enemy.spawnIn = squadIndex * 2 + Math.random();
 
         enemy.spawnData = {
             minAngle: startAngle,
@@ -256,13 +241,49 @@ export function createWave(wave, player) {
 
     if (queue.length > 0) {
         queue[0].spawnIn = 0;
-        const { minAngle, maxAngle, safeRadius } = queue[0].spawnData;
-        spawnEnemy(player, queue[0], minAngle, maxAngle, safeRadius);
+        _spawnAt(queue[0], anchorActor, queue[0].spawnData);
     }
 
     return queue;
 }
 
-export function damageEnemy(enemy, amount) {
-    enemy.hp -= Math.min(amount, enemy.hp);
+export function separateEnemies(enemies) {
+    for (const a of enemies) {
+        if (a.spawnIn > 0) continue;
+        for (const b of enemies) {
+            if (b === a || b.spawnIn > 0) continue;
+
+            const dx = b.x - a.x;
+            const dy = b.y - a.y;
+            const dist = Math.hypot(dx, dy);
+            const minDist = a.radius + b.radius + 3;
+
+            if (dist < minDist && dist > 0) {
+                // Overlap ratio between 0 and 1
+                const overlap = (minDist - dist) / minDist;
+                // Push enemies proportional to overlap
+                const force = overlap * 0.5;
+                const nx = (dx / dist) * force;
+                const ny = (dy / dist) * force;
+
+                // Heavier enemies yield less
+                const massA = a.radius * a.radius;
+                const massB = b.radius * b.radius;
+                const totalMass = massA + massB;
+
+                a.x -= nx * (massB / totalMass);
+                a.y -= ny * (massB / totalMass);
+                b.x += nx * (massA / totalMass);
+                b.y += ny * (massA / totalMass);
+            }
+        }
+    }
+}
+
+function _spawnAt(enemy, anchor, spawnData) {
+    const { minAngle, maxAngle, safeRadius } = spawnData;
+    const randAngle = minAngle + Math.random() * (maxAngle - minAngle);
+    const spawnDist = safeRadius + Math.random() * 300;
+    enemy.x = anchor.x + Math.cos(randAngle) * spawnDist;
+    enemy.y = anchor.y + Math.sin(randAngle) * spawnDist;
 }
