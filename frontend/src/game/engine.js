@@ -1,10 +1,10 @@
 import { createWorld, TEAM } from './world.js';
 import { createPlayer } from './actors/player.js';
-import { createEnemy, createWave, separateEnemies, ENEMY_TYPE } from './actors/enemy.js';
+import { createEnemy, createWave, separateEnemies, ENEMY_TYPE, BOSS_WAVE_INTERVAL } from './actors/enemy.js';
 import { initInput, destroyInput, flushInput, input } from './input.js';
 import { drawBackground, drawActors } from './renderer.js';
 import { WEAPON_TYPE } from './weapon.js';
-import { CHOICE_TYPE, getChoices, getEnchantChoices, getWeaponChoices } from './choice.js';
+import { CHOICE_TYPE, getChoices, getEnchantChoices, getWeaponChoices, getBossRewardChoices } from './choice.js';
 
 export const GAME_STATE = {
     RUNNING: 'running',
@@ -115,7 +115,14 @@ export function createEngine(canvas, onHUDUpdate) {
 
                 player.heal(20);
 
-                const choiceType = wave === 20 ? CHOICE_TYPE.ENCHANT : undefined;
+                const completedWave = wave;
+                let choiceType;
+                if (completedWave === 20) {
+                    choiceType = CHOICE_TYPE.ENCHANT;
+                } else if (completedWave % BOSS_WAVE_INTERVAL === 0) {
+                    choiceType = CHOICE_TYPE.BOSS_REWARD;
+                }
+
                 _openChoiceScreen(choiceType);
             }
 
@@ -137,7 +144,8 @@ export function createEngine(canvas, onHUDUpdate) {
 
         switch (type) {
             case CHOICE_TYPE.WEAPON: choices = getWeaponChoices(wave, player); break;
-            case CHOICE_TYPE.ENCHANT: choices = getEnchantChoices(wave, player); break;
+            case CHOICE_TYPE.ENCHANT: console.log("ADGHSAGDASJHDG"); choices = getEnchantChoices(wave, player); break;
+            case CHOICE_TYPE.BOSS_REWARD: choices = getBossRewardChoices(wave, player); break;
             default: choices = getChoices(wave, player); break;
         }
 

@@ -8,7 +8,7 @@ export const ENEMY_TYPE = {
     BOSS: 'boss',           // Giant, appears every X waves
 }
 
-const BOSS_WAVE_INTERVAL = 10;
+export const BOSS_WAVE_INTERVAL = 10;
 
 const BASE_STATS = {
     [ENEMY_TYPE.RUNNER]: {

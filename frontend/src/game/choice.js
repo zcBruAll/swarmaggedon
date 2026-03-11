@@ -5,6 +5,7 @@ export const CHOICE_TYPE = {
     WEAPON: 'weapon',
     ITEM: 'item',
     ENCHANT: 'enchant',
+    BOSS_REWARD: 'boss_reward',
 }
 
 const rand = (min, max) => Math.floor(Math.random() * (max - min + 1) + min);
@@ -16,15 +17,21 @@ const RARITIES = {
     LEGENDARY: { name: 'Legendary', color: '#f1c40f', weight: 0.16 }
 };
 
-function getRandomRarity() {
-    const totalWeight = Object.values(RARITIES).reduce((sum, r) => sum + r.weight, 0);
+const RARITY_TIER = ['COMMON', 'RARE', 'EPIC', 'LEGENDARY'];
+
+function getRandomRarity(minRarity = 'COMMON') {
+    const minTier = RARITY_TIER.indexOf(minRarity.toUpperCase());
+    const eligible = Object.entries(RARITIES)
+        .filter(([key]) => RARITY_TIER.indexOf(key) >= minTier);
+
+    const totalWeight = eligible.reduce((sum, [, r]) => sum + r.weight, 0);
     let random = Math.random() * totalWeight;
 
-    for (const key in RARITIES) {
-        if (random < RARITIES[key].weight) return RARITIES[key];
-        random -= RARITIES[key].weight;
+    for (const [, rarity] of eligible) {
+        if (random < rarity.weight) return rarity;
+        random -= rarity.weight;
     }
-    return RARITIES.COMMON;
+    return eligible[0][1];
 }
 
 function getTieredBonus(baseMin, baseMax, rarityName) {
@@ -38,6 +45,14 @@ function getTieredBonus(baseMin, baseMax, rarityName) {
 }
 
 export function getChoices(wave, player) {
+    return _buildAugmentChoices(wave, player, 'COMMON');
+}
+
+export function getBossRewardChoices(wave, player) {
+    return _buildAugmentChoices(wave, player, 'RARE');
+}
+
+function _buildAugmentChoices(wave, player, minRarity) {
     const wpn = player.weapon;
 
     let possibleChoices = [
@@ -83,7 +98,7 @@ export function getChoices(wave, player) {
         }
     }
 
-    return _buildChoices(possibleChoices, CHOICE_TYPE.AUGMENT);
+    return _buildChoices(possibleChoices, CHOICE_TYPE.AUGMENT, minRarity);
 }
 
 export function getEnchantChoices(wave, player) {
@@ -161,12 +176,12 @@ function _pct(attr, arg, prop, baseMin, baseMax) {
     };
 }
 
-function _buildChoices(possibleChoices, type) {
+function _buildChoices(possibleChoices, type, minRarity = 'COMMON') {
     return possibleChoices
         .sort(() => 0.5 - Math.random())
         .slice(0, 3)
         .map((choice, index) => {
-            const rarity = getRandomRarity();
+            const rarity = getRandomRarity(minRarity);
             const bonus = choice.getBonus(rarity);
             return {
                 id: index,
