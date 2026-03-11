@@ -7,6 +7,8 @@ import { gql } from '@apollo/client';
 import { useMutation } from '@apollo/client/react';
 import { sha256 } from 'js-sha256';
 import { AccountDelete } from '../components/AccountDelete'
+import NavBar from '../components/NavBar'
+import { PatchNotes } from '../components/PatchNotes'
 
 const MUTATION_CHANGEUSERNAME = gql`
   mutation UserChange($newUsername: String!) {
@@ -43,27 +45,27 @@ const Account = () => {
   const handleUsernameChange = async (e) => {
     e.preventDefault();
     setStatus({ type: '', text: '' });
-    
+
     if (!usernameChange || usernameChange === user.username) {
-        setStatus({ type: 'error', text: 'Please enter a different username.' });
-        return;
+      setStatus({ type: 'error', text: 'Please enter a different username.' });
+      return;
     }
 
     try {
-        const { data } = await changeUsername({
-            variables: {
-                newUsername: usernameChange
-            }
-        });
-        
-        if (data.changeUsername === "Username changed successfully") {
-            setStatus({ type: 'success', text: data.changeUsername });
-            await checkAuth();
-        } else {
-            setStatus({ type: 'error', text: data.changeUsername || 'Failed to change username' });
+      const { data } = await changeUsername({
+        variables: {
+          newUsername: usernameChange
         }
+      });
+
+      if (data.changeUsername === "Username changed successfully") {
+        setStatus({ type: 'success', text: data.changeUsername });
+        await checkAuth();
+      } else {
+        setStatus({ type: 'error', text: data.changeUsername || 'Failed to change username' });
+      }
     } catch (err) {
-        setStatus({ type: 'error', text: err.message || 'An error occurred' });
+      setStatus({ type: 'error', text: err.message || 'An error occurred' });
     }
   }
 
@@ -114,12 +116,12 @@ const Account = () => {
   }
 
   const Message = ({ type, text }) => (
-    <div style={{ 
-      backgroundColor: type === 'success' ? 'rgba(0, 255, 0, 0.1)' : 'rgba(255, 0, 0, 0.1)', 
-      border: `1px solid ${type === 'success' ? 'var(--accent)' : 'var(--red)'}`, 
-      color: type === 'success' ? 'var(--accent)' : 'var(--red)', 
-      padding: '10px', 
-      borderRadius: '4px', 
+    <div style={{
+      backgroundColor: type === 'success' ? 'rgba(0, 255, 0, 0.1)' : 'rgba(255, 0, 0, 0.1)',
+      border: `1px solid ${type === 'success' ? 'var(--accent)' : 'var(--red)'}`,
+      color: type === 'success' ? 'var(--accent)' : 'var(--red)',
+      padding: '10px',
+      borderRadius: '4px',
       marginBottom: '15px',
       fontSize: '14px'
     }}>
@@ -129,96 +131,104 @@ const Account = () => {
 
   if (loading || !isLoggedIn) {
     return (
-      <div id="section-account" className="section-content active">
-        <div style={{ textAlign: 'center', padding: '100px' }}>
-          <p>{loading ? 'Loading account details...' : 'Redirecting to login...'}</p>
+      <>
+        <NavBar />
+        <PatchNotes />
+        <div id="section-account" className="section-content active">
+          <div style={{ textAlign: 'center', padding: '100px' }}>
+            <p>{loading ? 'Loading account details...' : 'Redirecting to login...'}</p>
+          </div>
         </div>
-      </div>
+      </>
     );
   }
   return (
-    <div id="section-account" className="section-content active" style={{ position: 'relative' }}>
-      <AccountDelete user={user} show={showDeleteAccountPanel} onClose={onReturnFromDeleteAccountPanel}>
-      <div className="main account-main">
-        <div className="panel" style={{ gridColumn: '1/-1' }}>
-          <div className="panel-header">
-            <span className="panel-title">Account details</span>
-            <span className="tag tag-accent">{user.username}</span>
-          </div>
-          <div className="panel-body account-panel-body">
-            <div>
-              {status.text && <Message type={status.type} text={status.text} />}
-              <div className="label" style={{ fontSize: '14px', color: 'var(--ink-mid)', marginBottom: '12px' }}>— profile —</div>
-              <div className="account-field">
-                <div className="label">username</div>
-                <form id="user-change" onSubmit={handleUsernameChange}>
-                <div className="account-field-row">
-                  <input 
-                    type="text"
-                    onChange={(e) => setUsernameChange(e.target.value)}
-                    defaultValue={user.username}
-                    disabled={newUsernameLoading}
-                  />
-                  <button className="btn btn-outline btn-sm">update</button>
-                </div>
-                </form>
+    <>
+      <NavBar />
+      <PatchNotes />
+      <div id="section-account" className="section-content active" style={{ position: 'relative' }}>
+        <AccountDelete user={user} show={showDeleteAccountPanel} onClose={onReturnFromDeleteAccountPanel}>
+          <div className="main account-main">
+            <div className="panel" style={{ gridColumn: '1/-1' }}>
+              <div className="panel-header">
+                <span className="panel-title">Account details</span>
+                <span className="tag tag-accent">{user.username}</span>
               </div>
-              <div className="account-field">
-                <div className="label">email</div>
-                <div className="account-field-row">
-                  <input type="email" defaultValue={user.email} readOnly />
+              <div className="panel-body account-panel-body">
+                <div>
+                  {status.text && <Message type={status.type} text={status.text} />}
+                  <div className="label" style={{ fontSize: '14px', color: 'var(--ink-mid)', marginBottom: '12px' }}>— profile —</div>
+                  <div className="account-field">
+                    <div className="label">username</div>
+                    <form id="user-change" onSubmit={handleUsernameChange}>
+                      <div className="account-field-row">
+                        <input
+                          type="text"
+                          onChange={(e) => setUsernameChange(e.target.value)}
+                          defaultValue={user.username}
+                          disabled={newUsernameLoading}
+                        />
+                        <button className="btn btn-outline btn-sm">update</button>
+                      </div>
+                    </form>
+                  </div>
+                  <div className="account-field">
+                    <div className="label">email</div>
+                    <div className="account-field-row">
+                      <input type="email" defaultValue={user.email} readOnly />
+                    </div>
+                  </div>
+                  <hr className="divider" />
+                  <div className="label" style={{ fontSize: '14px', color: 'var(--red)', }}>— danger zone —</div>
+                  <div style={{ marginTop: '8px', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                    <button className="btn btn-danger btn-sm" onClick={handleDeleteAccount}>Delete account</button>
+                    <button className="btn btn-outline btn-sm" onClick={logout}>Log out</button>
+                  </div>
                 </div>
-              </div>
-              <hr className="divider" />
-              <div className="label" style={{ fontSize: '14px', color: 'var(--red)', }}>— danger zone —</div>
-              <div style={{ marginTop: '8px', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                <button className="btn btn-danger btn-sm" onClick={handleDeleteAccount}>Delete account</button>
-                <button className="btn btn-outline btn-sm" onClick={logout}>Log out</button>
+                <div>
+                  <div className="label" style={{ fontSize: '14px', color: 'var(--ink-mid)', marginBottom: '12px' }}>— security —</div>
+                  <form id="password-change" onSubmit={handlePasswordChange}>
+                    <div className="account-field">
+                      <div className="label">current password</div>
+                      <input
+                        type="password"
+                        placeholder="••••••••"
+                        value={passwordData.oldPassword}
+                        onChange={(e) => setPasswordData({ ...passwordData, oldPassword: e.target.value })}
+                        disabled={passwordLoading}
+                      />
+                    </div>
+                    <div className="account-field">
+                      <div className="label">new password</div>
+                      <input
+                        type="password"
+                        placeholder="••••••••"
+                        value={passwordData.newPassword}
+                        onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
+                        disabled={passwordLoading}
+                      />
+                    </div>
+                    <div className="account-field">
+                      <div className="label">confirm new password</div>
+                      <input
+                        type="password"
+                        placeholder="••••••••"
+                        value={passwordData.confirmPassword}
+                        onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
+                        disabled={passwordLoading}
+                      />
+                    </div>
+                    <button type="submit" className="btn btn-primary btn-sm mt-8" disabled={passwordLoading}>
+                      {passwordLoading ? 'Changing...' : 'Change password'}
+                    </button>
+                  </form>
+                </div>
               </div>
             </div>
-            <div>
-              <div className="label" style={{ fontSize: '14px', color: 'var(--ink-mid)', marginBottom: '12px' }}>— security —</div>
-              <form id="password-change" onSubmit={handlePasswordChange}>
-                <div className="account-field">
-                  <div className="label">current password</div>
-                  <input 
-                    type="password" 
-                    placeholder="••••••••" 
-                    value={passwordData.oldPassword}
-                    onChange={(e) => setPasswordData({ ...passwordData, oldPassword: e.target.value })}
-                    disabled={passwordLoading}
-                  />
-                </div>
-                <div className="account-field">
-                  <div className="label">new password</div>
-                  <input 
-                    type="password" 
-                    placeholder="••••••••" 
-                    value={passwordData.newPassword}
-                    onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
-                    disabled={passwordLoading}
-                  />
-                </div>
-                <div className="account-field">
-                  <div className="label">confirm new password</div>
-                  <input 
-                    type="password" 
-                    placeholder="••••••••" 
-                    value={passwordData.confirmPassword}
-                    onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
-                    disabled={passwordLoading}
-                  />
-                </div>
-                <button type="submit" className="btn btn-primary btn-sm mt-8" disabled={passwordLoading}>
-                  {passwordLoading ? 'Changing...' : 'Change password'}
-                </button>
-              </form>
-            </div>
           </div>
-        </div>
+        </AccountDelete>
       </div>
-      </AccountDelete>
-    </div>
+    </>
   )
 };
 
