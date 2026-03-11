@@ -102,7 +102,7 @@ export function drawBullet(ctx, camera, bullet) {
     ctx.fill();
 }
 
-function _drawWeaponArc(ctx, camera, bearer, showFullRange = true) {
+function _drawWeaponArc(ctx, camera, bearer, subtleArea = true) {
     const weapon = bearer.weapon;
     if (!weapon) return;
     if (bearer.spawnIn > 0) return;
@@ -122,8 +122,8 @@ function _drawWeaponArc(ctx, camera, bearer, showFullRange = true) {
     ctx.save();
 
     // Weapon cooldown
-    if (weapon.enchant !== WEAPON_ENCHANT.CHARGE || !weapon.charging) {
-        const ringR = bearer.radius + (showFullRange ? weapon.range : 3);
+    if (!subtleArea && (weapon.enchant !== WEAPON_ENCHANT.CHARGE || !weapon.charging)) {
+        const ringR = bearer.radius + 3;
         ctx.beginPath();
         ctx.ellipse(sx, sy, ringR, ringR, 0,
             weapon.cooldownTime / weapon.cooldown * Math.PI * 2, Math.PI * 2);
@@ -134,7 +134,7 @@ function _drawWeaponArc(ctx, camera, bearer, showFullRange = true) {
         ctx.closePath();
     }
 
-    // Weapon angle 
+    // Weapon area
     let lineWidth = 1;
     let angle = bearer.angle;
     let weaponAngle = weapon.angle ?? 0;
@@ -153,6 +153,8 @@ function _drawWeaponArc(ctx, camera, bearer, showFullRange = true) {
         weaponRange = weapon.range * (weapon.chargeTime * weapon.rngSpeed) / 100;
     }
 
+    const readyRatio = 1 - (Math.max(0, weapon.cooldownTime) / weapon.cooldown);
+
     const halfSpread = (weaponAngle / 2) * (Math.PI / 180);
     const arcRadius = bearer.radius + weaponRange;
 
@@ -163,8 +165,10 @@ function _drawWeaponArc(ctx, camera, bearer, showFullRange = true) {
     ctx.moveTo(sx, sy);
     ctx.arc(sx, sy, arcRadius, angle - halfSpread, angle + halfSpread);
     ctx.lineTo(sx, sy);
+    ctx.globalAlpha = (subtleArea ? 0.075 : 0.75) * readyRatio;
     ctx.stroke();
-    ctx.fillStyle = strokeStyle + '25';
+    ctx.globalAlpha = (subtleArea ? 0.035 : 0.25) * readyRatio;
+    ctx.fillStyle = strokeStyle;
     ctx.fill();
 
     ctx.restore();
