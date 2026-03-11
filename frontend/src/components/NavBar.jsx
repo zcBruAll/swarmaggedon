@@ -20,7 +20,7 @@ function NavBar() {
   return (
     <header>
       <div>
-        <span className="logo">Swarmaggedon</span>
+        <span className="logo">Swarmaggedon{process.env.NODE_ENV !== "production" ? "DEV" : ""}</span>
       </div>
       <nav>
         <Link 

@@ -240,6 +240,19 @@ select option {
   color: var(--ink-faint);
   transform: rotate(0.5deg);
   white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.tag.clickable {
+  cursor: pointer;
+  user-select: none;
+}
+
+.tag.clickable:hover {
+  background: var(--paper-offset);
+  border-color: var(--blue);
+  color: var(--blue);
+  transform: scale(1.1);
 }
 
 .tag-accent {

@@ -7,7 +7,7 @@ function AccountStats() {
     <div className="panel" style={{ display: 'flex', flexDirection: 'column' }}>
       <div className="panel-header">
         <span className="panel-title">My stats — {user.username}</span>
-        <span className="tag">{!user.rank ? "No rank yet" : "Rank #" + user.rank}</span>
+        <span className="tag">{!user.rank ? "No rank yet" : "Global rank #" + user.rank}</span>
       </div>
       <div className="panel-body account-stats" style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
         <div className="stats-grid" style={{ flex: 1 }}>
