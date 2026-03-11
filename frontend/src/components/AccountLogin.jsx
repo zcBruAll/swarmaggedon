@@ -5,6 +5,7 @@ import LoadingSpinner from './LoadingSpinner';
 import { sha256 } from 'js-sha256'
 import { gql } from '@apollo/client';
 import { useMutation } from '@apollo/client/react';
+import '../assets/style/components/AccountLogin.css';
 
 const MUTATION_LOGIN = gql`
   mutation LoginUser($username: String!, $password: String!) {
@@ -20,27 +21,27 @@ const MUTATION_REGISTER = gql`
 
 function AccountLogin() {
   const [loginData, setLoginData] = useState({ username: '', password: '' });
-  const [registerData, setRegisterData] = useState({ 
-    username: '', 
-    email: '', 
-    password: '', 
-    confirmPassword: '' 
+  const [registerData, setRegisterData] = useState({
+    username: '',
+    email: '',
+    password: '',
+    confirmPassword: ''
   });
-  
+
   const [loginUser, { loading: isLoadingLogin }] = useMutation(MUTATION_LOGIN);
   const [registerUser, { loading: isLoadingRegister }] = useMutation(MUTATION_REGISTER);
 
   const [registrationSuccess, setRegistrationSuccess] = useState(false);
   const [loginError, setLoginError] = useState('');
   const [registerError, setRegisterError] = useState('');
-  
+
   const { checkAuth } = useAuth();
   const navigate = useNavigate();
-  
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoginError('');
-    
+
     try {
       const { data } = await loginUser({
         variables: {
@@ -48,7 +49,7 @@ function AccountLogin() {
           password: sha256(loginData.password)
         }
       });
-      
+
       if (data.login === "Logged in successfully") {
         await checkAuth();
         navigate('/account');
@@ -70,7 +71,7 @@ function AccountLogin() {
       setRegisterError("Passwords do not match");
       return;
     }
-    
+
     try {
       const { data } = await registerUser({
         variables: {
@@ -79,7 +80,7 @@ function AccountLogin() {
           password: sha256(registerData.password)
         }
       });
-      
+
       if (data.register === "Account created successfully") {
         setRegistrationSuccess(true);
         setRegisterData({ username: '', email: '', password: '', confirmPassword: '' });
@@ -93,12 +94,12 @@ function AccountLogin() {
   };
 
   const Message = ({ type, text }) => (
-    <div style={{ 
-      backgroundColor: type === 'success' ? 'rgba(0, 255, 0, 0.1)' : 'rgba(255, 0, 0, 0.1)', 
-      border: `1px solid ${type === 'success' ? 'var(--accent)' : 'var(--red)'}`, 
-      color: type === 'success' ? 'var(--accent)' : 'var(--red)', 
-      padding: '10px', 
-      borderRadius: '4px', 
+    <div style={{
+      backgroundColor: type === 'success' ? 'rgba(0, 255, 0, 0.1)' : 'rgba(255, 0, 0, 0.1)',
+      border: `1px solid ${type === 'success' ? 'var(--accent)' : 'var(--red)'}`,
+      color: type === 'success' ? 'var(--accent)' : 'var(--red)',
+      padding: '10px',
+      borderRadius: '4px',
       marginBottom: '15px',
       fontSize: '14px'
     }}>
@@ -107,33 +108,33 @@ function AccountLogin() {
   );
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '28px', alignItems: 'start'}}>
+    <div className='authentication-panels'>
       <div className="panel">
         <div className="panel-header">
           <span className="panel-title">Login</span>
         </div>
-        <div className="panel-body">        
+        <div className="panel-body">
           {loginError && <Message type="error" text={loginError} />}
           <form id="auth-login" onSubmit={handleLogin}>
             <div className="form-row">
               <div className="label">username</div>
-              <input 
-                type="text" 
-                placeholder="your_username" 
+              <input
+                type="text"
+                placeholder="your_username"
                 value={loginData.username}
                 onChange={(e) => setLoginData({ ...loginData, username: e.target.value })}
                 disabled={isLoadingLogin}
-                />
+              />
             </div>
             <div className="form-row">
               <div className="label">password</div>
-              <input 
-                type="password" 
-                placeholder="••••••••" 
+              <input
+                type="password"
+                placeholder="••••••••"
                 value={loginData.password}
                 onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
                 disabled={isLoadingLogin}
-                />
+              />
             </div>
             <button type="submit" className="btn btn-primary btn-block" disabled={isLoadingLogin}>
               {isLoadingLogin ? <LoadingSpinner /> : null}
@@ -143,7 +144,7 @@ function AccountLogin() {
           </form>
         </div>
       </div>
-      
+
       <div className="panel">
         <div className="panel-header">
           <span className="panel-title">Register</span>
@@ -154,9 +155,9 @@ function AccountLogin() {
           <form id="auth-register" onSubmit={handleRegister}>
             <div className="form-row">
               <div className="label">choose a handle</div>
-              <input 
-                type="text" 
-                placeholder="coolname_42" 
+              <input
+                type="text"
+                placeholder="coolname_42"
                 value={registerData.username}
                 onChange={(e) => setRegisterData({ ...registerData, username: e.target.value })}
                 disabled={isLoadingRegister}
@@ -164,9 +165,9 @@ function AccountLogin() {
             </div>
             <div className="form-row">
               <div className="label">email</div>
-              <input 
-                type="email" 
-                placeholder="you@example.com" 
+              <input
+                type="email"
+                placeholder="you@example.com"
                 value={registerData.email}
                 onChange={(e) => setRegisterData({ ...registerData, email: e.target.value })}
                 disabled={isLoadingRegister}
@@ -174,9 +175,9 @@ function AccountLogin() {
             </div>
             <div className="form-row">
               <div className="label">password</div>
-              <input 
-                type="password" 
-                placeholder="min. 8 chars" 
+              <input
+                type="password"
+                placeholder="min. 8 chars"
                 value={registerData.password}
                 onChange={(e) => setRegisterData({ ...registerData, password: e.target.value })}
                 disabled={isLoadingRegister}
@@ -184,9 +185,9 @@ function AccountLogin() {
             </div>
             <div className="form-row">
               <div className="label">confirm password</div>
-              <input 
-                type="password" 
-                placeholder="again..." 
+              <input
+                type="password"
+                placeholder="again..."
                 value={registerData.confirmPassword}
                 onChange={(e) => setRegisterData({ ...registerData, confirmPassword: e.target.value })}
                 disabled={isLoadingRegister}

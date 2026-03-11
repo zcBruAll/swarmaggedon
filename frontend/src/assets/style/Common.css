@@ -83,7 +83,6 @@ select {
   outline: none;
   transition: border-color 0.15s;
   border-radius: 0;
-  -webkit-appearance: none;
 }
 
 input:focus,

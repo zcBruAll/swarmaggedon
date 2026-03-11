@@ -9,7 +9,7 @@ const Auth = () => {
       <NavBar />
       <PatchNotes />
       <div className="section-content active">
-        <div className="main" style={{ gridTemplateColumns: '1fr', maxWidth: '900px' }}>
+        <div className="main">
           <AccountLogin />
         </div>
       </div>
