@@ -14,24 +14,24 @@ export const input = {
 
 function onKeyDown(e) {
     const key = e.key;
-    switch (key) {
-        case "ArrowUp":
-        case "w":
+    switch (key.toUpperCase()) {
+        case "ARROWUP":
+        case "W":
             input.keys.up = true;
             e.preventDefault();
             break;
-        case "ArrowDown":
-        case "s":
+        case "ARROWDOWN":
+        case "S":
             input.keys.down = true;
             e.preventDefault();
             break;
-        case "ArrowLeft":
-        case "a":
+        case "ARROWLEFT":
+        case "A":
             input.keys.left = true;
             e.preventDefault();
             break;
-        case "ArrowRight":
-        case "d":
+        case "ARROWRIGHT":
+        case "D":
             input.keys.right = true;
             e.preventDefault();
             break;
@@ -40,24 +40,24 @@ function onKeyDown(e) {
 
 function onKeyUp(e) {
     const key = e.key;
-    switch (key) {
-        case "ArrowUp":
-        case "w":
+    switch (key.toUpperCase()) {
+        case "ARROWUP":
+        case "W":
             input.keys.up = false;
             e.preventDefault();
             break;
-        case "ArrowDown":
-        case "s":
+        case "ARROWDOWN":
+        case "S":
             input.keys.down = false;
             e.preventDefault();
             break;
-        case "ArrowLeft":
-        case "a":
+        case "ARROWLEFT":
+        case "A":
             input.keys.left = false;
             e.preventDefault();
             break;
-        case "ArrowRight":
-        case "d":
+        case "ARROWRIGHT":
+        case "D":
             input.keys.right = false;
             e.preventDefault();
             break;
