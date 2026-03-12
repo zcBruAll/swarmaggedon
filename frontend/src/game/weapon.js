@@ -258,8 +258,8 @@ export function tryAttack(weapon, attacker, world, dt, inputState = null) {
     let nearest = null;
     let nearestDist = Infinity;
     let angleToNearest;
-    let firstAngle;
     let didHit = false;
+    let inRangeCandidates = [];
 
     for (const target of candidates) {
         const dx = target.x - attacker.x;
@@ -268,7 +268,7 @@ export function tryAttack(weapon, attacker, world, dt, inputState = null) {
         const inRange = d <= target.radius + (attacker.radius ?? 0) + weapon.range;
 
         if (!inRange) continue;
-
+        inRangeCandidates.push(target);
         const angle = Math.atan2(dy, dx);
 
         if (d < nearestDist) {
@@ -276,14 +276,16 @@ export function tryAttack(weapon, attacker, world, dt, inputState = null) {
             angleToNearest = angle;
             nearest = target;
         }
+    }
 
-        if (firstAngle === undefined) {
-            firstAngle = angle;
-        } else {
-            let diff = Math.abs(angle - firstAngle);
-            if (diff > Math.PI) diff = Math.PI * 2 - diff;
-            if (diff > Math.PI / 180 * (weapon.angle ?? 360)) continue;
-        }
+    for (const target of inRangeCandidates) {
+        const dx = target.x - attacker.x;
+        const dy = target.y - attacker.y;
+        const angle = Math.atan2(dy, dx);
+
+        let diff = Math.abs(angle - angleToNearest);
+        if (diff > Math.PI) diff = Math.PI * 2 - diff;
+        if (diff > Math.PI / 180 * (weapon.angle ?? 360)) continue;
 
         if (weapon.type === WEAPON_TYPE.MELEE) {
             if (weapon.enchant === WEAPON_ENCHANT.LIFESTEAL) {
