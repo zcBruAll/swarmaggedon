@@ -313,3 +313,35 @@ select option {
   transform: rotate(-1deg);
   display: inline-block;
 }
+
+.button {
+    background: var(--paper2);
+    color: var(--ink);
+    border: 2px solid var(--line);
+    padding: 6px 14px;
+    border-radius: 4px;
+    width: 105px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 1rem;
+    box-shadow: 2px 2px 0 var(--line);
+    transition: transform 0.1s;
+}
+
+.button:hover {
+    transform: translateY(-1px);
+}
+
+.button:active {
+    transform: translateY(1px);
+    box-shadow: 1px 1px 0 var(--line);
+}
+
+.modal {
+    background: var(--paper);
+    border: 2px solid var(--line);
+    border-radius: 4px;
+    box-shadow: 4px 4px 0 var(--line);
+    display: flex;
+    flex-direction: column;
+}

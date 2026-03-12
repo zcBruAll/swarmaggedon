@@ -21,7 +21,7 @@ export function PatchNotes() {
     const toggleOpen = () => {
         const nextOpen = !isOpen;
         setIsOpen(nextOpen);
-        
+
         if (nextOpen && newUpdates) {
             setNewUpdates(false);
             const last_commit_hash = sha256(JSON.stringify(commitData[0]));
@@ -52,7 +52,7 @@ export function PatchNotes() {
             const last_commit_hash = sha256(JSON.stringify(commitData[0]))
             // last update is stored as sha256
             if (!localStorageData) return localStorage.setItem(LOCAL_STORAGE_ITEM, last_commit_hash)
-            
+
             // else check stored commit with last one
             if (localStorageData == last_commit_hash) return
 
@@ -65,22 +65,22 @@ export function PatchNotes() {
 
     const groupedCommits = useMemo(() => {
         const groups = {};
-        
+
         commitData.forEach(commit => {
             const { date, type } = commit;
             if (!groups[date]) groups[date] = {};
             if (!groups[date][type]) groups[date][type] = [];
             groups[date][type].push(commit);
         });
-        
+
         return groups;
     }, []);
 
     return (
         <div className="patch-notes-container" ref={containerRef}>
-            {newUpdates ? <span className="nav-badge">!</span>: ""}
+            {newUpdates ? <span className="nav-badge">!</span> : ""}
             {isOpen && (
-                <div className="patch-notes-modal">
+                <div className="patch-notes-modal modal">
                     <div className="patch-notes-title">Patch Notes</div>
                     <div className="patch-notes-content">
                         {Object.entries(groupedCommits).map(([date, types], dateIndex) => (
@@ -89,7 +89,7 @@ export function PatchNotes() {
                                 {TYPE_ORDER.map(type => {
                                     const commits = types[type];
                                     if (!commits || commits.length === 0) return null;
-                                    
+
                                     return (
                                         <div key={type} className="patch-type-subgroup">
                                             <div className={`patch-type-header ${type}`}>{TYPE_NAMES[type]}</div>
@@ -106,7 +106,7 @@ export function PatchNotes() {
                     </div>
                 </div>
             )}
-            <button className="patch-notes-button" onClick={toggleOpen}>
+            <button className="button" onClick={toggleOpen}>
                 {isOpen ? 'Close' : 'Patch Notes'}
             </button>
         </div>
