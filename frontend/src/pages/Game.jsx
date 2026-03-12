@@ -30,6 +30,7 @@ const DEFAULT_HUD = {
   },
   choices: [],
   items: [],
+  rerollsLeft: 2,
 };
 
 function Game() {
@@ -207,6 +208,16 @@ function Game() {
                 </div>
               ))}
             </div>
+            {hudRawRef.current.rerollsLeft > 0 && hudRawRef.current.wave > 0 && (
+              <div style={{ marginTop: '30px', textAlign: 'center' }}>
+                <button
+                  className='menu-btn'
+                  onClick={() => engineRef.current.rerollChoice()}
+                >
+                  Reroll Choices ({hudRawRef.current.rerollsLeft} left)
+                </button>
+              </div>
+            )}
           </div>
         )}
         {/* score / time / wave / kills */}
