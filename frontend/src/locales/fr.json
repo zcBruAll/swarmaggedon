@@ -1,0 +1,343 @@
+{
+  "nav": {
+    "dashboard": "Tableau de bord",
+    "account": "Compte",
+    "friends": "Amis",
+    "loginRegister": "Connexion / Inscription",
+    "connected": "● connecté"
+  },
+  "patchNotes": {
+    "button": "Notes de mise à jour",
+    "close": "Fermer",
+    "title": "Notes de mise à jour",
+    "types": {
+      "feat!": "Changements majeurs",
+      "feat": "Nouvelles fonctionnalités",
+      "fix": "Corrections",
+      "ref": "Refactorisation"
+    }
+  },
+  "wiki": {
+    "button": "Wiki / Aide",
+    "close": "Fermer",
+    "title": "Wiki / Aide",
+    "tabs": {
+      "controls": "🎮 Contrôles",
+      "enemies": "👾 Ennemis",
+      "weapons": "⚔️ Armes",
+      "augments": "✦ Améliorations"
+    },
+    "controls": {
+      "movement": "Déplacement",
+      "combat": "Combat",
+      "game": "Jeu",
+      "hudLegend": "Légende du HUD",
+      "keys": {
+        "moveUpLeftDownRight": "Se déplacer en haut / gauche / bas / droite",
+        "arrowKeys": "Les touches fléchées fonctionnent aussi",
+        "mouseAim": "Viser - votre personnage fait automatiquement face à l'ennemi le plus proche",
+        "lmbCharge": "Attaque chargée (enchantement Charge uniquement)",
+        "escPause": "Pause / Reprendre"
+      },
+      "hud": {
+        "topRight": "Score · Temps survécu · Vague actuelle · Nombre de kills",
+        "bottomLeft": "Barre de PV, type d'arme et statistiques",
+        "bottomRight": "Emplacements d'objets (6 max) avec barres de recharge",
+        "topBar": "Minuteur de vague - se remplit avec le temps"
+      },
+      "tip": "Les attaques se déclenchent automatiquement - restez simplement à portée des ennemis."
+    },
+    "enemies": {
+      "runner": {
+        "name": "Coureur",
+        "tags": ["rapide", "fragile"],
+        "desc": "Fonce directement sur vous. Peu de PV mais très rapide - dangereux en groupe. Apparaît dès la vague 1."
+      },
+      "brute": {
+        "name": "Brute",
+        "tags": ["lent", "résistant", "frappe lourde"],
+        "desc": "Combattant au corps-à-corps lent avec beaucoup de PV et des dégâts massifs par coup. Apparaît à partir de la vague 4."
+      },
+      "shooter": {
+        "name": "Tireur",
+        "tags": ["à distance", "recule"],
+        "desc": "Maintient ses distances et tire des projectiles. Essaie de vous orbiter à portée idéale. Apparaît à partir de la vague 5."
+      },
+      "boss": {
+        "name": "Boss",
+        "tags": ["vague 10, 20…", "laser", "récompense bonus"],
+        "desc": "Ennemi géant avec un rayon laser longue portée. Apparaît toutes les 10 vagues avec un groupe de Coureurs. Le tuer déclenche un écran de récompense de Boss."
+      }
+    },
+    "weapons": {
+      "rangedTitle": "🔫 À distance",
+      "meleeTitle": "⚔️ Corps-à-corps",
+      "tip": "Les enchantements se débloquent à la vague 20 et sont proposés comme récompense spéciale. Vous ne pouvez avoir qu'un seul enchantement à la fois.",
+      "ranged": {
+        "single": "Balle unique standard. Base fiable - dégâts solides, portée correcte.",
+        "rifle": "Tire une rafale de balles en succession rapide. Excellent DPS soutenu contre les ennemis résistants.",
+        "pierce": "La balle traverse plusieurs ennemis. Dévastateur contre les groupes de Coureurs serrés.",
+        "aoe": "La balle explose à l'impact. Inflige des dégâts à tous les ennemis dans un rayon - idéal pour contrôler les foules.",
+        "chain": "La balle rebondit sur les ennemis proches après chaque impact. Excellent dans les vagues denses.",
+        "laser": "Se charge brièvement puis tire un rayon à impact instantané. Dégâts massifs, grande largeur. Restez immobile pendant la charge.",
+        "smg": "Cadence de tir très rapide avec dispersion. Déchiquète tout ce qui s'approche, mais moins de dégâts par balle."
+      },
+      "melee": {
+        "single": "Coup de corps-à-corps standard avec un arc de 90°. Simple et efficace à courte portée.",
+        "cleave": "Arc massif de 180° frappe tout devant vous. Parfait contre les ruées de Coureurs.",
+        "frenzy": "Attaques très rapides avec un arc modéré. Se combine bien avec le Vol de vie.",
+        "lunge": "Arc étroit de 25° mais dégâts extrêmement élevés. Récompense un positionnement précis.",
+        "charge": "Maintenez le clic gauche pour charger - dégâts et portée augmentent avec le temps de charge. Potentiel de burst massif.",
+        "lifesteal": "Chaque coup vous soigne d'un pourcentage des dégâts infligés. Rend le corps-à-corps plus sûr."
+      }
+    },
+    "augments": {
+      "howTitle": "Comment fonctionnent les améliorations",
+      "howDesc": "Après chaque vague, choisissez 1 amélioration parmi 3 aléatoires. Chacune a une rareté qui détermine l'ampleur du bonus - rareté plus élevée = bonus plus grand en %. Les écrans de récompense de Boss proposent toujours au moins une qualité Rare.",
+      "raritiesTitle": "Raretés",
+      "statsTitle": "Référence des statistiques",
+      "tip": "Tous les bonus sont multiplicatifs - cumuler la même statistique se compose dans le temps. Un bonus de 15% de Dégâts sur des améliorations existantes représente toujours 15% de votre valeur actuelle.",
+      "rarities": {
+        "common": { "name": "Commun", "chance": "75%", "desc": "Petits bonus, améliorations de 5 à 15%." },
+        "rare": { "name": "Rare", "chance": "22,3%", "desc": "Mises à niveau solides, pics de puissance notables." },
+        "epic": { "name": "Épique", "chance": "2,5%", "desc": "Grands bonus. Rare mais impactant." },
+        "legendary": { "name": "Légendaire", "chance": "0,16%", "desc": "Multiplicateurs massifs. Peut définir une partie si trouvé." }
+      },
+      "stats": {
+        "maxHp": ["PV max", "Augmente vos points de vie maximum. Conserve également le ratio de PV actuels."],
+        "damage": ["Dégâts", "Multiplie les dégâts de l'arme."],
+        "range": ["Portée", "Étend la portée effective de l'arme."],
+        "moveSpeed": ["Vitesse de déplacement", "Augmente votre vitesse de déplacement. Très fort - la mobilité, c'est la survie."],
+        "cooldown": ["Recharge", "Réduit le temps entre les attaques. % négatif = attaques plus rapides."],
+        "bulletSpeed": ["Vitesse de balle", "Vitesse de déplacement des projectiles (à distance uniquement)."],
+        "aoeRadius": ["Rayon de zone", "Taille de l'explosion pour l'enchantement Zone."],
+        "pierce": ["Perçage", "Nombre de cibles traversées (enchantement Perçage)."],
+        "laserWidth": ["Largeur du laser", "Épaisseur du faisceau (enchantement Laser)."],
+        "chainRadius": ["Rayon de chaîne", "Distance de saut de la foudre en chaîne (enchantement Chaîne)."],
+        "lifesteal": ["Vol de vie", "PV volés par pourcentage de dégâts infligés (enchantement Vol de vie)."]
+      }
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Connexion",
+      "usernamePlaceholder": "votre_pseudo",
+      "passwordPlaceholder": "••••••••",
+      "submit": "Se connecter →",
+      "submitting": "Connexion...",
+      "forgotPassword": "mot de passe oublié ?",
+      "usernameLabel": "pseudo",
+      "passwordLabel": "mot de passe"
+    },
+    "register": {
+      "title": "Inscription",
+      "handleLabel": "choisissez un pseudo",
+      "handlePlaceholder": "pseudo_cool_42",
+      "emailLabel": "e-mail",
+      "emailPlaceholder": "vous@exemple.com",
+      "passwordLabel": "mot de passe",
+      "passwordPlaceholder": "min. 8 caractères",
+      "confirmLabel": "confirmer le mot de passe",
+      "confirmPlaceholder": "encore...",
+      "submit": "Créer un compte →",
+      "submitting": "Création...",
+      "successMessage": "Compte créé ! Veuillez vous connecter."
+    },
+    "errors": {
+      "passwordMismatch": "Les mots de passe ne correspondent pas",
+      "unexpected": "Une erreur inattendue s'est produite"
+    }
+  },
+  "account": {
+    "title": "Détails du compte",
+    "noRank": "Pas encore de classement",
+    "globalRank": "Classement mondial #{{rank}}",
+    "profile": "— profil —",
+    "dangerZone": "— zone dangereuse —",
+    "security": "— sécurité —",
+    "usernameLabel": "pseudo",
+    "emailLabel": "e-mail",
+    "updateButton": "mettre à jour",
+    "deleteAccount": "Supprimer le compte",
+    "logout": "Se déconnecter",
+    "currentPassword": "mot de passe actuel",
+    "newPassword": "nouveau mot de passe",
+    "confirmNewPassword": "confirmer le nouveau mot de passe",
+    "changePassword": "Changer le mot de passe",
+    "changingPassword": "Modification...",
+    "passwordPlaceholder": "••••••••",
+    "errors": {
+      "differentUsername": "Veuillez entrer un pseudo différent.",
+      "fillAllFields": "Veuillez remplir tous les champs de mot de passe.",
+      "passwordMismatch": "Les nouveaux mots de passe ne correspondent pas."
+    },
+    "loading": "Chargement des détails du compte...",
+    "redirecting": "Redirection vers la connexion..."
+  },
+  "accountDelete": {
+    "title": "Supprimer le compte",
+    "warning": "Avertissement : Cette action est permanente et irréversible. Toutes vos statistiques, amis et historique de jeu seront perdus.",
+    "confirmLabel": "Veuillez saisir votre pseudo {{username}} pour confirmer :",
+    "cancel": "Annuler",
+    "deleteButton": "Supprimer définitivement",
+    "deletingButton": "Suppression...",
+    "confirmAgain": "Encore...",
+    "errors": {
+      "usernameMismatch": "Le pseudo ne correspond pas."
+    }
+  },
+  "accountStats": {
+    "title": "Mes stats — {{username}}",
+    "gamesPlayed_one": "Partie jouée",
+    "gamesPlayed_other": "Parties jouées",
+    "highScore": "Meilleur score",
+    "bestWave": "Meilleure vague",
+    "bestRun": "Meilleure partie",
+    "totalKills": "Total de kills",
+    "totalTime": "Temps total survécu"
+  },
+  "dashboard": {
+    "playTitle": "Prêt à survivre ? ✦",
+    "startGame": "▶ Lancer la partie",
+    "neverPlayed": "Vous n'avez jamais joué",
+    "lastRun": "Dernière partie <1>{{time}}</1>, atteint la vague <2>{{wave}}</2> en <3>{{duration}}</3> avec <4>{{score}}</4> points.",
+    "createAccount": "Créez un compte pour voir vos statistiques !",
+    "globalBar": {
+      "playersOnline_one": "Joueur en ligne",
+      "playersOnline_other": "Joueurs en ligne",
+      "activeNow": "actif maintenant",
+      "gamesPlayed": "Parties jouées",
+      "allTime": "depuis toujours",
+      "enemiesKilled": "Ennemis tués",
+      "totalSurvivalTime": "Temps total de survie",
+      "global": "mondial"
+    }
+  },
+  "leaderboard": {
+    "title": "Classement mondial",
+    "you": " ← vous",
+    "loading": "Chargement du classement...",
+    "resetsIn": "réinitialisation dans {{time}}",
+    "scopes": {
+      "allTime": "depuis toujours",
+      "weekly": "hebdomadaire",
+      "daily": "quotidien"
+    },
+    "timeLeft": {
+      "daysHoursMinutes": "{{days}}j {{hours}}h {{minutes}}m",
+      "hoursMinutes": "{{hours}}h {{minutes}}m"
+    }
+  },
+  "friends": {
+    "title": "Liste d'amis",
+    "count_one": "{{count}} ami",
+    "count_other": "{{count}} amis",
+    "addTitle": "Ajouter un ami",
+    "searchLabel": "rechercher par pseudo",
+    "searchPlaceholder": "entrez un pseudo...",
+    "searchButton": "Rechercher",
+    "resultsLabel": "résultats",
+    "noResults": "Aucun survivant trouvé.",
+    "pendingLabel": "demandes en attente",
+    "wantsToFriend": "veut être votre ami",
+    "accept": "Accepter",
+    "decline": "Refuser",
+    "addButton": "+ Ajouter",
+    "removeButton": "Retirer",
+    "confirmRemove": "Encore...",
+    "noFriends": "Vous n'avez encore ajouté aucun ami.",
+    "loading": "Chargement des détails du compte...",
+    "redirecting": "Redirection vers la connexion...",
+    "errors": {
+      "searchFailed": "Recherche échouée. Veuillez réessayer."
+    }
+  },
+  "friendsStats": {
+    "title": "Stats des amis",
+    "count_one": "{{count}} ami",
+    "count_other": "{{count}} amis",
+    "noFriends": "Pas encore d'amis.",
+    "columns": {
+      "player": "joueur",
+      "score": "score",
+      "totalTime": "temps total",
+      "status": "statut"
+    },
+    "status": {
+      "inGame": "en jeu",
+      "online": "en ligne",
+      "offline": "hors ligne"
+    }
+  },
+  "guestWelcome": {
+    "panelTitle": "Records de survie",
+    "title": "Records verrouillés",
+    "text": "Connectez votre compte pour suivre vos meilleures parties, rivaliser avec vos amis et débloquer des récompenses exclusives.",
+    "features": {
+      "personalBest": "✓ Suivi des meilleurs scores personnels",
+      "friendLeaderboards": "✓ Classements entre amis"
+    },
+    "joinButton": "Rejoindre l'essaim →"
+  },
+  "game": {
+    "gameOver": "GAME OVER",
+    "gamePaused": "JEU EN PAUSE",
+    "newRun": "Nouvelle partie",
+    "backToMenu": "← menu",
+    "returnToGame": "Reprendre la partie",
+    "chooseAugment": "CHOISISSEZ VOTRE AMÉLIORATION",
+    "wave": "VAGUE {{number}}",
+    "hud": {
+      "score": "score",
+      "time": "temps",
+      "wave": "vague",
+      "kills": "kills"
+    },
+    "playerCard": {
+      "guest": "Invité",
+      "cd": "cd",
+      "dmg": "dgts",
+      "rng": "port",
+      "arc": "arc",
+      "aoe": "zone",
+      "radius": "r",
+      "pierce": "perc",
+      "rifle": "rafale",
+      "chain": "chaîne",
+      "fall": "chute",
+      "ms": "VM"
+    },
+    "choice": {
+      "current": "actuel : {{value}}",
+      "bonus": "+{{value}}%",
+      "arrow": "➔ {{value}}"
+    }
+  },
+  "weaponTypes": {
+    "melee": "Corps-à-corps",
+    "range": "À distance"
+  },
+  "weaponEnchants": {
+    "single": "Simple",
+    "aoe": "Zone",
+    "rifle": "Rafale",
+    "chain": "Chaîne",
+    "pierce": "Perçage",
+    "laser": "Laser",
+    "submachinegun": "Mitraillette",
+    "lifesteal": "Vol de vie",
+    "lunge": "Estoc",
+    "cleave": "Taillade",
+    "frenzy": "Frénésie",
+    "charge": "Charge"
+  },
+  "loading": {
+    "friends": "Chargement des amis..."
+  },
+  "authRequired": {
+    "header": "Authentification requise",
+    "message": "Vous devez être authentifié pour accéder à cette section."
+  },
+  "appName": "Swarmaggedon",
+  "appNameDev": "SwarmaggedonDEV"
+}
