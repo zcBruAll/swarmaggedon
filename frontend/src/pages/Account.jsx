@@ -9,6 +9,7 @@ import { sha256 } from 'js-sha256';
 import { AccountDelete } from '../components/AccountDelete'
 import NavBar from '../components/NavBar'
 import { PatchNotes } from '../components/PatchNotes'
+import { WikiHelp } from '../components/Wiki'
 
 const MUTATION_CHANGEUSERNAME = gql`
   mutation UserChange($newUsername: String!) {
@@ -134,6 +135,7 @@ const Account = () => {
       <>
         <NavBar />
         <PatchNotes />
+        <WikiHelp />
         <div id="section-account" className="section-content active">
           <div style={{ textAlign: 'center', padding: '100px' }}>
             <p>{loading ? 'Loading account details...' : 'Redirecting to login...'}</p>
@@ -146,6 +148,7 @@ const Account = () => {
     <>
       <NavBar />
       <PatchNotes />
+      <WikiHelp />
       <div id="section-account" className="section-content active" style={{ position: 'relative' }}>
         <AccountDelete user={user} show={showDeleteAccountPanel} onClose={onReturnFromDeleteAccountPanel}>
           <div className="main account-main">

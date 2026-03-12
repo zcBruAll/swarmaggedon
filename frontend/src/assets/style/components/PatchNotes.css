@@ -5,42 +5,13 @@
     z-index: 1000;
 }
 
-.patch-notes-button {
-    background: var(--paper2);
-    color: var(--ink);
-    border: 2px solid var(--line);
-    padding: 6px 14px;
-    border-radius: 4px;
-    width: 105px;
-    cursor: pointer;
-    font-family: inherit;
-    font-size: 1rem;
-    box-shadow: 2px 2px 0 var(--line);
-    transition: transform 0.1s;
-}
-
-.patch-notes-button:hover {
-    transform: translateY(-1px);
-}
-
-.patch-notes-button:active {
-    transform: translateY(1px);
-    box-shadow: 1px 1px 0 var(--line);
-}
-
 .patch-notes-modal {
     position: absolute;
     bottom: 45px;
     left: 0;
     width: 500px;
     max-height: 450px;
-    background: var(--paper);
-    border: 2px solid var(--line);
-    border-radius: 4px;
     padding: 12px;
-    box-shadow: 4px 4px 0 var(--line);
-    display: flex;
-    flex-direction: column;
     gap: 8px;
 }
 

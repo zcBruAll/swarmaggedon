@@ -10,6 +10,7 @@ import { useAuth } from '../context/AuthContext'
 import { formatRelativeTime, formatToRealTime, formatNumberShort } from '../utils/Utils'
 import NavBar from '../components/NavBar'
 import { PatchNotes } from '../components/PatchNotes'
+import { WikiHelp } from '../components/Wiki'
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -18,6 +19,7 @@ const Dashboard = () => {
   return (
     <>
       <NavBar />
+      <WikiHelp />
       <PatchNotes />
       <div id="section-dashboard" className="section-content active">
         <div className="main" style={{ alignItems: 'stretch' }}>

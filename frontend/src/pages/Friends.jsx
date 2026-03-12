@@ -8,6 +8,7 @@ import { useQuery, useMutation, useLazyQuery } from '@apollo/client/react';
 import { gql } from '@apollo/client';
 import NavBar from '../components/NavBar';
 import { PatchNotes } from '../components/PatchNotes';
+import { WikiHelp } from '../components/Wiki'
 
 const GET_FRIENDS = gql`
   query GetFriends {
@@ -82,6 +83,7 @@ const Friends = () => {
       <>
         <NavBar />
         <PatchNotes />
+        <WikiHelp />
         <div id="section-account" className="section-content active">
           <div style={{ textAlign: 'center', padding: '100px' }}>
             <p>{authLoading ? 'Loading account details...' : 'Redirecting to login...'}</p>
@@ -151,6 +153,7 @@ const Friends = () => {
     <>
       <NavBar />
       <PatchNotes />
+      <WikiHelp />
       <div id="section-friends" className="section-content active">
         <div className="main" style={{ gridTemplateColumns: '1fr 1fr', maxWidth: '900px', alignItems: 'start' }}>
           {/* Add friend */}
