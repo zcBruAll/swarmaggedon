@@ -86,7 +86,7 @@ function EnemiesTab() {
                             <strong style={{ fontSize: '1.1rem' }}>{t(`wiki.enemies.${e.key}.name`)}</strong>
                             <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
                                 {tags.map((tag, ti) => (
-                                    <span className='wiki-badge tag' key={ti} style={{ color: e.tagColors[ti] }}>{tag}</span>
+                                    <span className='wiki-badge tag' key={ti}>{tag}</span>
                                 ))}
                             </div>
                         </div>
