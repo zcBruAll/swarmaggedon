@@ -37,6 +37,9 @@ export function createEngine(canvas, onHUDUpdate) {
         duration: 0,
     };
 
+    let rerollsLeft = 2;
+    let currentChoiceType = null;
+
     function init() {
         world = createWorld();
         wave = 0;
@@ -47,6 +50,8 @@ export function createEngine(canvas, onHUDUpdate) {
         waveTimer = WAVE_INTERVAL;
         gameState = GAME_STATE.RUNNING;
         choices = [];
+
+        rerollsLeft = 2;
 
         _openChoiceScreen(CHOICE_TYPE.WEAPON);
         wave = 1;
@@ -141,6 +146,8 @@ export function createEngine(canvas, onHUDUpdate) {
     function _openChoiceScreen(type) {
         gameState = GAME_STATE.CHOICE;
 
+        currentChoiceType = type;
+
         switch (type) {
             case CHOICE_TYPE.WEAPON: choices = getWeaponChoices(wave, player); break;
             case CHOICE_TYPE.ENCHANT: console.log("ADGHSAGDASJHDG"); choices = getEnchantChoices(wave, player); break;
@@ -181,6 +188,7 @@ export function createEngine(canvas, onHUDUpdate) {
             player,
             gameState,
             choices,
+            rerollsLeft,
         });
     }
 
@@ -217,6 +225,13 @@ export function createEngine(canvas, onHUDUpdate) {
         madeChoice() {
             if (gameState === GAME_STATE.CHOICE) gameState = GAME_STATE.RUNNING;
             _emitHUD();
+        },
+
+        rerollChoice() {
+            if (gameState === GAME_STATE.CHOICE && rerollsLeft > 0) {
+                rerollsLeft--;
+                _openChoiceScreen(currentChoiceType);
+            }
         }
     };
 }
