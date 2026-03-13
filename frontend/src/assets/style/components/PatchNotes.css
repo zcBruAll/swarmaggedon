@@ -6,13 +6,26 @@
 }
 
 .patch-notes-modal {
-    position: absolute;
-    bottom: 45px;
-    left: 0;
-    width: 500px;
-    max-height: 450px;
+    position: fixed;
+    inset: 10px;
+    width: auto;
+    bottom: 65px;
+    max-height: none;
     padding: 12px;
     gap: 8px;
+    display: flex;
+    flex-direction: column;
+}
+
+@media (min-width: 560px) {
+    .patch-notes-modal {
+        position: absolute;
+        inset: auto;
+        bottom: 45px;
+        left: 0;
+        width: 500px;
+        max-height: 450px;
+    }
 }
 
 .patch-notes-title {
@@ -21,13 +34,16 @@
     color: var(--red);
     border-bottom: 2px solid var(--line);
     padding-bottom: 4px;
+    flex-shrink: 0;
 }
 
 .patch-notes-content {
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     display: flex;
     flex-direction: column;
     gap: 15px;
+    flex: 1;
 }
 
 .patch-date-group {
@@ -59,10 +75,21 @@
     opacity: 0.8;
 }
 
-.patch-type-header.feat\! { color: var(--red); }
-.patch-type-header.feat { color: var(--blue); }
-.patch-type-header.fix { color: var(--ink-mid); }
-.patch-type-header.ref { color: var(--ink-faint); }
+.patch-type-header.feat\! {
+    color: var(--red);
+}
+
+.patch-type-header.feat {
+    color: var(--blue);
+}
+
+.patch-type-header.fix {
+    color: var(--ink-mid);
+}
+
+.patch-type-header.ref {
+    color: var(--ink-faint);
+}
 
 .patch-item {
     padding-left: 10px;
