@@ -50,22 +50,36 @@
     "enemies": {
       "runner": {
         "name": "Coureur",
-        "tags": ["rapide", "fragile"],
+        "tags": [
+          "rapide",
+          "fragile"
+        ],
         "desc": "Fonce directement sur vous. Peu de PV mais très rapide - dangereux en groupe. Apparaît dès la vague 1."
       },
       "brute": {
         "name": "Brute",
-        "tags": ["lent", "résistant", "frappe lourde"],
+        "tags": [
+          "lent",
+          "résistant",
+          "frappe lourde"
+        ],
         "desc": "Combattant au corps-à-corps lent avec beaucoup de PV et des dégâts massifs par coup. Apparaît à partir de la vague 4."
       },
       "shooter": {
         "name": "Tireur",
-        "tags": ["à distance", "recule"],
+        "tags": [
+          "à distance",
+          "recule"
+        ],
         "desc": "Maintient ses distances et tire des projectiles. Essaie de vous orbiter à portée idéale. Apparaît à partir de la vague 5."
       },
       "boss": {
         "name": "Boss",
-        "tags": ["vague 10, 20…", "laser", "récompense bonus"],
+        "tags": [
+          "vague 10, 20…",
+          "laser",
+          "récompense bonus"
+        ],
         "desc": "Ennemi géant avec un rayon laser longue portée. Apparaît toutes les 10 vagues avec un groupe de Coureurs. Le tuer déclenche un écran de récompense de Boss."
       }
     },
@@ -98,23 +112,72 @@
       "statsTitle": "Référence des statistiques",
       "tip": "Tous les bonus sont multiplicatifs - cumuler la même statistique se compose dans le temps. Un bonus de 15% de Dégâts sur des améliorations existantes représente toujours 15% de votre valeur actuelle.",
       "rarities": {
-        "common": { "name": "Commun", "chance": "75%", "desc": "Petits bonus, améliorations de 5 à 15%." },
-        "rare": { "name": "Rare", "chance": "22,3%", "desc": "Mises à niveau solides, pics de puissance notables." },
-        "epic": { "name": "Épique", "chance": "2,5%", "desc": "Grands bonus. Rare mais impactant." },
-        "legendary": { "name": "Légendaire", "chance": "0,16%", "desc": "Multiplicateurs massifs. Peut définir une partie si trouvé." }
+        "common": {
+          "name": "Commun",
+          "chance": "75%",
+          "desc": "Petits bonus, améliorations de 5 à 15%."
+        },
+        "rare": {
+          "name": "Rare",
+          "chance": "22,3%",
+          "desc": "Mises à niveau solides, pics de puissance notables."
+        },
+        "epic": {
+          "name": "Épique",
+          "chance": "2,5%",
+          "desc": "Grands bonus. Rare mais impactant."
+        },
+        "legendary": {
+          "name": "Légendaire",
+          "chance": "0,16%",
+          "desc": "Multiplicateurs massifs. Peut définir une partie si trouvé."
+        }
       },
       "stats": {
-        "maxHp": ["PV max", "Augmente vos points de vie maximum. Conserve également le ratio de PV actuels."],
-        "damage": ["Dégâts", "Multiplie les dégâts de l'arme."],
-        "range": ["Portée", "Étend la portée effective de l'arme."],
-        "moveSpeed": ["Vitesse de déplacement", "Augmente votre vitesse de déplacement. Très fort - la mobilité, c'est la survie."],
-        "cooldown": ["Recharge", "Réduit le temps entre les attaques. % négatif = attaques plus rapides."],
-        "bulletSpeed": ["Vitesse de balle", "Vitesse de déplacement des projectiles (à distance uniquement)."],
-        "aoeRadius": ["Rayon de zone", "Taille de l'explosion pour l'enchantement Zone."],
-        "pierce": ["Perçage", "Nombre de cibles traversées (enchantement Perçage)."],
-        "laserWidth": ["Largeur du laser", "Épaisseur du faisceau (enchantement Laser)."],
-        "chainRadius": ["Rayon de chaîne", "Distance de saut de la foudre en chaîne (enchantement Chaîne)."],
-        "lifesteal": ["Vol de vie", "PV volés par pourcentage de dégâts infligés (enchantement Vol de vie)."]
+        "maxHp": [
+          "PV max",
+          "Augmente vos points de vie maximum. Conserve également le ratio de PV actuels."
+        ],
+        "damage": [
+          "Dégâts",
+          "Multiplie les dégâts de l'arme."
+        ],
+        "range": [
+          "Portée",
+          "Étend la portée effective de l'arme."
+        ],
+        "moveSpeed": [
+          "Vitesse de déplacement",
+          "Augmente votre vitesse de déplacement. Très fort - la mobilité, c'est la survie."
+        ],
+        "cooldown": [
+          "Recharge",
+          "Réduit le temps entre les attaques. % négatif = attaques plus rapides."
+        ],
+        "bulletSpeed": [
+          "Vitesse de balle",
+          "Vitesse de déplacement des projectiles (à distance uniquement)."
+        ],
+        "aoeRadius": [
+          "Rayon de zone",
+          "Taille de l'explosion pour l'enchantement Zone."
+        ],
+        "pierce": [
+          "Perçage",
+          "Nombre de cibles traversées (enchantement Perçage)."
+        ],
+        "laserWidth": [
+          "Largeur du laser",
+          "Épaisseur du faisceau (enchantement Laser)."
+        ],
+        "chainRadius": [
+          "Rayon de chaîne",
+          "Distance de saut de la foudre en chaîne (enchantement Chaîne)."
+        ],
+        "lifesteal": [
+          "Vol de vie",
+          "PV volés par pourcentage de dégâts infligés (enchantement Vol de vie)."
+        ]
       }
     }
   },
@@ -176,7 +239,7 @@
   },
   "accountDelete": {
     "title": "Supprimer le compte",
-    "warning": "Avertissement : Cette action est permanente et irréversible. Toutes vos statistiques, amis et historique de jeu seront perdus.",
+    "warning": "Cette action est permanente et irréversible. Toutes vos statistiques, amis et historique de jeu seront perdus.",
     "confirmLabel": "Veuillez saisir votre pseudo {{username}} pour confirmer :",
     "cancel": "Annuler",
     "deleteButton": "Supprimer définitivement",
@@ -310,7 +373,53 @@
     "choice": {
       "current": "actuel : {{value}}",
       "bonus": "+{{value}}%",
-      "arrow": "➔ {{value}}"
+      "newValue": "➔ {{value}}"
+    },
+    "augmentAttrs": {
+      "maxHp": "PV max",
+      "damage": "Dégâts",
+      "range": "Portée",
+      "moveSpeed": "Vitesse",
+      "cooldown": "Recharge",
+      "bulletSpeed": "Vit. balle",
+      "aoeRadius": "Rayon zone",
+      "pierce": "Perçage",
+      "rifle": "Rafale",
+      "chainRadius": "Rayon chaîne",
+      "chain": "Chaîne",
+      "laserWidth": "Largeur laser",
+      "laserCooldown": "CD laser",
+      "lifesteal": "Vol de vie",
+      "damageSpeed": "Vit. dégâts",
+      "rangeSpeed": "Vit. portée",
+      "maxCharge": "Charge max"
+    },
+    "choiceProps": {
+      "cooldown": "recharge",
+      "damage": "dégâts",
+      "range": "portée",
+      "bulletSpeed": "vit. balle",
+      "angle": "arc",
+      "aoeRadius": "rayon zone",
+      "pierce": "perçage",
+      "rifle": "rafale",
+      "burstInterval": "intervalle rafale",
+      "chainRadius": "rayon chaîne",
+      "chain": "chaîne",
+      "bulletWidth": "largeur",
+      "laserCd": "cd laser",
+      "dispersion": "dispersion",
+      "lifesteal": "vol de vie",
+      "dmgSpeed": "vit. dégâts",
+      "rngSpeed": "vit. portée",
+      "maxCharge": "charge max",
+      "chargeTime": "temps charge"
+    },
+    "rarities": {
+      "Common": "Commun",
+      "Rare": "Rare",
+      "Epic": "Épique",
+      "Legendary": "Légendaire"
     }
   },
   "weaponTypes": {

@@ -50,22 +50,36 @@
     "enemies": {
       "runner": {
         "name": "Runner",
-        "tags": ["fast", "fragile"],
+        "tags": [
+          "fast",
+          "fragile"
+        ],
         "desc": "Rushes directly at you. Low HP but high speed - dangerous in groups. Appears every wave from wave 1."
       },
       "brute": {
         "name": "Brute",
-        "tags": ["slow", "tanky", "heavy hit"],
+        "tags": [
+          "slow",
+          "tanky",
+          "heavy hit"
+        ],
         "desc": "Slow melee fighter with high HP and massive damage per swing. Appears from wave 4+."
       },
       "shooter": {
         "name": "Shooter",
-        "tags": ["ranged", "kites"],
+        "tags": [
+          "ranged",
+          "kites"
+        ],
         "desc": "Maintains distance and fires projectiles. Tries to orbit you at ideal range. Appears from wave 5+."
       },
       "boss": {
         "name": "Boss",
-        "tags": ["wave 10, 20…", "laser", "bonus reward"],
+        "tags": [
+          "wave 10, 20…",
+          "laser",
+          "bonus reward"
+        ],
         "desc": "Giant enemy with a long-range laser beam. Appears every 10 waves alongside a pack of Runners. Killing it grants a Boss Reward choice screen."
       }
     },
@@ -98,23 +112,72 @@
       "statsTitle": "Stat reference",
       "tip": "All bonuses are multiplicative - stacking the same stat compounds over time. A 15% Damage boost on top of existing upgrades is always 15% of your current value.",
       "rarities": {
-        "common": { "name": "Common", "chance": "75%", "desc": "Small bonuses, 5-15% improvements." },
-        "rare": { "name": "Rare", "chance": "22.3%", "desc": "Solid upgrades, noticeable power spikes." },
-        "epic": { "name": "Epic", "chance": "2.5%", "desc": "Large bonuses. Rare but impactful." },
-        "legendary": { "name": "Legendary", "chance": "0.16%", "desc": "Massive multipliers. Run-defining if you find one." }
+        "common": {
+          "name": "Common",
+          "chance": "75%",
+          "desc": "Small bonuses, 5-15% improvements."
+        },
+        "rare": {
+          "name": "Rare",
+          "chance": "22.3%",
+          "desc": "Solid upgrades, noticeable power spikes."
+        },
+        "epic": {
+          "name": "Epic",
+          "chance": "2.5%",
+          "desc": "Large bonuses. Rare but impactful."
+        },
+        "legendary": {
+          "name": "Legendary",
+          "chance": "0.16%",
+          "desc": "Massive multipliers. Run-defining if you find one."
+        }
       },
       "stats": {
-        "maxHp": ["Max HP", "Increases your maximum health. Also keeps current HP ratio."],
-        "damage": ["Damage", "Multiplies weapon damage output."],
-        "range": ["Range", "Extends weapon effective range."],
-        "moveSpeed": ["Move Speed", "Increases your movement speed. Very strong - mobility is survival."],
-        "cooldown": ["Cooldown", "Reduces time between attacks. Negative % = faster attacks."],
-        "bulletSpeed": ["Bullet Speed", "How fast projectiles travel (ranged only)."],
-        "aoeRadius": ["AoE Radius", "Explosion size for AoE enchant."],
-        "pierce": ["Pierce", "Number of targets pierced (Pierce enchant)."],
-        "laserWidth": ["Laser Width", "Beam thickness (Laser enchant)."],
-        "chainRadius": ["Chain Radius", "How far chain lightning jumps (Chain enchant)."],
-        "lifesteal": ["Lifesteal", "HP stolen per hit percentage (Lifesteal enchant)."]
+        "maxHp": [
+          "Max HP",
+          "Increases your maximum health. Also keeps current HP ratio."
+        ],
+        "damage": [
+          "Damage",
+          "Multiplies weapon damage output."
+        ],
+        "range": [
+          "Range",
+          "Extends weapon effective range."
+        ],
+        "moveSpeed": [
+          "Move Speed",
+          "Increases your movement speed. Very strong - mobility is survival."
+        ],
+        "cooldown": [
+          "Cooldown",
+          "Reduces time between attacks. Negative % = faster attacks."
+        ],
+        "bulletSpeed": [
+          "Bullet Speed",
+          "How fast projectiles travel (ranged only)."
+        ],
+        "aoeRadius": [
+          "AoE Radius",
+          "Explosion size for AoE enchant."
+        ],
+        "pierce": [
+          "Pierce",
+          "Number of targets pierced (Pierce enchant)."
+        ],
+        "laserWidth": [
+          "Laser Width",
+          "Beam thickness (Laser enchant)."
+        ],
+        "chainRadius": [
+          "Chain Radius",
+          "How far chain lightning jumps (Chain enchant)."
+        ],
+        "lifesteal": [
+          "Lifesteal",
+          "HP stolen per hit percentage (Lifesteal enchant)."
+        ]
       }
     }
   },
@@ -176,7 +239,7 @@
   },
   "accountDelete": {
     "title": "Delete Account",
-    "warning": "Warning: This action is permanent and cannot be undone. All your stats, friends, and game history will be lost.",
+    "warning": "This action is permanent and cannot be undone. All your stats, friends, and game history will be lost.",
     "confirmLabel": "Please type your username {{username}} to confirm:",
     "cancel": "Cancel",
     "deleteButton": "Delete Permanently",
@@ -310,7 +373,53 @@
     "choice": {
       "current": "current: {{value}}",
       "bonus": "+{{value}}%",
-      "arrow": "➔ {{value}}"
+      "newValue": "➔ {{value}}"
+    },
+    "augmentAttrs": {
+      "maxHp": "Max HP",
+      "damage": "Damage",
+      "range": "Range",
+      "moveSpeed": "Move Speed",
+      "cooldown": "Cooldown",
+      "bulletSpeed": "Bullet Speed",
+      "aoeRadius": "AoE Radius",
+      "pierce": "Pierce",
+      "rifle": "Rifle",
+      "chainRadius": "Chain Radius",
+      "chain": "Chain",
+      "laserWidth": "Laser Width",
+      "laserCooldown": "Laser Cooldown",
+      "lifesteal": "Lifesteal",
+      "damageSpeed": "Damage Speed",
+      "rangeSpeed": "Range Speed",
+      "maxCharge": "Max Charge"
+    },
+    "choiceProps": {
+      "cooldown": "cooldown",
+      "damage": "damage",
+      "range": "range",
+      "bulletSpeed": "bullet spd",
+      "angle": "arc",
+      "aoeRadius": "aoe radius",
+      "pierce": "pierce",
+      "rifle": "burst",
+      "burstInterval": "burst interval",
+      "chainRadius": "chain radius",
+      "chain": "chain",
+      "bulletWidth": "width",
+      "laserCd": "laser cd",
+      "dispersion": "spread",
+      "lifesteal": "lifesteal",
+      "dmgSpeed": "dmg speed",
+      "rngSpeed": "rng speed",
+      "maxCharge": "max charge",
+      "chargeTime": "charge time"
+    },
+    "rarities": {
+      "Common": "Common",
+      "Rare": "Rare",
+      "Epic": "Epic",
+      "Legendary": "Legendary"
     }
   },
   "weaponTypes": {
