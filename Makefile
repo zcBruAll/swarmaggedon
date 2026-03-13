@@ -1,5 +1,5 @@
 start:
-	git pull
+	git fetch --all && git reset --hard origin/master
 	chmod +x ./create_patch_notes.sh
 	bash ./create_patch_notes.sh
 	docker compose pull
