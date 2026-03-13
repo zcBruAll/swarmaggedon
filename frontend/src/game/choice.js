@@ -57,7 +57,7 @@ function _buildAugmentChoices(wave, player, minRarity) {
 
     let possibleChoices = [
         {
-            attr: 'Max HP',
+            attr: 'maxHp',
             getBonus: (r) => getTieredBonus(10, 15, r.name),
             arg: player, getCurr: (a) => a.maxHp,
             getNew: (a, b) => Math.round(a.maxHp * (1 + b / 100)),
@@ -65,36 +65,36 @@ function _buildAugmentChoices(wave, player, minRarity) {
         },
     ];
 
-    possibleChoices.push(_pct('Damage', wpn, 'damage', 10, 15));
-    possibleChoices.push(_pct('Range', wpn, 'range', 5, 15));
-    possibleChoices.push(_pct('Move Speed', player, 'speed', 5, 12));
-    possibleChoices.push(_pct('Cooldown', wpn, 'cooldown', -10, -5));
+    possibleChoices.push(_pct('damage', wpn, 'damage', 10, 15));
+    possibleChoices.push(_pct('range', wpn, 'range', 5, 15));
+    possibleChoices.push(_pct('moveSpeed', player, 'speed', 5, 12));
+    possibleChoices.push(_pct('cooldown', wpn, 'cooldown', -10, -5));
 
     if (wpn?.type === WEAPON_TYPE.RANGE) {
         if (wpn.enchant !== WEAPON_ENCHANT.LASER) {
-            possibleChoices.push(_pct('Bullet Speed', wpn, 'bulletSpeed', 2, 6));
+            possibleChoices.push(_pct('bulletSpeed', wpn, 'bulletSpeed', 2, 6));
         }
         if (wpn.enchant === WEAPON_ENCHANT.AOE)
-            possibleChoices.push(_pct('AOE Radius', wpn, 'aoeRadius', 5, 10));
+            possibleChoices.push(_pct('aoeRadius', wpn, 'aoeRadius', 5, 10));
         if (wpn.enchant === WEAPON_ENCHANT.PIERCE)
-            possibleChoices.push(_pct('Pierce', wpn, 'pierce', 5, 10));
+            possibleChoices.push(_pct('pierce', wpn, 'pierce', 5, 10));
         if (wpn.enchant === WEAPON_ENCHANT.RIFLE)
-            possibleChoices.push(_pct('Rifle', wpn, 'rifle', 5, 10));
+            possibleChoices.push(_pct('rifle', wpn, 'rifle', 5, 10));
         if (wpn.enchant === WEAPON_ENCHANT.CHAIN) {
-            possibleChoices.push(_pct('Chain Radius', wpn, 'chainRadius', 5, 10));
-            possibleChoices.push(_pct('Chain', wpn, 'chain', 5, 10));
+            possibleChoices.push(_pct('chainRadius', wpn, 'chainRadius', 5, 10));
+            possibleChoices.push(_pct('chain', wpn, 'chain', 5, 10));
         }
         if (wpn.enchant === WEAPON_ENCHANT.LASER) {
-            possibleChoices.push(_pct('Laser Width', wpn, 'bulletWidth', 1, 5));
-            possibleChoices.push(_pct('Laser Cooldown', wpn, 'laserCd', -7, -2));
+            possibleChoices.push(_pct('laserWidth', wpn, 'bulletWidth', 1, 5));
+            possibleChoices.push(_pct('laserCooldown', wpn, 'laserCd', -7, -2));
         }
     } else if (wpn?.type === WEAPON_TYPE.MELEE) {
         if (wpn.enchant === WEAPON_ENCHANT.LIFESTEAL)
-            possibleChoices.push(_pct('Lifesteal', wpn, 'lifesteal', 2, 7));
+            possibleChoices.push(_pct('lifesteal', wpn, 'lifesteal', 2, 7));
         if (wpn.enchant === WEAPON_ENCHANT.CHARGE) {
-            possibleChoices.push(_pct('Damage Speed', wpn, 'dmgSpeed', 5, 10));
-            possibleChoices.push(_pct('Range Speed', wpn, 'rngSpeed', 5, 10));
-            possibleChoices.push(_pct('Max Charge', wpn, 'maxCharge', 2, 7));
+            possibleChoices.push(_pct('damageSpeed', wpn, 'dmgSpeed', 5, 10));
+            possibleChoices.push(_pct('rangeSpeed', wpn, 'rngSpeed', 5, 10));
+            possibleChoices.push(_pct('maxCharge', wpn, 'maxCharge', 2, 7));
         }
     }
 
@@ -154,7 +154,7 @@ export function getWeaponChoices(wave, player) {
 
             return {
                 id: index,
-                attr: wpn.type + ' · ' + wpn.enchant ?? '',
+                attr: wpn.type,
                 wpn,
                 rarityName: rarity.name,
                 rarityColor: rarity.color,

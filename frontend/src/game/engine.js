@@ -33,8 +33,7 @@ export function createEngine(canvas, onHUDUpdate) {
     let choices = [];
     let camera = { x: 0, y: 0 };
     let waveMsg = {
-        title: '',
-        subtitle: '',
+        waveNumber: 0,
         duration: 0,
     };
 
@@ -141,7 +140,7 @@ export function createEngine(canvas, onHUDUpdate) {
         const enemies = createWave(wave, player);
         for (const e of enemies) world.actors.push(e);
 
-        waveMsg = { title: 'WAVE ' + wave, subtitle: '', duration: WAVE_MSG_DURATION };
+        waveMsg = { waveNumber: wave, duration: WAVE_MSG_DURATION };
     }
 
     function _openChoiceScreen(type) {

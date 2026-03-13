@@ -1,0 +1,452 @@
+{
+  "nav": {
+    "dashboard": "Dashboard",
+    "account": "Account",
+    "friends": "Friends",
+    "loginRegister": "Login / Register",
+    "connected": "● connected"
+  },
+  "patchNotes": {
+    "button": "Patch Notes",
+    "close": "Close",
+    "title": "Patch Notes",
+    "types": {
+      "feat!": "Major changes",
+      "feat": "New features",
+      "fix": "Fixes",
+      "ref": "Refactor"
+    }
+  },
+  "wiki": {
+    "button": "Wiki / Help",
+    "close": "Close",
+    "title": "Wiki / Help",
+    "tabs": {
+      "controls": "🎮 Controls",
+      "enemies": "👾 Enemies",
+      "weapons": "⚔️ Weapons",
+      "augments": "✦ Augments"
+    },
+    "controls": {
+      "movement": "Movement",
+      "combat": "Combat",
+      "game": "Game",
+      "hudLegend": "HUD legend",
+      "keys": {
+        "moveUpLeftDownRight": "Move up / left / down / right",
+        "arrowKeys": "Arrow keys also work",
+        "mouseAim": "Aim - your character auto-faces the nearest enemy",
+        "lmbCharge": "Charge attack (Charge enchant only)",
+        "escPause": "Pause / Resume"
+      },
+      "hud": {
+        "topRight": "Score · Time survived · Current wave · Kill count",
+        "bottomLeft": "Your HP bar, weapon type & stats",
+        "bottomRight": "Item slots (6 max) with cooldown bars",
+        "topBar": "Wave timer - fills up as time passes"
+      },
+      "tip": "Attacks fire automatically - just stay in range of enemies."
+    },
+    "enemies": {
+      "runner": {
+        "name": "Runner",
+        "tags": [
+          "fast",
+          "fragile"
+        ],
+        "desc": "Rushes directly at you. Low HP but high speed - dangerous in groups. Appears every wave from wave 1."
+      },
+      "brute": {
+        "name": "Brute",
+        "tags": [
+          "slow",
+          "tanky",
+          "heavy hit"
+        ],
+        "desc": "Slow melee fighter with high HP and massive damage per swing. Appears from wave 4+."
+      },
+      "shooter": {
+        "name": "Shooter",
+        "tags": [
+          "ranged",
+          "kites"
+        ],
+        "desc": "Maintains distance and fires projectiles. Tries to orbit you at ideal range. Appears from wave 5+."
+      },
+      "boss": {
+        "name": "Boss",
+        "tags": [
+          "wave 10, 20…",
+          "laser",
+          "bonus reward"
+        ],
+        "desc": "Giant enemy with a long-range laser beam. Appears every 10 waves alongside a pack of Runners. Killing it grants a Boss Reward choice screen."
+      }
+    },
+    "weapons": {
+      "rangedTitle": "🔫 Ranged",
+      "meleeTitle": "⚔️ Melee",
+      "tip": "Enchants are unlocked at wave 20 and offered as a special reward. You can only have one enchant at a time.",
+      "ranged": {
+        "single": "Standard single bullet. Reliable baseline - solid damage, decent range.",
+        "rifle": "Fires a burst of bullets in quick succession. Great sustained DPS against tanky enemies.",
+        "pierce": "Bullet travels through multiple enemies. Devastating against tight Runner packs.",
+        "aoe": "Bullet explodes on impact. Damages all enemies in a radius - great for crowd control.",
+        "chain": "Bullet bounces to nearby enemies after each hit. Excellent in dense waves.",
+        "laser": "Charges briefly then fires an instant-hit beam. Massive damage, wide width. Hold position during charge.",
+        "smg": "Very fast fire rate with bullet spread. Shreds anything that gets close, lower per-bullet damage."
+      },
+      "melee": {
+        "single": "Standard melee swing with a 90° arc. Simple and effective at close range.",
+        "cleave": "Massive 180° arc hits everything in front of you. Perfect for Runner rushes.",
+        "frenzy": "Very fast attacks with a moderate arc. Synergizes well with Lifesteal.",
+        "lunge": "Narrow 25° arc but extremely high damage. Rewards precise positioning.",
+        "charge": "Hold LMB to charge - damage and range scale with charge time. Massive burst potential.",
+        "lifesteal": "Each hit heals you for a percentage of damage dealt. Makes staying in melee range safer."
+      }
+    },
+    "augments": {
+      "howTitle": "How augments work",
+      "howDesc": "After each wave you choose 1 of 3 random augments. Each has a rarity that determines the bonus magnitude - higher rarity = bigger % boost. Boss reward screens always offer at least Rare quality.",
+      "raritiesTitle": "Rarities",
+      "statsTitle": "Stat reference",
+      "tip": "All bonuses are multiplicative - stacking the same stat compounds over time. A 15% Damage boost on top of existing upgrades is always 15% of your current value.",
+      "rarities": {
+        "common": {
+          "name": "Common",
+          "chance": "75%",
+          "desc": "Small bonuses, 5-15% improvements."
+        },
+        "rare": {
+          "name": "Rare",
+          "chance": "22.3%",
+          "desc": "Solid upgrades, noticeable power spikes."
+        },
+        "epic": {
+          "name": "Epic",
+          "chance": "2.5%",
+          "desc": "Large bonuses. Rare but impactful."
+        },
+        "legendary": {
+          "name": "Legendary",
+          "chance": "0.16%",
+          "desc": "Massive multipliers. Run-defining if you find one."
+        }
+      },
+      "stats": {
+        "maxHp": [
+          "Max HP",
+          "Increases your maximum health. Also keeps current HP ratio."
+        ],
+        "damage": [
+          "Damage",
+          "Multiplies weapon damage output."
+        ],
+        "range": [
+          "Range",
+          "Extends weapon effective range."
+        ],
+        "moveSpeed": [
+          "Move Speed",
+          "Increases your movement speed. Very strong - mobility is survival."
+        ],
+        "cooldown": [
+          "Cooldown",
+          "Reduces time between attacks. Negative % = faster attacks."
+        ],
+        "bulletSpeed": [
+          "Bullet Speed",
+          "How fast projectiles travel (ranged only)."
+        ],
+        "aoeRadius": [
+          "AoE Radius",
+          "Explosion size for AoE enchant."
+        ],
+        "pierce": [
+          "Pierce",
+          "Number of targets pierced (Pierce enchant)."
+        ],
+        "laserWidth": [
+          "Laser Width",
+          "Beam thickness (Laser enchant)."
+        ],
+        "chainRadius": [
+          "Chain Radius",
+          "How far chain lightning jumps (Chain enchant)."
+        ],
+        "lifesteal": [
+          "Lifesteal",
+          "HP stolen per hit percentage (Lifesteal enchant)."
+        ]
+      }
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Login",
+      "usernamePlaceholder": "your_username",
+      "passwordPlaceholder": "••••••••",
+      "submit": "Login →",
+      "submitting": "Connecting...",
+      "forgotPassword": "forgot password?",
+      "usernameLabel": "username",
+      "passwordLabel": "password"
+    },
+    "register": {
+      "title": "Register",
+      "handleLabel": "choose a handle",
+      "handlePlaceholder": "coolname_42",
+      "emailLabel": "email",
+      "emailPlaceholder": "you@example.com",
+      "passwordLabel": "password",
+      "passwordPlaceholder": "min. 8 chars",
+      "confirmLabel": "confirm password",
+      "confirmPlaceholder": "again...",
+      "submit": "Create account →",
+      "submitting": "Creating...",
+      "successMessage": "Account created! Please login."
+    },
+    "errors": {
+      "passwordMismatch": "Passwords do not match",
+      "unexpected": "An unexpected error occurred"
+    }
+  },
+  "account": {
+    "title": "Account details",
+    "noRank": "No rank yet",
+    "globalRank": "Global rank #{{rank}}",
+    "profile": "— profile —",
+    "dangerZone": "— danger zone —",
+    "security": "— security —",
+    "usernameLabel": "username",
+    "emailLabel": "email",
+    "updateButton": "update",
+    "deleteAccount": "Delete account",
+    "logout": "Log out",
+    "currentPassword": "current password",
+    "newPassword": "new password",
+    "confirmNewPassword": "confirm new password",
+    "changePassword": "Change password",
+    "changingPassword": "Changing...",
+    "passwordPlaceholder": "••••••••",
+    "errors": {
+      "differentUsername": "Please enter a different username.",
+      "fillAllFields": "Please fill in all password fields.",
+      "passwordMismatch": "New passwords do not match."
+    },
+    "loading": "Loading account details...",
+    "redirecting": "Redirecting to login..."
+  },
+  "accountDelete": {
+    "title": "Delete Account",
+    "warning": "This action is permanent and cannot be undone. All your stats, friends, and game history will be lost.",
+    "confirmLabel": "Please type your username {{username}} to confirm:",
+    "cancel": "Cancel",
+    "deleteButton": "Delete Permanently",
+    "deletingButton": "Deleting...",
+    "confirmAgain": "Again...",
+    "errors": {
+      "usernameMismatch": "Username does not match."
+    }
+  },
+  "accountStats": {
+    "title": "My stats — {{username}}",
+    "gamesPlayed_one": "Game played",
+    "gamesPlayed_other": "Games played",
+    "highScore": "High score",
+    "bestWave": "Best wave",
+    "bestRun": "Best run",
+    "totalKills": "Total kills",
+    "totalTime": "Total time survived"
+  },
+  "dashboard": {
+    "playTitle": "Ready to survive? ✦",
+    "startGame": "▶ Start game",
+    "neverPlayed": "You've never played before",
+    "lastRun": "Last run <1>{{time}}</1>, reached wave <2>{{wave}}</2> in <3>{{duration}}</3> and scoring <4>{{score}}</4> points.",
+    "createAccount": "Create an account to see your stats !",
+    "globalBar": {
+      "playersOnline_one": "Player online",
+      "playersOnline_other": "Players online",
+      "activeNow": "active now",
+      "gamesPlayed": "Games played",
+      "allTime": "all time",
+      "enemiesKilled": "Enemies killed",
+      "totalSurvivalTime": "Total survival time",
+      "global": "global"
+    }
+  },
+  "leaderboard": {
+    "title": "Global leaderboard",
+    "you": " ← you",
+    "loading": "Loading leaderboard...",
+    "resetsIn": "resets in {{time}}",
+    "scopes": {
+      "allTime": "all time",
+      "weekly": "weekly",
+      "daily": "daily"
+    },
+    "timeLeft": {
+      "daysHoursMinutes": "{{days}}d {{hours}}h {{minutes}}m",
+      "hoursMinutes": "{{hours}}h {{minutes}}m"
+    }
+  },
+  "friends": {
+    "title": "Friend list",
+    "count_one": "{{count}} friend",
+    "count_other": "{{count}} friends",
+    "addTitle": "Add a friend",
+    "searchLabel": "search by username",
+    "searchPlaceholder": "enter a username...",
+    "searchButton": "Search",
+    "resultsLabel": "results",
+    "noResults": "No survivors found.",
+    "pendingLabel": "pending requests",
+    "wantsToFriend": "wants to be friends",
+    "accept": "Accept",
+    "decline": "Decline",
+    "addButton": "+ Add",
+    "removeButton": "Remove",
+    "confirmRemove": "Again...",
+    "noFriends": "You haven't added any friends yet.",
+    "loading": "Loading account details...",
+    "redirecting": "Redirecting to login...",
+    "errors": {
+      "searchFailed": "Search failed. Please try again."
+    }
+  },
+  "friendsStats": {
+    "title": "Friends stats",
+    "count_one": "{{count}} friend",
+    "count_other": "{{count}} friends",
+    "noFriends": "No friends yet.",
+    "columns": {
+      "player": "player",
+      "score": "score",
+      "totalTime": "total time",
+      "status": "status"
+    },
+    "status": {
+      "inGame": "in game",
+      "online": "online",
+      "offline": "offline"
+    }
+  },
+  "guestWelcome": {
+    "panelTitle": "Survival Records",
+    "title": "Records are locked",
+    "text": "Connect your account to track your best runs, compete with friends, and unlock exclusive rewards.",
+    "features": {
+      "personalBest": "✓ Personal Best Tracking",
+      "friendLeaderboards": "✓ Friend Leaderboards"
+    },
+    "joinButton": "Join the swarm →"
+  },
+  "game": {
+    "gameOver": "GAME OVER",
+    "gamePaused": "GAME PAUSED",
+    "newRun": "Start a new run",
+    "backToMenu": "← menu",
+    "returnToGame": "Return to game",
+    "chooseAugment": "CHOOSE YOUR AUGMENT",
+    "wave": "WAVE {{number}}",
+    "hud": {
+      "score": "score",
+      "time": "time",
+      "wave": "wave",
+      "kills": "kills"
+    },
+    "playerCard": {
+      "guest": "Guest",
+      "cd": "cd",
+      "dmg": "dmg",
+      "rng": "rng",
+      "arc": "arc",
+      "aoe": "aoe",
+      "radius": "r",
+      "pierce": "pierce",
+      "rifle": "rifle",
+      "chain": "chain",
+      "fall": "fall",
+      "ms": "MS"
+    },
+    "choice": {
+      "current": "current: {{value}}",
+      "bonus": "+{{value}}%",
+      "newValue": "➔ {{value}}"
+    },
+    "augmentAttrs": {
+      "maxHp": "Max HP",
+      "damage": "Damage",
+      "range": "Range",
+      "moveSpeed": "Move Speed",
+      "cooldown": "Cooldown",
+      "bulletSpeed": "Bullet Speed",
+      "aoeRadius": "AoE Radius",
+      "pierce": "Pierce",
+      "rifle": "Rifle",
+      "chainRadius": "Chain Radius",
+      "chain": "Chain",
+      "laserWidth": "Laser Width",
+      "laserCooldown": "Laser Cooldown",
+      "lifesteal": "Lifesteal",
+      "damageSpeed": "Damage Speed",
+      "rangeSpeed": "Range Speed",
+      "maxCharge": "Max Charge"
+    },
+    "choiceProps": {
+      "cooldown": "cooldown",
+      "damage": "damage",
+      "range": "range",
+      "bulletSpeed": "bullet spd",
+      "angle": "arc",
+      "aoeRadius": "aoe radius",
+      "pierce": "pierce",
+      "rifle": "burst",
+      "burstInterval": "burst interval",
+      "chainRadius": "chain radius",
+      "chain": "chain",
+      "bulletWidth": "width",
+      "laserCd": "laser cd",
+      "dispersion": "spread",
+      "lifesteal": "lifesteal",
+      "dmgSpeed": "dmg speed",
+      "rngSpeed": "rng speed",
+      "maxCharge": "max charge",
+      "chargeTime": "charge time"
+    },
+    "rarities": {
+      "Common": "Common",
+      "Rare": "Rare",
+      "Epic": "Epic",
+      "Legendary": "Legendary"
+    }
+  },
+  "weaponTypes": {
+    "melee": "Melee",
+    "range": "Ranged"
+  },
+  "weaponEnchants": {
+    "single": "Single",
+    "aoe": "AoE",
+    "rifle": "Rifle",
+    "chain": "Chain",
+    "pierce": "Pierce",
+    "laser": "Laser",
+    "submachinegun": "SMG",
+    "lifesteal": "Lifesteal",
+    "lunge": "Lunge",
+    "cleave": "Cleave",
+    "frenzy": "Frenzy",
+    "charge": "Charge"
+  },
+  "loading": {
+    "friends": "Loading friends..."
+  },
+  "authRequired": {
+    "header": "Authentication Required",
+    "message": "You must be authenticated to access this section."
+  },
+  "appName": "Swarmaggedon",
+  "appNameDev": "SwarmaggedonDEV"
+}
