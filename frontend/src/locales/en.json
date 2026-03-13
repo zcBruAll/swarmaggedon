@@ -98,9 +98,7 @@
       },
       "melee": {
         "single": "Standard melee swing with a 90° arc. Simple and effective at close range.",
-        "cleave": "Massive 180° arc hits everything in front of you. Perfect for Runner rushes.",
-        "frenzy": "Very fast attacks with a moderate arc. Synergizes well with Lifesteal.",
-        "lunge": "Narrow 25° arc but extremely high damage. Rewards precise positioning.",
+        "sweetspot": "Deals 75% more damage on enemies on the range edge but 75% less otherwise.",
         "charge": "Hold LMB to charge - damage and range scale with charge time. Massive burst potential.",
         "lifesteal": "Each hit heals you for a percentage of damage dealt. Makes staying in melee range safer."
       }
@@ -433,11 +431,9 @@
     "chain": "Chain",
     "pierce": "Pierce",
     "laser": "Laser",
-    "submachinegun": "SMG",
+    "smg": "SMG",
     "lifesteal": "Lifesteal",
-    "lunge": "Lunge",
-    "cleave": "Cleave",
-    "frenzy": "Frenzy",
+    "sweetspot": "Sweetspot",
     "charge": "Charge"
   },
   "loading": {

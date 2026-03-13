@@ -98,9 +98,7 @@
       },
       "melee": {
         "single": "Coup de corps-à-corps standard avec un arc de 90°. Simple et efficace à courte portée.",
-        "cleave": "Arc massif de 180° frappe tout devant vous. Parfait contre les ruées de Coureurs.",
-        "frenzy": "Attaques très rapides avec un arc modéré. Se combine bien avec le Vol de vie.",
-        "lunge": "Arc étroit de 25° mais dégâts extrêmement élevés. Récompense un positionnement précis.",
+        "sweetspot": "Inflige 75% plus de dégâts aux ennemis en bord de portée mais 75% moins autrement.",
         "charge": "Maintenez le clic gauche pour charger - dégâts et portée augmentent avec le temps de charge. Potentiel de burst massif.",
         "lifesteal": "Chaque coup vous soigne d'un pourcentage des dégâts infligés. Rend le corps-à-corps plus sûr."
       }
@@ -433,11 +431,9 @@
     "chain": "Chaîne",
     "pierce": "Perçage",
     "laser": "Laser",
-    "submachinegun": "Mitraillette",
+    "smg": "Mitraillette",
     "lifesteal": "Vol de vie",
-    "lunge": "Estoc",
-    "cleave": "Taillade",
-    "frenzy": "Frénésie",
+    "sweetspot": "Pointe",
     "charge": "Charge"
   },
   "loading": {
