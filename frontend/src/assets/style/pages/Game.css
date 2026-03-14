@@ -1,4 +1,3 @@
-/* ============ GAME VIEW ============ */
 .game-canvas {
   display: block;
   position: fixed;
@@ -7,6 +6,7 @@
   width: 100%;
   height: 100%;
   z-index: 10;
+  touch-action: none;
 }
 
 .overlay {
@@ -21,13 +21,13 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 40px;
+  gap: clamp(16px, 4vh, 40px);
   z-index: 2000;
 }
 
 .game-title {
   font-family: 'Patrick Hand';
-  font-size: 180px;
+  font-size: clamp(52px, 16vw, 180px);
   font-weight: 700;
   color: #2a2318;
   text-transform: uppercase;
@@ -38,17 +38,17 @@
 .menu {
   display: flex;
   flex-direction: column;
-  gap: 15px;
-  width: 40%;
+  gap: clamp(8px, 1.5vh, 15px);
+  width: clamp(220px, 55vw, 420px);
 }
 
 .menu-btn {
   font-family: 'Patrick Hand';
-  font-size: 32px;
+  font-size: clamp(18px, 3.5vw, 32px);
   color: #5a5040;
   text-decoration: none;
   border: 2px solid #5a5040;
-  padding: 12px 20px;
+  padding: clamp(8px, 1.5vh, 12px) clamp(12px, 2vw, 20px);
   background: rgba(244, 240, 232, 0.95);
   box-shadow: 4px 4px 0 rgba(42, 35, 24, 0.1);
   transform: rotate(-0.5deg);
@@ -70,8 +70,8 @@
 
 .overlay.game-over .game-title {
   color: #f4f0e8;
-  font-size: 140px;
-  letter-spacing: 4px;
+  font-size: clamp(44px, 13vw, 140px);
+  letter-spacing: clamp(1px, 0.5vw, 4px);
   text-shadow:
     4px 4px 0px rgba(80, 0, 0, 0.6),
     0 0 80px rgba(255, 80, 40, 0.3);
@@ -95,34 +95,23 @@
 }
 
 @keyframes bloodFlood {
-  0% {
-    opacity: 0;
-  }
-
-  100% {
-    opacity: 0.9;
-  }
+  0%   { opacity: 0; }
+  100% { opacity: 0.9; }
 }
 
 @keyframes titleCrash {
-  0% {
-    opacity: 0;
-    transform: scale(1.3) rotate(-2deg);
-  }
+  0%   { opacity: 0; transform: scale(1.3) rotate(-2deg); }
+  60%  { opacity: 1; transform: scale(0.96) rotate(0.5deg); }
+  100% { opacity: 1; transform: scale(1) rotate(-0.3deg); }
+}
 
-  60% {
-    opacity: 1;
-    transform: scale(0.96) rotate(0.5deg);
-  }
-
-  100% {
-    opacity: 1;
-    transform: scale(1) rotate(-0.3deg);
-  }
+@keyframes titleCrashReverse {
+  0%   { opacity: 1; transform: scale(1) rotate(-0.3deg); }
+  100% { opacity: 0; transform: scale(1.2) rotate(2deg); }
 }
 
 .wave-info {
-  width: 75%;
+  width: clamp(200px, 75%, 600px);
   margin: 5% auto;
   text-align: center;
   display: flex;
@@ -130,39 +119,48 @@
   animation: titleCrash 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.15s both;
 }
 
-@keyframes titleCrashReverse {
-  0% {
-    opacity: 1;
-    transform: scale(1) rotate(-0.3deg);
-  }
-
-  100% {
-    opacity: 0;
-    transform: scale(1.2) rotate(2deg);
-  }
-}
-
 .wave-info.exit {
   animation: titleCrashReverse 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 .wave-title {
-  font-size: 64px;
+  font-size: clamp(28px, 7vw, 64px);
   font-weight: 700;
 }
 
 .wave-subtitle {
-  font-size: 32px;
+  font-size: clamp(16px, 3.5vw, 32px);
   font-weight: 500;
   text-transform: capitalize;
 }
 
+.choice-title {
+  font-family: 'Patrick Hand';
+  font-size: clamp(22px, 5vw, 48px);
+  font-weight: 700;
+  color: #2a2318;
+  margin-bottom: clamp(8px, 1.5vh, 20px);
+  text-align: center;
+  padding: 0 12px;
+}
+
+.choice-list {
+  display: flex;
+  gap: clamp(8px, 2vw, 20px);
+  justify-content: center;
+  flex-wrap: wrap;
+  padding: 0 clamp(8px, 2vw, 20px);
+  padding-top: 10px;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
 .choice-rarity {
   font-family: 'Patrick Hand';
-  font-size: 14px;
+  font-size: clamp(10px, 1.8vw, 14px);
   font-weight: 700;
   color: #fff;
-  padding: 2px 12px;
+  padding: 2px clamp(6px, 1.5vw, 12px);
   border-radius: 12px;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -174,12 +172,12 @@
   background: #faf7f1;
   border-style: solid;
   border-width: 3px;
-  padding: 15px 20px 20px 20px;
-  width: 200px;
+  padding: clamp(10px, 2vh, 15px) clamp(12px, 2vw, 20px) clamp(14px, 2.5vh, 20px);
+  width: clamp(140px, 18vw, 200px);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: clamp(6px, 1vh, 10px);
   cursor: pointer;
   box-shadow: 4px 4px 0 rgba(42, 35, 24, 0.15);
   transition: all 0.1s;
@@ -188,96 +186,83 @@
 .choice-card:hover {
   transform: translateY(-5px);
   background: #fff;
-  box-shadow: 6px 6px 0 rgba(42, 35, 24, 0.2); 
-}
-.choice-title {
-  font-family: 'Patrick Hand';
-  font-size: 48px;
-  font-weight: 700;
-  color: #2a2318;
-  margin-bottom: 20px;
-}
-
-.choice-list {
-  display: flex;
-  gap: 20px;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-.choice-img {
-  width: 64px;
-  height: 64px;
-  object-fit: contain;
-  background: rgba(42, 35, 24, 0.05);
-  border-radius: 4px;
-  padding: 8px;
+  box-shadow: 6px 6px 0 rgba(42, 35, 24, 0.2);
 }
 
 .choice-attr {
   font-family: 'Patrick Hand';
-  font-size: 24px;
+  font-size: clamp(18px, 3.5vw, 28px);
   font-weight: 700;
   color: #2a2318;
-  text-transform: uppercase;
+  text-align: center;
+  word-break: break-word;
+  margin-bottom: clamp(8px, 1.5vh, 20px);
+}
+
+.choice-img {
+  width: clamp(40px, 8vw, 64px);
+  height: clamp(40px, 8vw, 64px);
+  object-fit: contain;
+  background: rgba(42, 35, 24, 0.05);
+  border-radius: 4px;
+  padding: clamp(4px, 1vw, 8px);
 }
 
 .choice-stats-container {
   display: flex;
   flex-direction: column;
   width: 100%;
-  padding-top: 10px;
+  padding-top: clamp(6px, 1vh, 10px);
   border-top: 1.5px dashed #ccc;
-  gap: 4px;
+  gap: clamp(2px, 0.5vh, 4px);
 }
 
-.choice-stats-container.weapon, .choice-stats-container.enchant {
+.choice-stats-container.weapon,
+.choice-stats-container.enchant {
   flex-flow: row wrap;
   justify-content: space-evenly;
 }
 
 .choice-curr {
-  font-size: 14px;
+  font-size: clamp(11px, 1.8vw, 14px);
   color: #777;
   font-style: italic;
 }
 
 .choice-bonus {
   font-family: 'Patrick Hand';
-  font-size: 28px;
+  font-size: clamp(18px, 4vw, 28px);
   color: #27ae60;
   font-weight: 700;
 }
 
 .choice-new {
-  font-size: 16px;
+  font-size: clamp(12px, 2vw, 16px);
   color: #2a2318;
   font-weight: 600;
 }
 
-.choice-wpn-attr, .choice-enchant-attr {
+.choice-wpn-attr,
+.choice-enchant-attr {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   text-align: center;
 }
 
-.choice-wpn-attr-title, .choice-enchant-attr-title {
+.choice-wpn-attr-title,
+.choice-enchant-attr-title {
   text-transform: capitalize;
-  font-size: 14px;
+  font-size: clamp(10px, 1.6vw, 14px);
 }
 
-.choice-wpn-attr-value, .choice-enchant-attr-value {
-  font-size: 20px;
+.choice-wpn-attr-value,
+.choice-enchant-attr-value {
+  font-size: clamp(14px, 2.5vw, 20px);
 }
 
-.choice-enchant-attr-value.malus {
-  color: #8c140c;
-}
-
-.choice-enchant-attr-value.bonus {
-  color: #27ae60;
-}
+.choice-enchant-attr-value.malus  { color: #8c140c; }
+.choice-enchant-attr-value.bonus  { color: #27ae60; }
 
 .wave-time {
   position: fixed;
@@ -299,11 +284,11 @@
 
 .hud {
   position: fixed;
-  top: 16px;
-  right: 16px;
+  top: clamp(8px, 2vh, 16px);
+  right: clamp(8px, 2vw, 16px);
   display: flex;
   justify-content: center;
-  gap: 48px;
+  gap: clamp(16px, 4vw, 48px);
   font-family: 'Patrick Hand';
   pointer-events: none;
   z-index: 201;
@@ -317,14 +302,14 @@
 }
 
 .hud-stat-label {
-  font-size: 11px;
+  font-size: clamp(8px, 1.5vw, 11px);
   color: rgba(42, 35, 24, 0.45);
   text-transform: uppercase;
   letter-spacing: 1.5px;
 }
 
 .hud-stat-value {
-  font-size: 22px;
+  font-size: clamp(14px, 2.8vw, 22px);
   font-weight: 700;
   color: rgba(42, 35, 24, 0.7);
   text-shadow:
@@ -334,23 +319,29 @@
 
 .player-card {
   position: fixed;
-  bottom: 20px;
-  left: 20px;
+  bottom: clamp(8px, 2vh, 20px);
+  left: clamp(8px, 2vw, 20px);
   font-family: 'Patrick Hand';
   color: rgba(42, 35, 24, 0.85);
   pointer-events: none;
   z-index: 201;
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  background: radial-gradient(ellipse at bottom left,
-      rgba(230, 224, 210, 0.75) 0%,
-      rgba(230, 224, 210, 0) 80%);
-  padding: 10px 32px 10px 10px;
+  gap: clamp(2px, 0.5vh, 4px);
+  background: radial-gradient(
+    ellipse at bottom left,
+    rgba(230, 224, 210, 0.75) 0%,
+    rgba(230, 224, 210, 0) 80%
+  );
+  padding: clamp(6px, 1vh, 10px) clamp(16px, 4vw, 32px) clamp(6px, 1vh, 10px) clamp(6px, 1.5vw, 10px);
+
+  @media (pointer: coarse) {
+    bottom: calc(220px + clamp(8px, 2vh, 16px));
+  }
 }
 
 .pc-identity {
-  font-size: 14px;
+  font-size: clamp(10px, 1.8vw, 14px);
   font-weight: 700;
   color: rgba(42, 35, 24, 0.6);
   letter-spacing: 0.5px;
@@ -365,39 +356,31 @@
 }
 
 .pc-hp-value {
-  font-size: 26px;
+  font-size: clamp(16px, 3.5vw, 26px);
   font-weight: 700;
   line-height: 1;
   color: rgba(42, 35, 24, 0.85);
 }
 
-.pc-hp-value.hp-mid {
-  color: rgba(192, 57, 43, 0.85);
-}
-
+.pc-hp-value.hp-mid { color: rgba(192, 57, 43, 0.85); }
 .pc-hp-value.hp-low {
   color: rgba(140, 20, 12, 0.9);
   animation: hp-pulse 0.6s ease-in-out infinite alternate;
 }
 
 @keyframes hp-pulse {
-  from {
-    opacity: 1;
-  }
-
-  to {
-    opacity: 0.5;
-  }
+  from { opacity: 1; }
+  to   { opacity: 0.5; }
 }
 
 .pc-hp-max {
-  font-size: 13px;
+  font-size: clamp(9px, 1.6vw, 13px);
   color: rgba(42, 35, 24, 0.4);
 }
 
 .hp-bar-track {
   height: 3px;
-  width: 90px;
+  width: clamp(60px, 10vw, 90px);
   background: rgba(42, 35, 24, 0.1);
   overflow: hidden;
 }
@@ -408,13 +391,8 @@
   transition: width 0.15s ease;
 }
 
-.hp-bar-fill.hp-mid {
-  background: rgba(192, 57, 43, 0.7);
-}
-
-.hp-bar-fill.hp-low {
-  background: rgba(140, 20, 12, 0.8);
-}
+.hp-bar-fill.hp-mid { background: rgba(192, 57, 43, 0.7); }
+.hp-bar-fill.hp-low { background: rgba(140, 20, 12, 0.8); }
 
 .pc-weapon-row {
   display: flex;
@@ -424,7 +402,7 @@
 }
 
 .pc-weapon-type {
-  font-size: 13px;
+  font-size: clamp(9px, 1.6vw, 13px);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -432,76 +410,64 @@
 }
 
 .pc-weapon-enchant {
-  font-size: 11px;
+  font-size: clamp(8px, 1.4vw, 11px);
   color: rgba(42, 35, 24, 0.4);
   font-style: italic;
 }
 
 .pc-weapon-stats {
   display: flex;
-  gap: 8px;
+  gap: clamp(4px, 1vw, 8px);
   flex-wrap: wrap;
 }
 
-.pc-stat {
-  display: flex;
-  gap: 2px;
-  align-items: baseline;
-}
-
-.pc-label {
-  font-size: 10px;
-  color: rgba(42, 35, 24, 0.4);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.pc-value {
-  font-size: 13px;
-  font-weight: 700;
-  color: rgba(42, 35, 24, 0.75);
-}
-
+.pc-stat,
 .pw-stat {
   display: flex;
   gap: 2px;
   align-items: baseline;
 }
 
+.pc-label,
 .pw-label {
-  font-size: 10px;
+  font-size: clamp(7px, 1.2vw, 10px);
   color: rgba(42, 35, 24, 0.4);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
+.pc-value,
 .pw-value {
-  font-size: 13px;
+  font-size: clamp(10px, 1.8vw, 13px);
   font-weight: 700;
   color: rgba(42, 35, 24, 0.75);
 }
 
 .pc-speed {
-  font-size: 11px;
+  font-size: clamp(8px, 1.4vw, 11px);
   color: rgba(42, 35, 24, 0.35);
   margin-top: 1px;
 }
 
 .items-grid {
   position: fixed;
-  bottom: 20px;
-  right: 20px;
+  bottom: clamp(8px, 2vh, 20px);
+  right: clamp(8px, 2vw, 20px);
   display: grid;
-  grid-template-columns: repeat(3, 36px);
-  grid-template-rows: repeat(2, 36px);
-  gap: 4px;
+  grid-template-columns: repeat(3, clamp(28px, 5vw, 36px));
+  grid-template-rows:    repeat(2, clamp(28px, 5vw, 36px));
+  gap: clamp(2px, 0.5vw, 4px);
   pointer-events: none;
   z-index: 201;
+
+  @media (pointer: coarse) {
+    bottom: calc(220px + clamp(8px, 2vh, 16px));
+  }
 }
 
 .item-slot {
-  width: 36px;
-  height: 36px;
+  width: clamp(28px, 5vw, 36px);
+  height: clamp(28px, 5vw, 36px);
   background: rgba(230, 224, 210, 0.55);
   border: 1.5px solid rgba(42, 35, 24, 0.25);
   position: relative;
@@ -516,8 +482,8 @@
 }
 
 .item-slot img {
-  width: 22px;
-  height: 22px;
+  width: clamp(16px, 3vw, 22px);
+  height: clamp(16px, 3vw, 22px);
   object-fit: contain;
   opacity: 0.85;
 }
@@ -527,7 +493,7 @@
   bottom: 1px;
   right: 3px;
   font-family: 'Patrick Hand';
-  font-size: 11px;
+  font-size: clamp(8px, 1.5vw, 11px);
   font-weight: 700;
   color: rgba(42, 35, 24, 0.8);
   line-height: 1;
@@ -543,6 +509,4 @@
   transition: width 0.1s linear;
 }
 
-.item-slot-bar.ready {
-  background: rgba(39, 174, 96, 0.7);
-}
+.item-slot-bar.ready { background: rgba(39, 174, 96, 0.7); }

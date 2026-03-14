@@ -11,6 +11,7 @@ import { CHOICE_TYPE } from '../game/choice';
 import NavBar from '../components/NavBar';
 import { PatchNotes } from '../components/PatchNotes';
 import { useTranslation } from 'react-i18next';
+import MobileControls from '../components/MobileControls';
 
 const MUTATION_ADD_RUN = gql`
   mutation AddRun($score: Int!, $duration: Int!, $wave: Int!, $kills: Int!) {
@@ -108,8 +109,10 @@ function Game() {
 
   return (
     <>
-      <NavBar />
-      <PatchNotes />
+      {hudRawRef.current.gameState === GAME_STATE.RUNNING &&
+        <MobileControls />
+      }
+
       <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', zIndex: 1000, background: '#f4f0e8' }}>
 
         {/* ── Game Over ── */}
