@@ -10,7 +10,7 @@ function ControlsTab() {
                 <div className='wiki-section-title'>{t('wiki.controls.movement')}</div>
                 {[
                     [['W', 'A', 'S', 'D'], t('wiki.controls.keys.moveUpLeftDownRight')],
-                    [['?', '?', '?', '?'], t('wiki.controls.keys.arrowKeys')],
+                    [['↑', '←', '↓', '→'], t('wiki.controls.keys.arrowKeys')],
                 ].map(([keys, desc], i) => (
                     <div className='wiki-row' key={i}>
                         <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap', minWidth: '90px' }}>
