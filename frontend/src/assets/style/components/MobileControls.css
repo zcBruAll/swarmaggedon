@@ -1,0 +1,104 @@
+.mobile-controls {
+  display: none;
+}
+
+@media (pointer: coarse) {
+  .mobile-controls {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 220px;
+    z-index: 2100;
+    pointer-events: none;
+    touch-action: none;
+  }
+}
+
+.mobile-zone {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: all;
+}
+
+.joystick-ring {
+  position: relative;
+  width: 104px;
+  height: 104px;
+  border-radius: 50%;
+
+  border: 2px solid rgba(42, 35, 24, 0.55);
+  box-shadow:
+    3px 3px 0 rgba(42, 35, 24, 0.30),
+    inset 0 0 24px rgba(42, 35, 24, 0.04);
+
+  transform: rotate(-0.4deg);
+}
+
+.joystick-knob {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  
+  background: #2a2318;
+  border: 2px solid #2a2318;
+  box-shadow:
+    2px 2px 0 rgba(42, 35, 24, 0.40),
+    inset 0 1px 0 rgba(255, 255, 255, 0.10);
+
+  transition: transform 0.08s ease-out;
+  will-change: transform;
+}
+
+.joystick-ring:active .joystick-knob {
+  background: #c0392b;
+  border-color: #c0392b;
+  box-shadow: 2px 2px 0 rgba(192, 57, 43, 0.40);
+  transition: none;
+}
+
+.joystick-hint {
+  position: absolute;
+  font-family: 'Patrick Hand';
+  font-size: 10px;
+  color: rgba(42, 35, 24, 0.30);
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+}
+
+.joystick-hint-top    { top: 4px;    left: 50%; transform: translateX(-50%); }
+.joystick-hint-bottom { bottom: 4px; left: 50%; transform: translateX(-50%); }
+.joystick-hint-left   { left: 4px;   top: 50%;  transform: translateY(-50%); }
+.joystick-hint-right  { right: 4px;  top: 50%;  transform: translateY(-50%); }
+
+.aim-hint {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: rgba(42, 35, 24, 0.28);
+  pointer-events: none;
+  user-select: none;
+  transform: rotate(-0.6deg);
+}
+
+.aim-hint span {
+  font-family: 'Patrick Hand';
+  font-size: 13px;
+  font-style: italic;
+  letter-spacing: 0.3px;
+}
+
+@media (pointer: coarse) {
+  canvas {
+    touch-action: none;
+  }
+}
