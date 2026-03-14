@@ -13,11 +13,9 @@ export const WEAPON_ENCHANT = {
     CHAIN: 'chain',
     PIERCE: 'pierce',
     LASER: 'laser',
-    SUBMACHINEGUN: 'submachinegun',
+    SUBMACHINEGUN: 'smg',
     LIFESTEAL: 'lifesteal',
-    LUNGE: 'lunge',
-    CLEAVE: 'cleave',
-    FRENZY: 'frenzy',
+    SWEETSPOT: 'sweetspot',
     CHARGE: 'charge',
 }
 
@@ -136,37 +134,15 @@ export function createEnchant(enchant) {
                 props: ['lifesteal'],
                 bonusProps: ['cooldown', 'damage', 'range'],
             }
-        case WEAPON_ENCHANT.LUNGE:
+        case WEAPON_ENCHANT.SWEETSPOT:
             return {
-                name: WEAPON_ENCHANT.LUNGE,
-                cooldown: 175,
-                damage: 150,
-                range: 90,
-                support: [WEAPON_TYPE.MELEE],
-                angle: 25,
-                props: ['angle'],
-                bonusProps: ['cooldown', 'damage', 'range'],
-            }
-        case WEAPON_ENCHANT.CLEAVE:
-            return {
-                name: WEAPON_ENCHANT.CLEAVE,
+                name: WEAPON_ENCHANT.SWEETSPOT,
                 cooldown: 125,
-                damage: 70,
-                range: 90,
+                damage: 75,
+                range: 105,
                 support: [WEAPON_TYPE.MELEE],
-                angle: 180,
-                props: ['angle'],
-                bonusProps: ['cooldown', 'damage', 'range'],
-            }
-        case WEAPON_ENCHANT.FRENZY:
-            return {
-                name: WEAPON_ENCHANT.FRENZY,
-                cooldown: 50,
-                damage: 60,
-                range: 90,
-                support: [WEAPON_TYPE.MELEE],
-                angle: 75,
-                props: ['angle'],
+                sweetspot: 15,
+                props: ['sweetspot'],
                 bonusProps: ['cooldown', 'damage', 'range'],
             }
         case WEAPON_ENCHANT.CHARGE:
@@ -288,11 +264,17 @@ export function tryAttack(weapon, attacker, world, dt, inputState = null) {
         if (diff > Math.PI / 180 * (weapon.angle ?? 360)) continue;
 
         if (weapon.type === WEAPON_TYPE.MELEE) {
+            let damage = weapon.damage;
             if (weapon.enchant === WEAPON_ENCHANT.LIFESTEAL) {
                 const heal = weapon.damage * weapon.lifesteal / 100;
                 attacker.hp = Math.min(attacker.maxHp, attacker.hp + heal);
             }
-            target.takeDamage(weapon.damage, attacker, world);
+            if (weapon.enchant === WEAPON_ENCHANT.SWEETSPOT) {
+                const d = Math.hypot(dx, dy);
+                const radius = target.radius + (attacker.radius ?? 0) + weapon.range;
+                damage *= d + (weapon.sweetspot ?? 15) <= radius ? 0.25 : 1.75;
+            }
+            target.takeDamage(damage, attacker, world);
             didHit = true;
         }
     }
