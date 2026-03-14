@@ -1,0 +1,288 @@
+.admin-login-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - 80px);
+    padding: 20px;
+}
+
+.admin-login-panel {
+    width: 100%;
+    max-width: 400px;
+}
+
+.admin-login-intro {
+    font-family: 'Patrick Hand';
+    font-size: 18px;
+    color: var(--ink-mid);
+    margin-bottom: 16px;
+}
+
+.admin-login-btn {
+    margin-top: 8px;
+}
+
+.notif-error {
+    background: rgba(192, 57, 43, 0.07);
+    border-left-color: var(--red);
+    color: var(--red);
+}
+
+.admin-main {
+    max-width: 1300px;
+    grid-template-columns: 1fr;
+    padding: 28px 32px;
+}
+
+.admin-page-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.admin-page-header-left {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+}
+
+.admin-page-title {
+    font-family: 'Patrick Hand';
+    font-size: 36px;
+    color: var(--ink);
+    transform: rotate(-0.4deg);
+    display: inline-block;
+}
+
+.admin-error {
+    margin-bottom: 16px;
+}
+
+.admin-loading {
+    font-family: 'Patrick Hand';
+    font-size: 20px;
+    color: var(--ink-faint);
+    text-align: center;
+    padding: 60px 0;
+    font-style: italic;
+}
+
+.admin-filter-panel {
+    margin-bottom: 20px;
+}
+
+.admin-filter-panel .panel-title {
+    font-size: 24px;
+}
+
+.admin-filter-body {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: flex-end;
+}
+
+.admin-filter-field {
+    flex: 1 1 160px;
+    min-width: 140px;
+}
+
+.admin-filter-field-sm {
+    flex: 1 1 100px;
+    min-width: 90px;
+}
+
+.admin-filter-field-select {
+    flex: 1 1 110px;
+    min-width: 100px;
+}
+
+.admin-filter-field-select-sm {
+    flex: 1 1 90px;
+    min-width: 80px;
+}
+
+.admin-filter-checkbox-wrap {
+    display: flex;
+    align-items: center;
+    padding-bottom: 6px;
+}
+
+.admin-filter-checkbox-label {
+    font-family: 'Patrick Hand';
+    font-size: 18px;
+    color: var(--ink-mid);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.admin-filter-checkbox-label input[type="checkbox"] {
+    width: auto;
+    margin-bottom: 0;
+}
+
+.admin-filter-actions {
+    display: flex;
+    gap: 8px;
+    padding-bottom: 4px;
+}
+
+.admin-runs-title {
+    font-size: 24px;
+}
+
+.admin-runs-header-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.admin-pagination {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+}
+
+.admin-pagination-btn {
+    padding: 2px 10px;
+}
+
+.admin-pagination-info {
+    font-family: 'Patrick Hand';
+    font-size: 16px;
+    color: var(--ink-faint);
+    min-width: 70px;
+    text-align: center;
+}
+
+.admin-table-wrap {
+    overflow-x: auto;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Patrick Hand';
+    min-width: 760px;
+}
+
+.admin-table thead tr {
+    background: var(--paper3);
+    border-bottom: 2px solid var(--ink);
+}
+
+.admin-table th {
+    padding: 8px 12px;
+    text-align: left;
+    font-size: 16px;
+    color: var(--ink-faint);
+    font-weight: 400;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+}
+
+.admin-table td {
+    padding: 7px 12px;
+}
+
+.admin-tr-cheater {
+    background: rgba(192, 57, 43, 0.04);
+    border-bottom: 1px dashed var(--line);
+}
+
+.admin-tr-even {
+    background: transparent;
+    border-bottom: 1px dashed var(--line);
+}
+
+.admin-tr-odd {
+    background: rgba(200, 191, 173, 0.06);
+    border-bottom: 1px dashed var(--line);
+}
+
+.admin-td-player {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.admin-td-player-name {
+    font-size: 18px;
+    color: var(--ink);
+}
+
+.admin-td-player-name-cheater {
+    font-size: 18px;
+    color: var(--red);
+}
+
+.admin-td-player-deleted {
+    color: var(--ink-faint);
+    font-style: italic;
+}
+
+.admin-td-cheater-badge {
+    font-size: 13px;
+    color: var(--red);
+    background: rgba(192, 57, 43, 0.1);
+    border: 1px solid rgba(192, 57, 43, 0.25);
+    padding: 0 5px;
+    border-radius: 2px;
+}
+
+.admin-td-score {
+    font-size: 18px;
+    color: var(--blue);
+    font-variant-numeric: tabular-nums;
+}
+
+.admin-td-number {
+    font-size: 18px;
+    color: var(--ink-mid);
+}
+
+.admin-td-duration {
+    font-size: 18px;
+    color: var(--ink-mid);
+    font-variant-numeric: tabular-nums;
+}
+
+.admin-td-date {
+    font-size: 14px;
+    color: var(--ink-faint);
+    white-space: nowrap;
+}
+
+.admin-td-actions {
+    display: flex;
+    gap: 5px;
+}
+
+.admin-btn-flag {
+    font-size: 15px;
+}
+
+.admin-btn-action {
+    font-size: 15px;
+}
+
+.admin-btn-action-dim {
+    font-size: 15px;
+    opacity: 0.7;
+}
+
+.admin-td-empty {
+    padding: 40px 14px;
+    text-align: center;
+    font-family: 'Patrick Hand';
+    font-size: 18px;
+    color: var(--ink-faint);
+    font-style: italic;
+}

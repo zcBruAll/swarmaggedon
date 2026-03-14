@@ -27,9 +27,9 @@ const server = new ApolloServer({
     resolvers,
     introspection: process.env.NODE_ENV !== 'production',
     plugins: [
-    process.env.NODE_ENV === 'production'
-        ? ApolloServerPluginLandingPageDisabled()
-        : ApolloServerPluginLandingPageLocalDefault({ footer: false }),
+        process.env.NODE_ENV === 'production'
+            ? ApolloServerPluginLandingPageDisabled()
+            : ApolloServerPluginLandingPageLocalDefault({ footer: false }),
     ],
 })
 
@@ -54,15 +54,19 @@ app.use(
 
             if (token) {
                 try {
-                user = jwt.verify(token, process.env.JWT_SECRET);
+                    user = jwt.verify(token, process.env.JWT_SECRET);
                 } catch (err) {
-                // Token is invalid/expired
+                    // Token is invalid/expired
                 }
             }
 
+            // Admin token, read separately, never mixed with user auth
+            const adminToken = req.cookies.admin_token || null;
+
             return {
-                res, 
-                user 
+                res,
+                user,
+                adminToken,
             };
         }
     })
@@ -71,4 +75,3 @@ app.use(
 app.listen(port, () => {
     console.log(`Backend is ready. Listening on port ${port}`)
 })
-
