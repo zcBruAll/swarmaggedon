@@ -142,7 +142,7 @@ export function getWeaponChoices(wave, player) {
                 possibleChoices.push(createWeapon(type, enchant));
             });
         } else {
-            possibleChoices.push(createWeapon(type, WEAPON_ENCHANT.CHARGE));
+            possibleChoices.push(createWeapon(type, undefined));
         }
     });
 
