@@ -7,6 +7,7 @@ import Account from './pages/Account'
 import Friends from './pages/Friends'
 import Auth from './pages/Auth'
 import { AuthProvider } from './context/AuthContext'
+import Admin from './pages/Admin'
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
             <Route path="/friends" element={<Friends />} />
             <Route path="/game" element={<Game />} />
             <Route path="/auth" element={<Auth />} />
+            <Route path="/admin" element={<Admin />} />
           </Routes>
         </div>
       </Router>
