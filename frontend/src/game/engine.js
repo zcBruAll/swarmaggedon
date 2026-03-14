@@ -183,8 +183,10 @@ export function createEngine(canvas, onHUDUpdate) {
         const viewW = canvas.width / scale;
         const viewH = canvas.height / scale;
 
-        const padX = CAMERA_FREE_SPACE / scale;
-        const padY = CAMERA_FREE_SPACE / scale;
+        const padX = (canvas.width / 2 - CAMERA_FREE_SPACE) / scale;
+        const padY = (canvas.height / 2 - CAMERA_FREE_SPACE) / scale;
+
+        console.log(padX, padY, scale);
 
         const dx = player.x - camera.x;
         const dy = player.y - camera.y;
