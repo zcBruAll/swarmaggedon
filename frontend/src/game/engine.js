@@ -186,8 +186,6 @@ export function createEngine(canvas, onHUDUpdate) {
         const padX = (canvas.width / 2 - CAMERA_FREE_SPACE) / scale;
         const padY = (canvas.height / 2 - CAMERA_FREE_SPACE) / scale;
 
-        console.log(padX, padY, scale);
-
         const dx = player.x - camera.x;
         const dy = player.y - camera.y;
 
@@ -244,6 +242,7 @@ export function createEngine(canvas, onHUDUpdate) {
         },
 
         togglePause() {
+            if (gameState === GAME_STATE.CHOICE) return;
             if (gameState === GAME_STATE.RUNNING) gameState = GAME_STATE.PAUSED;
             else if (gameState === GAME_STATE.PAUSED) gameState = GAME_STATE.RUNNING;
             _emitHUD();
