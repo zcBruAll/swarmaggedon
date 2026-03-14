@@ -3,21 +3,23 @@ import { ENEMY_TYPE } from './actors/enemy.js';
 
 export function drawBackground(ctx, width, height, camera) {
     ctx.clearRect(0, 0, width, height);
+
+    const scale = camera.scale ?? 1;
     const gridSize = 100;
 
-    const offsetX = (-camera?.x ?? 0) % gridSize;
-    const offsetY = (-camera?.y ?? 0) % gridSize;
+    const offsetX = ((-camera.x) % gridSize) * scale;
+    const offsetY = ((-camera.y) % gridSize) * scale;
+    const step = gridSize * scale;
 
-    ctx.strokeStyle = "#e0e0e0";
+    ctx.strokeStyle = '#e0e0e0';
     ctx.lineWidth = 1;
     ctx.beginPath();
 
-    for (let x = offsetX; x <= width; x += gridSize) {
+    for (let x = offsetX; x <= width; x += step) {
         ctx.moveTo(x, 0);
         ctx.lineTo(x, height);
     }
-
-    for (let y = offsetY; y <= height; y += gridSize) {
+    for (let y = offsetY; y <= height; y += step) {
         ctx.moveTo(0, y);
         ctx.lineTo(width, y);
     }
@@ -27,103 +29,112 @@ export function drawBackground(ctx, width, height, camera) {
 }
 
 export function drawActors(ctx, camera, actors, canvasW, canvasH) {
+    const scale = camera.scale ?? 1;
+
+    ctx.save();
+    ctx.scale(scale, scale);
+    ctx.translate(-camera.x, -camera.y);
+
     for (const actor of actors) {
         switch (actor.drawType) {
-            case 'player': drawPlayer(ctx, camera, actor); break;
-            case 'enemy': drawEnemy(ctx, camera, actor, canvasW, canvasH); break;
-            case 'bullet': drawBullet(ctx, camera, actor); break;
+            case 'player': drawPlayer(ctx, actor); break;
+            case 'enemy': drawEnemy(ctx, actor, canvasW, canvasH, camera); break;
+            case 'bullet': drawBullet(ctx, actor); break;
         }
     }
+
+    ctx.restore();
 }
 
-function drawPlayer(ctx, camera, player) {
-    _drawWeaponArc(ctx, camera, player, false);
+function drawPlayer(ctx, player) {
+    _drawWeaponArc(ctx, player, false);
 
     ctx.fillStyle = '#000000';
     ctx.beginPath();
-    ctx.ellipse(player.x - camera.x, player.y - camera.y,
-        player.radius, player.radius, 0, 0, Math.PI * 2);
+    ctx.ellipse(player.x, player.y, player.radius, player.radius, 0, 0, Math.PI * 2);
     ctx.fill();
 }
 
-function drawEnemy(ctx, camera, enemy, canvasW, canvasH) {
+function drawEnemy(ctx, enemy, canvasW, canvasH, camera) {
     if (enemy.spawnIn > 1.5) return;
 
-    const sx = enemy.x - camera.x;
-    const sy = enemy.y - camera.y;
+    const scale = camera.scale ?? 1;
     const alpha = Math.max(0, 1 - enemy.spawnIn / 1.25);
 
-    const onScreen = sx > -(enemy.radius + enemy.weapon.range)
-        && sx < canvasW + enemy.radius + enemy.weapon.range
-        && sy > -(enemy.radius + enemy.weapon.range)
-        && sy < canvasH + enemy.radius + enemy.weapon.range;
+    // On-screen check is still in screen space — convert enemy world pos to screen pos
+    const sx = (enemy.x - camera.x) * scale;
+    const sy = (enemy.y - camera.y) * scale;
+    const screenR = (enemy.radius + enemy.weapon.range) * scale;
+
+    const onScreen = sx > -screenR && sx < canvasW + screenR
+        && sy > -screenR && sy < canvasH + screenR;
 
     if (onScreen) {
-        _drawWeaponArc(ctx, camera, enemy, true);
+        _drawWeaponArc(ctx, enemy, true);
 
         ctx.save();
         ctx.globalAlpha = alpha;
         ctx.fillStyle = enemy.color;
         ctx.beginPath();
-        ctx.ellipse(sx, sy, enemy.radius, enemy.radius, 0, 0, Math.PI * 2);
+        ctx.ellipse(enemy.x, enemy.y, enemy.radius, enemy.radius, 0, 0, Math.PI * 2);
         ctx.fill();
         ctx.restore();
 
-        // Enemy HP bar
+        // HP bar (in world space — scales with zoom automatically)
         if (enemy.hp < enemy.maxHp) {
             const barW = enemy.radius * 2.4;
             const barH = enemy.type === ENEMY_TYPE.BOSS ? 6 : 3;
-            const bx = sx - barW / 2;
-            const by = sy - enemy.radius - (enemy.type === ENEMY_TYPE.BOSS ? 18 : 10);
+            const bx = enemy.x - barW / 2;
+            const by = enemy.y - enemy.radius - (enemy.type === ENEMY_TYPE.BOSS ? 18 : 10);
             const filled = (enemy.hp / enemy.maxHp) * barW;
 
             ctx.save();
             ctx.fillStyle = 'rgba(0,0,0,0.35)';
             ctx.fillRect(bx, by, barW, barH);
-
             ctx.fillStyle = enemy.hp / enemy.maxHp > 0.5 ? 'orange' : 'red';
             ctx.fillRect(bx, by, filled, barH);
             ctx.restore();
         }
     } else {
+        ctx.save();
+        ctx.resetTransform();
         _drawOffscreenIndicator(ctx, sx, sy, enemy.color, alpha, canvasW, canvasH);
+        ctx.restore();
     }
 }
 
-export function drawBullet(ctx, camera, bullet) {
+export function drawBullet(ctx, bullet) {
     if (bullet.dead) return;
     ctx.fillStyle = '#007b00';
     ctx.beginPath();
     ctx.ellipse(
-        bullet.x - camera.x, bullet.y - camera.y,
+        bullet.x, bullet.y,
         bullet.width * 1.5, bullet.width,
         bullet.angle, 0, Math.PI * 2,
     );
     ctx.fill();
 }
 
-function _drawWeaponArc(ctx, camera, bearer, subtleArea = true) {
+function _drawWeaponArc(ctx, bearer, subtleArea = true) {
     const weapon = bearer.weapon;
     if (!weapon) return;
     if (bearer.spawnIn > 0) return;
 
-    const sx = bearer.x - camera.x;
-    const sy = bearer.y - camera.y;
+    const sx = bearer.x;
+    const sy = bearer.y;
 
-    let strokeStyle = "#c9570b";
+    let strokeStyle = '#c9570b';
     let lineDash = [8, 8];
 
     const laserCharging = weapon.enchant === WEAPON_ENCHANT.LASER && weapon.charging;
 
     const ready = weapon.cooldownTime <= 0
-        || ((weapon.enchant === WEAPON_ENCHANT.CHARGE || laserCharging)
-            && weapon.charging);
+        || ((weapon.enchant === WEAPON_ENCHANT.CHARGE || laserCharging) && weapon.charging);
 
     if (ready) { strokeStyle = '#169116'; lineDash = []; }
 
     ctx.save();
 
-    // Weapon cooldown
     if (!subtleArea && (weapon.enchant !== WEAPON_ENCHANT.CHARGE || !weapon.charging)) {
         const ringR = bearer.radius + 3;
         ctx.beginPath();
@@ -136,7 +147,6 @@ function _drawWeaponArc(ctx, camera, bearer, subtleArea = true) {
         ctx.closePath();
     }
 
-    // Weapon area
     let lineWidth = 1;
     let angle = bearer.angle;
     let weaponAngle = weapon.angle ?? 0;
@@ -155,10 +165,7 @@ function _drawWeaponArc(ctx, camera, bearer, subtleArea = true) {
         weaponRange = weapon.range * (weapon.chargeTime * weapon.rngSpeed) / 100;
     }
 
-    const readyRatio = laserCharging
-        ? 1
-        : 1 - (Math.max(0, weapon.cooldownTime) / weapon.cooldown);
-
+    const readyRatio = laserCharging ? 1 : 1 - (Math.max(0, weapon.cooldownTime) / weapon.cooldown);
     const halfSpread = (weaponAngle / 2) * (Math.PI / 180);
     const arcRadius = bearer.radius + weaponRange;
 

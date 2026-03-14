@@ -17,9 +17,10 @@ const CAMERA_FREE_SPACE = 35;
 const WAVE_MSG_DURATION = 2;
 export const WAVE_INTERVAL = 60;
 
+const BASE_WIDTH = 700;
+
 export function createEngine(canvas, onHUDUpdate) {
     const ctx = canvas.getContext('2d');
-    let CAMERA_PADDING = Math.min(canvas.width, canvas.height) / 2 - CAMERA_FREE_SPACE;
 
     let gameState = GAME_STATE.RUNNING;
     let lastTs = 0;
@@ -31,7 +32,7 @@ export function createEngine(canvas, onHUDUpdate) {
     let wave = 0;
     let waveTimer = WAVE_INTERVAL;
     let choices = [];
-    let camera = { x: 0, y: 0 };
+    let camera = { x: 0, y: 0, scale: 1 };
     let waveMsg = {
         waveNumber: 0,
         duration: 0,
@@ -39,6 +40,18 @@ export function createEngine(canvas, onHUDUpdate) {
 
     let rerollsLeft = 2;
     let currentChoiceType = null;
+
+    function _computeScale() {
+        return Math.min(1, canvas.width / BASE_WIDTH);
+    }
+
+    function _screenToWorld(sx, sy) {
+        const s = camera.scale;
+        return {
+            x: sx / s + camera.x,
+            y: sy / s + camera.y,
+        };
+    }
 
     function init() {
         world = createWorld();
@@ -59,7 +72,7 @@ export function createEngine(canvas, onHUDUpdate) {
     }
 
     function loop(ts) {
-        const dt = Math.min((ts - lastTs) / 1000, 0.1); // Max at 100ms
+        const dt = Math.min((ts - lastTs) / 1000, 0.1);
         lastTs = ts;
         world.addElapsed(dt);
 
@@ -73,9 +86,15 @@ export function createEngine(canvas, onHUDUpdate) {
     }
 
     function update(dt) {
+        const worldMouse = _screenToWorld(input.mouse.x, input.mouse.y);
+        const scaledInput = {
+            ...input,
+            mouse: worldMouse,
+        };
+
         for (const actor of world.actors) {
             if (actor.drawType === 'player') {
-                actor.update(dt, world, input);
+                actor.update(dt, world, scaledInput);
             } else {
                 actor.update(dt, world);
             }
@@ -90,7 +109,6 @@ export function createEngine(canvas, onHUDUpdate) {
 
         _tickWave(dt);
 
-        // Check game over
         if (player.hp <= 0) {
             gameState = GAME_STATE.GAME_OVER;
         }
@@ -150,7 +168,7 @@ export function createEngine(canvas, onHUDUpdate) {
 
         switch (type) {
             case CHOICE_TYPE.WEAPON: choices = getWeaponChoices(wave, player); break;
-            case CHOICE_TYPE.ENCHANT: console.log("ADGHSAGDASJHDG"); choices = getEnchantChoices(wave, player); break;
+            case CHOICE_TYPE.ENCHANT: choices = getEnchantChoices(wave, player); break;
             case CHOICE_TYPE.BOSS_REWARD: choices = getBossRewardChoices(wave, player); break;
             default: choices = getChoices(wave, player); break;
         }
@@ -159,16 +177,23 @@ export function createEngine(canvas, onHUDUpdate) {
     }
 
     function _updateCamera() {
-        const w = canvas.width;
-        const h = canvas.height;
+        const scale = _computeScale();
+        camera.scale = scale;
+
+        const viewW = canvas.width / scale;
+        const viewH = canvas.height / scale;
+
+        const padX = CAMERA_FREE_SPACE / scale;
+        const padY = CAMERA_FREE_SPACE / scale;
+
         const dx = player.x - camera.x;
         const dy = player.y - camera.y;
 
-        if (dx < CAMERA_PADDING) camera.x -= CAMERA_PADDING - dx;
-        else if (dx > w - CAMERA_PADDING) camera.x += dx - (w - CAMERA_PADDING);
+        if (dx < padX) camera.x -= padX - dx;
+        else if (dx > viewW - padX) camera.x += dx - (viewW - padX);
 
-        if (dy < CAMERA_PADDING) camera.y -= CAMERA_PADDING - dy;
-        else if (dy > h - CAMERA_PADDING) camera.y += dy - (h - CAMERA_PADDING);
+        if (dy < padY) camera.y -= padY - dy;
+        else if (dy > viewH - padY) camera.y += dy - (viewH - padY);
     }
 
     function render() {
