@@ -81,13 +81,6 @@ export function createWorld() {
                 kills += 1;
                 emit({ type: 'kill', actor: a });
                 if (world.onKillCallback) world.onKillCallback(a);
-            }
-
-            if (isDead && a.score) {
-                score += a.score;
-                kills += 1;
-                emit({ type: 'kill', actor: a });
-                if (world.onKillCallback) world.onKillCallback(a);
 
                 const attacker = a._lastAttacker;
                 if (attacker?.weapon?.enchant === 'detonator') {
