@@ -80,6 +80,7 @@ export function createWorld() {
                 score += a.score;
                 kills += 1;
                 emit({ type: 'kill', actor: a });
+                if (world.onKillCallback) world.onKillCallback(a);
             }
 
             if (isDead && a.persistent) {
@@ -105,6 +106,7 @@ export function createWorld() {
 
     const world = {
         actors,
+        onKillCallback: null,
 
         actorsOnTeam,
         nearestActor,

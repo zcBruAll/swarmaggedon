@@ -50,6 +50,10 @@ export function createPlayer(canvasWidth, canvasHeight) {
 
         takeDamage(amount) {
             this.hp -= Math.min(amount, this.hp);
+            if (this.weapon?.enchant === WEAPON_ENCHANT.MOMENTUM) {
+                this.weapon.stacks = 0;
+                this.weapon.decayTime = 0;
+            }
         },
 
         heal(amount) {
