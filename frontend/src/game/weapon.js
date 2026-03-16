@@ -272,7 +272,8 @@ export function tryAttack(weapon, attacker, world, dt, inputState = null) {
             if (weapon.enchant === WEAPON_ENCHANT.SWEETSPOT) {
                 const d = Math.hypot(dx, dy);
                 const radius = target.radius + (attacker.radius ?? 0) + weapon.range;
-                damage *= d + (weapon.sweetspot ?? 15) <= radius ? 0.25 : 1.75;
+                const sweetspotThreshold = weapon.range * (weapon.sweetspot / 100);
+                damage *= d + sweetspotThreshold <= radius ? 0.25 : 1.75;
             }
             target.takeDamage(damage, attacker, world);
             didHit = true;
