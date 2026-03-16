@@ -1,5 +1,6 @@
 import { WEAPON_ENCHANT } from './weapon.js';
 import { ENEMY_TYPE } from './actors/enemy.js';
+import { TEAM } from './world.js';
 
 export function drawBackground(ctx, width, height, camera) {
     ctx.clearRect(0, 0, width, height);
@@ -181,6 +182,20 @@ function _drawWeaponArc(ctx, bearer, subtleArea = true) {
     ctx.globalAlpha = (subtleArea && !laserCharging ? 0.035 : 0.25) * readyRatio;
     ctx.fillStyle = strokeStyle;
     ctx.fill();
+
+    if (bearer.team === TEAM.PLAYER && weapon.enchant === WEAPON_ENCHANT.SWEETSPOT) {
+        const sweetspotThreshold = weapon.range * ((weapon.sweetspot ?? 15) / 100);
+        const innerR = bearer.radius + weapon.range - sweetspotThreshold;
+        const outerR = bearer.radius + weapon.range;
+
+        ctx.beginPath();
+        ctx.arc(sx, sy, outerR, angle - halfSpread, angle + halfSpread);
+        ctx.arc(sx, sy, innerR, angle + halfSpread, angle - halfSpread, true);
+        ctx.closePath();
+
+        ctx.globalAlpha = ready ? 0.35 : 0.15;
+        ctx.fill();
+    }
 
     ctx.restore();
 }
