@@ -101,6 +101,7 @@
         "sweetspot": "Inflige 75% plus de dégâts aux ennemis en bord de portée mais 75% moins autrement.",
         "momentum": "Cumulez des stacks en tuant : augmente les dégâts et le CD. Perdu si blessé ou après 1.5s.",
         "charge": "Maintenez le clic gauche pour charger - dégâts et portée augmentent avec le temps de charge. Potentiel de burst massif.",
+        "detonator": "Les ennemis tués explosent, infligeant des dégâts de zone aux ennemis proches. Dévastateur dans les groupes denses - chaque kill peut en déclencher un autre.",
         "lifesteal": "Chaque coup vous soigne d'un pourcentage des dégâts infligés. Rend le corps-à-corps plus sûr."
       }
     },
@@ -179,15 +180,23 @@
         ],
         "maxStacks": [
           "Stacks max.",
-          "Stacks maximum stackable"
+          "Stacks maximum stackable (enchantement Momentum)."
         ],
         "damagePerStack": [
           "DGT par stack",
-          "Pourcentage de dégâts supplémentaires par stack"
+          "Pourcentage de dégâts supplémentaires par stack (enchantement Momentum)."
         ],
         "cooldownPerStack": [
           "CD par stack",
-          "Pourcentage de cooldown en moins par stack"
+          "Pourcentage de cooldown en moins par stack (enchantement Momentum)."
+        ],
+        "detonateRadius": [
+          "Rayon détonation",
+          "Rayon de la détonation (enchantement Détonation)."
+        ],
+        "detonateDamage": [
+          "Dégâts détonation",
+          "Dégâts de base de la détonation (enchantement Détonation)."
         ]
       }
     }
@@ -407,7 +416,9 @@
       "maxStacks": "Stacks max",
       "damagePerStack": "Dmg par Stack",
       "cooldownPerStack": "CD par Stack",
-      "stacks": "Stacks"
+      "stacks": "Stacks",
+      "detonateRadius": "Rayon détonation",
+      "detonateDamage": "Dégâts détonation"
     },
     "choiceProps": {
       "cooldown": "recharge",
@@ -432,7 +443,9 @@
       "maxStacks": "Stacks max",
       "damagePerStack": "Dmg par Stack",
       "cooldownPerStack": "CD par Stack",
-      "stacks": "Stacks"
+      "stacks": "Stacks",
+      "detonateRadius": "rayon dét.",
+      "detonateDamage": "dégâts dét."
     },
     "rarities": {
       "Common": "Commun",
@@ -456,7 +469,8 @@
     "lifesteal": "Vol de vie",
     "sweetspot": "Pointe",
     "momentum": "Momentum",
-    "charge": "Charge"
+    "charge": "Charge",
+    "detonator": "Détonateur"
   },
   "loading": {
     "friends": "Chargement des amis..."

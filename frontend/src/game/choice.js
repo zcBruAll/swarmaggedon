@@ -101,6 +101,10 @@ function _buildAugmentChoices(wave, player, minRarity) {
             possibleChoices.push(_pct('damagePerStack', wpn, 'damagePerStack', 5, 10));
             possibleChoices.push(_pct('cooldownPerStack', wpn, 'cooldownPerStack', 3, 7));
         }
+        if (wpn.enchant === WEAPON_ENCHANT.DETONATOR) {
+            possibleChoices.push(_pct('detonateRadius', wpn, 'detonateRadius', 5, 12));
+            possibleChoices.push(_pct('detonateDamage', wpn, 'detonateDamage', 8, 15));
+        }
     }
 
     return _buildChoices(possibleChoices, CHOICE_TYPE.AUGMENT, minRarity);
@@ -147,7 +151,7 @@ export function getWeaponChoices(wave, player) {
                 possibleChoices.push(createWeapon(type, enchant));
             });
         } else {
-            possibleChoices.push(createWeapon(type, undefined));
+            possibleChoices.push(createWeapon(type, WEAPON_ENCHANT.DETONATOR));
         }
     });
 

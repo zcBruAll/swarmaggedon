@@ -183,8 +183,9 @@ export function createEnemy(type, wave) {
             }
         },
 
-        takeDamage(amount) {
+        takeDamage(amount, source, world) {
             this.hp -= Math.min(amount, this.hp);
+            if (source) this._lastAttacker = source;
         },
 
         onDeath() { },
