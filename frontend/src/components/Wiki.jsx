@@ -115,9 +115,8 @@ function WeaponsTab() {
 
     const meleeKeys = [
         { key: 'single', color: '#bdc3c7' },
-        { key: 'cleave', color: '#e67e22' },
-        { key: 'frenzy', color: '#e74c3c' },
-        { key: 'lunge', color: '#8e44ad' },
+        { key: 'sweetspot', color: '#e67e22' },
+        { key: 'momentum', color: '#e74c3c' },
         { key: 'charge', color: '#f39c12' },
         { key: 'lifesteal', color: '#27ae60' },
     ];
@@ -164,6 +163,7 @@ function AugmentsTab() {
     const statKeys = [
         'maxHp', 'damage', 'range', 'moveSpeed', 'cooldown',
         'bulletSpeed', 'aoeRadius', 'pierce', 'laserWidth', 'chainRadius', 'lifesteal',
+        'cooldownPerStack', 'damagePerStack', 'maxStacks'
     ];
 
     return (
