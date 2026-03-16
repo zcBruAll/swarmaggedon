@@ -83,10 +83,17 @@ export function createWorld() {
                 if (world.onKillCallback) world.onKillCallback(a);
             }
 
-            if (isDead && a.persistent) {
-                a.hp = 0;
-                actors[w++] = a;
-                continue;
+            if (isDead && a.score) {
+                score += a.score;
+                kills += 1;
+                emit({ type: 'kill', actor: a });
+                if (world.onKillCallback) world.onKillCallback(a);
+
+                const attacker = a._lastAttacker;
+                if (attacker?.weapon?.enchant === 'detonator') {
+                    const w = attacker.weapon;
+                    aoeBlast(a.x, a.y, w.detonateRadius, w.detonateDamage, a.team, a);
+                }
             }
 
             if (!isDead) actors[w++] = a;

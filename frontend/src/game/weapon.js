@@ -17,6 +17,7 @@ export const WEAPON_ENCHANT = {
     LIFESTEAL: 'lifesteal',
     SWEETSPOT: 'sweetspot',
     MOMENTUM: 'momentum',
+    DETONATOR: 'detonator',
     CHARGE: 'charge',
 }
 
@@ -160,6 +161,18 @@ export function createEnchant(enchant) {
                 decay: 1.5,
                 decayTime: 1.5,
                 props: ['maxStacks', 'damagePerStack', 'cooldownPerStack', 'stacks', 'decay', 'decayTime'],
+                bonusProps: ['cooldown', 'damage', 'range'],
+            }
+        case WEAPON_ENCHANT.DETONATOR:
+            return {
+                name: WEAPON_ENCHANT.DETONATOR,
+                cooldown: 110,
+                damage: 90,
+                range: 95,
+                support: [WEAPON_TYPE.MELEE],
+                detonateRadius: 120,
+                detonateDamage: 60,
+                props: ['detonateRadius', 'detonateDamage'],
                 bonusProps: ['cooldown', 'damage', 'range'],
             }
         case WEAPON_ENCHANT.CHARGE:

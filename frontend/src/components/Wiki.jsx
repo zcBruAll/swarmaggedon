@@ -119,6 +119,7 @@ function WeaponsTab() {
         { key: 'momentum', color: '#e74c3c' },
         { key: 'charge', color: '#f39c12' },
         { key: 'lifesteal', color: '#27ae60' },
+        { key: 'detonator', color: '#e67e22' },
     ];
 
     return (
@@ -163,7 +164,7 @@ function AugmentsTab() {
     const statKeys = [
         'maxHp', 'damage', 'range', 'moveSpeed', 'cooldown',
         'bulletSpeed', 'aoeRadius', 'pierce', 'laserWidth', 'chainRadius', 'lifesteal',
-        'cooldownPerStack', 'damagePerStack', 'maxStacks'
+        'cooldownPerStack', 'damagePerStack', 'maxStacks', 'detonateRadius', 'detonateDamage'
     ];
 
     return (
