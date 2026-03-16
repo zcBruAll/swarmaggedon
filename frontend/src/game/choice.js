@@ -96,6 +96,11 @@ function _buildAugmentChoices(wave, player, minRarity) {
             possibleChoices.push(_pct('rangeSpeed', wpn, 'rngSpeed', 5, 10));
             possibleChoices.push(_pct('maxCharge', wpn, 'maxCharge', 2, 7));
         }
+        if (wpn.enchant === WEAPON_ENCHANT.MOMENTUM) {
+            possibleChoices.push(_pct('maxStacks', wpn, 'maxStacks', 5, 10));
+            possibleChoices.push(_pct('damagePerStack', wpn, 'damagePerStack', 5, 10));
+            possibleChoices.push(_pct('cooldownPerStack', wpn, 'cooldownPerStack', 3, 7));
+        }
     }
 
     return _buildChoices(possibleChoices, CHOICE_TYPE.AUGMENT, minRarity);

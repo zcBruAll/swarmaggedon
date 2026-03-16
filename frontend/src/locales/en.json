@@ -99,6 +99,7 @@
       "melee": {
         "single": "Standard melee swing with a 90° arc. Simple and effective at close range.",
         "sweetspot": "Deals 75% more damage on enemies on the range edge but 75% less otherwise.",
+        "momentum": "Each kills grants a stack that increases damages and reduces cooldown. Gets reset on damage taken or after not killing any ennemies in 1.5",
         "charge": "Hold LMB to charge - damage and range scale with charge time. Massive burst potential.",
         "lifesteal": "Each hit heals you for a percentage of damage dealt. Makes staying in melee range safer."
       }
@@ -175,6 +176,18 @@
         "lifesteal": [
           "Lifesteal",
           "HP stolen per hit percentage (Lifesteal enchant)."
+        ],
+        "maxStacks": [
+          "Max Stacks",
+          "Maximum stackable stacks"
+        ],
+        "damagePerStack": [
+          "Per-stack DMG",
+          "Percentage increasing weapon damages for each stack"
+        ],
+        "cooldownPerStack": [
+          "Per-stack CD",
+          "Percentage reducing weapon cooldown for each stack"
         ]
       }
     }
@@ -390,7 +403,11 @@
       "lifesteal": "Lifesteal",
       "damageSpeed": "Damage Speed",
       "rangeSpeed": "Range Speed",
-      "maxCharge": "Max Charge"
+      "maxCharge": "Max Charge",
+      "maxStacks": "Max Stacks",
+      "damagePerStack": "Dmg per Stack",
+      "cooldownPerStack": "CD per Stack",
+      "stacks": "Stacks"
     },
     "choiceProps": {
       "cooldown": "cooldown",
@@ -411,7 +428,11 @@
       "dmgSpeed": "dmg speed",
       "rngSpeed": "rng speed",
       "maxCharge": "max charge",
-      "chargeTime": "charge time"
+      "chargeTime": "charge time",
+      "maxStacks": "Max Stacks",
+      "damagePerStack": "Dmg per Stack",
+      "cooldownPerStack": "CD per Stack",
+      "stacks": "Stacks"
     },
     "rarities": {
       "Common": "Common",
@@ -434,6 +455,7 @@
     "smg": "SMG",
     "lifesteal": "Lifesteal",
     "sweetspot": "Sweetspot",
+    "momentum": "Momentum",
     "charge": "Charge"
   },
   "loading": {

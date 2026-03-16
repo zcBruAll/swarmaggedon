@@ -16,6 +16,7 @@ export const WEAPON_ENCHANT = {
     SUBMACHINEGUN: 'smg',
     LIFESTEAL: 'lifesteal',
     SWEETSPOT: 'sweetspot',
+    MOMENTUM: 'momentum',
     CHARGE: 'charge',
 }
 
@@ -145,6 +146,22 @@ export function createEnchant(enchant) {
                 props: ['sweetspot'],
                 bonusProps: ['cooldown', 'damage', 'range'],
             }
+        case WEAPON_ENCHANT.MOMENTUM:
+            return {
+                name: WEAPON_ENCHANT.MOMENTUM,
+                cooldown: 110,
+                damage: 80,
+                range: 95,
+                support: [WEAPON_TYPE.MELEE],
+                maxStacks: 10,
+                damagePerStack: 9,
+                cooldownPerStack: 6,
+                stacks: 0,
+                decay: 1.5,
+                decayTime: 1.5,
+                props: ['maxStacks', 'damagePerStack', 'cooldownPerStack', 'stacks', 'decay', 'decayTime'],
+                bonusProps: ['cooldown', 'damage', 'range'],
+            }
         case WEAPON_ENCHANT.CHARGE:
             return {
                 name: WEAPON_ENCHANT.CHARGE,
@@ -224,9 +241,21 @@ export function tryAttack(weapon, attacker, world, dt, inputState = null) {
         }
     }
 
+    if (weapon.enchant === WEAPON_ENCHANT.MOMENTUM && weapon.stacks > 0) {
+        weapon.decayTime -= Math.min(dt, weapon.decayTime);
+        if (weapon.decayTime <= 0) weapon.stacks = 0;
+    }
+
     weapon.cooldownTime -= Math.min(dt, weapon.cooldownTime);
     if (weapon.cooldownTime > 0) return;
 
+    let effectiveDamage = weapon.damage;
+    let effectiveCooldown = weapon.cooldown;
+
+    if (weapon.enchant === WEAPON_ENCHANT.MOMENTUM && weapon.stacks > 0) {
+        effectiveDamage *= 1 + (weapon.damagePerStack * weapon.stacks) / 100;
+        effectiveCooldown *= 1 - (weapon.cooldownPerStack * weapon.stacks) / 100;
+    }
 
     const candidates = world.actorsOnTeam(targetTeam)
         .filter(a => a.targetable !== false);
@@ -264,24 +293,23 @@ export function tryAttack(weapon, attacker, world, dt, inputState = null) {
         if (diff > Math.PI / 180 * (weapon.angle ?? 360)) continue;
 
         if (weapon.type === WEAPON_TYPE.MELEE) {
-            let damage = weapon.damage;
             if (weapon.enchant === WEAPON_ENCHANT.LIFESTEAL) {
-                const heal = weapon.damage * weapon.lifesteal / 100;
+                const heal = effectiveDamage * weapon.lifesteal / 100;
                 attacker.hp = Math.min(attacker.maxHp, attacker.hp + heal);
             }
             if (weapon.enchant === WEAPON_ENCHANT.SWEETSPOT) {
                 const d = Math.hypot(dx, dy);
                 const radius = target.radius + (attacker.radius ?? 0) + weapon.range;
                 const sweetspotThreshold = weapon.range * (weapon.sweetspot / 100);
-                damage *= d + sweetspotThreshold <= radius ? 0.25 : 1.75;
+                effectiveDamage *= d + sweetspotThreshold <= radius ? 0.25 : 1.75;
             }
-            target.takeDamage(damage, attacker, world);
+            target.takeDamage(effectiveDamage, attacker, world);
             didHit = true;
         }
     }
 
     if (didHit && weapon.type === WEAPON_TYPE.MELEE) {
-        weapon.cooldownTime = weapon.cooldown;
+        weapon.cooldownTime = effectiveCooldown;
     }
 
     if (nearest && weapon.type === WEAPON_TYPE.RANGE) {

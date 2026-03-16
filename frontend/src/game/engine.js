@@ -3,7 +3,7 @@ import { createPlayer } from './actors/player.js';
 import { createEnemy, createWave, separateEnemies, ENEMY_TYPE, BOSS_WAVE_INTERVAL } from './actors/enemy.js';
 import { initInput, destroyInput, flushInput, input } from './input.js';
 import { drawBackground, drawActors } from './renderer.js';
-import { WEAPON_TYPE } from './weapon.js';
+import { WEAPON_ENCHANT, WEAPON_TYPE } from './weapon.js';
 import { CHOICE_TYPE, getChoices, getEnchantChoices, getWeaponChoices, getBossRewardChoices } from './choice.js';
 
 export const GAME_STATE = {
@@ -59,6 +59,14 @@ export function createEngine(canvas, onHUDUpdate) {
 
         player = createPlayer(canvas.width, canvas.height);
         world.actors.push(player);
+
+        world.onKillCallback = () => {
+            const wpn = player.weapon;
+            if (wpn?.enchant === WEAPON_ENCHANT.MOMENTUM) {
+                wpn.stacks = Math.min(wpn.stacks + 1, wpn.maxStacks);
+                wpn.decayTime = wpn.decay;
+            }
+        };
 
         waveTimer = WAVE_INTERVAL;
         gameState = GAME_STATE.RUNNING;
@@ -123,7 +131,7 @@ export function createEngine(canvas, onHUDUpdate) {
         waveTimer -= dt;
 
         const enemiesAlive = world.actors.some(
-            a => a.team === TEAM.ENEMY && a.hp > 0 && !a.dead
+            a => a.team === TEAM.ENEMY && a.hp > 0 && !a.dead && a.drawType === 'enemy'
         );
 
         if (waveTimer <= 0 || !enemiesAlive) {
@@ -134,6 +142,11 @@ export function createEngine(canvas, onHUDUpdate) {
                     a => a.drawType === 'bullet' && a.team === TEAM.PLAYER
                 );
                 for (const b of bulletsToRemove) b.dead = true;
+
+                if (player.weapon?.enchant === WEAPON_ENCHANT.MOMENTUM) {
+                    player.weapon.stacks = 0;
+                    player.weapon.decayTimer = 0;
+                }
 
                 player.heal(20);
 

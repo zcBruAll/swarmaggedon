@@ -54,6 +54,20 @@ function drawPlayer(ctx, player) {
     ctx.beginPath();
     ctx.ellipse(player.x, player.y, player.radius, player.radius, 0, 0, Math.PI * 2);
     ctx.fill();
+
+    if (player.weapon?.enchant === WEAPON_ENCHANT.MOMENTUM && player.weapon.stacks > 0) {
+        const stacks = player.weapon.stacks;
+        const max = player.weapon.maxStacks;
+        const ratio = stacks / max;
+        const color = ratio >= 1 ? '#e74c3c' : ratio > 0.5 ? '#e67e22' : '#ffffff';
+
+        ctx.save();
+        ctx.font = `bold ${10 + stacks}px sans-serif`;
+        ctx.fillStyle = color;
+        ctx.textAlign = 'center';
+        ctx.fillText(`${stacks}`, player.x, player.y - player.radius - 8);
+        ctx.restore();
+    }
 }
 
 function drawEnemy(ctx, enemy, canvasW, canvasH, camera) {
