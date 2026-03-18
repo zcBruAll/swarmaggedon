@@ -1,3 +1,5 @@
+import i18n from '../i18n';
+
 /**
  * Formats a duration in seconds into hh:mm:ss string.
  * @param {number} durationInSeconds 
@@ -56,26 +58,26 @@ export const isUserOnline = (last_online) => {
  * @returns {string}
  */
 export const formatRelativeTime = (date) => {
-    if (!date) return "never";
+    if (!date) return i18n.t("utils.never");
     const now = new Date();
     const past = new Date(date);
     const diffInSeconds = Math.floor((now - past) / 1000);
 
-    if (diffInSeconds < 60) return "just now";
+    if (diffInSeconds < 60) return i18n.t("utils.justNow");
     
     const minutes = Math.floor(diffInSeconds / 60);
-    if (minutes < 60) return `${minutes}m ago`;
+    if (minutes < 60) return `${minutes}${i18n.t("utils.units.minute")}`;
     
     const hours = Math.floor(minutes / 60);
-    if (hours < 24) return `${hours}h ago`;
+    if (hours < 24) return `${hours}${i18n.t("utils.units.hour")}`;
     
     const days = Math.floor(hours / 24);
-    if (days < 30) return `${days}d ago`;
+    if (days < 30) return `${days}${i18n.t("utils.units.day")}`;
     
     const months = Math.floor(days / 30);
-    if (months < 12) return `${months}mo ago`;
+    if (months < 12) return `${months}${i18n.t("utils.units.month")}`;
     
-    return `${Math.floor(months / 12)}y ago`;
+    return `${Math.floor(months / 12)}${i18n.t("utils.units.year")}`;
 };
 
 export const formatTotalToHours = (duration) => {

@@ -76,6 +76,24 @@
     box-shadow: 4px 4px 0 var(--ink);
 }
 
+.btn-remove-friend {
+    background: transparent;
+    color: var(--red);
+    border: 2px solid var(--red);
+    font-family: inherit;
+    font-size: 18px;
+    padding: 6px 20px;
+    cursor: pointer;
+    box-shadow: 3px 3px 0 rgba(192, 57, 43, 0.2);
+    transition: all 0.1s;
+}
+
+.btn-remove-friend:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 4px 4px 0 rgba(192, 57, 43, 0.3);
+    background: rgba(192, 57, 43, 0.05);
+}
+
 .btn-edit-profile {
     background: var(--paper3);
     color: var(--ink);
