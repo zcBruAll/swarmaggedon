@@ -140,11 +140,16 @@ export default function Profile() {
                     </div>
 
                     <div className="last-run-banner">
-                        <div className="lr-label">LAST RUN — {formatRelativeTime(displayUser?.last_run.date)}</div>
+                        <div className="lr-label">LAST RUN — {formatRelativeTime(displayUser?.last_run?.date)}</div>
                         <div className="lr-main">
                             <div>
-                                <div className="lr-score">{formatNumberFull(displayUser?.last_run.score)} pts</div>
-                                <div className="lr-sub">Wave {displayUser?.last_run.wave} · {formatToRealTime(displayUser?.last_run.duration)}</div>
+                                {displayUser?.last_run === null ?
+                                <div className="lr-score">...</div>
+                                :
+                                <>
+                                    <div className="lr-score">{formatNumberFull(displayUser?.last_run.score)} pts</div>
+                                    <div className="lr-sub">Wave {displayUser?.last_run.wave} · {formatToRealTime(displayUser?.last_run.duration)}</div>
+                                </>}
                             </div>
                             {/* TODO: ADD WEAPON <span className="lr-tag">{stats.favoriteWeapon}</span> */}
                         </div>
