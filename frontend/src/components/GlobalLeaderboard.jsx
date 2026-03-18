@@ -4,6 +4,7 @@ import { formatNumberFull } from '../utils/Utils';
 import { gql } from "@apollo/client";
 import { useQuery } from "@apollo/client/react";
 import { useTranslation } from 'react-i18next';
+import { Link } from "react-router-dom";
 
 const SCOPE_KEYS = {
   ALL_TIME: "allTime",
@@ -124,25 +125,29 @@ function GlobalLeaderboard() {
             ) : (
               <>
                 {leaderboard.map((lb, index) => (
-                  <div key={lb.user_id} className={`lb-row ${lb.username === user?.username ? 'highlight' : ''}`}>
-                    <span className={`lb-rank ${index < 3 ? 'top' : ''}`}>#{index + 1}</span>
-                    <span className="lb-name" style={{ color: lb.username === user?.username ? 'var(--blue)' : '' }}>
-                      {lb.username}{lb.username === user?.username ? t('leaderboard.you') : ''}
-                    </span>
-                    <span className="lb-score">{formatNumberFull(lb.score)}</span>
-                  </div>
+                  <Link key={lb.user_id} to={`/profile/${lb.username}`} className="list-item-link">
+                    <div className={`lb-row ${lb.username === user?.username ? 'highlight' : ''}`}>
+                      <span className={`lb-rank ${index < 3 ? 'top' : ''}`}>#{index + 1}</span>
+                      <span className="lb-name" style={{ color: lb.username === user?.username ? 'var(--blue)' : '' }}>
+                        {lb.username}{lb.username === user?.username ? t('leaderboard.you') : ''}
+                      </span>
+                      <span className="lb-score">{formatNumberFull(lb.score)}</span>
+                    </div>
+                  </Link>
                 ))}
 
                 {isLoggedIn && userRank > 10 && (
                   <>
                     <hr className="divider" />
-                    <div className="lb-row highlight">
-                      <span className="lb-rank">#{userRank}</span>
-                      <span className="lb-name" style={{ color: 'var(--blue)' }}>
-                        {user?.username}{t('leaderboard.you')}
-                      </span>
-                      <span className="lb-score">{formatNumberFull(user?.stats.high_score)}</span>
-                    </div>
+                    <Link to={`/profile/${user?.username}`} className="list-item-link">
+                      <div className="lb-row highlight">
+                        <span className="lb-rank">#{userRank}</span>
+                        <span className="lb-name" style={{ color: 'var(--blue)' }}>
+                          {user?.username}{t('leaderboard.you')}
+                        </span>
+                        <span className="lb-score">{formatNumberFull(user?.stats.high_score)}</span>
+                      </div>
+                    </Link>
                   </>
                 )}
               </>

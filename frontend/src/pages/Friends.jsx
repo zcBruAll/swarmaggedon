@@ -1,67 +1,91 @@
-import { useNavigate } from 'react-router-dom';
-import '../assets/style/pages/Friends.css';
-import { useEffect, useState } from 'react';
-import LoadingSpinner from '../components/LoadingSpinner';
+import { useNavigate, Link } from 'react-router-dom';
+import '../assets/style/pages/Friends.css'
+import { useEffect, useState } from 'react'
+import LoadingSpinner from '../components/LoadingSpinner'
 import { useAuth } from '../context/AuthContext';
 import { isUserOnline } from '../utils/Utils';
 import { useQuery, useMutation, useLazyQuery } from '@apollo/client/react';
 import { gql } from '@apollo/client';
 import NavBar from '../components/NavBar';
 import { PatchNotes } from '../components/PatchNotes';
-import { WikiHelp } from '../components/Wiki';
+import { WikiHelp } from '../components/Wiki'
 import { useTranslation } from 'react-i18next';
 
 const GET_FRIENDS = gql`
   query GetFriends {
     friends {
-      id username last_online in_game date_created
-      stats { total_time high_score }
+      id
+      username
+      last_online
+      in_game
+      date_created
+      stats {
+          total_time
+          high_score
+      }
     }
-    pending_requests { id username }
+    pending_requests {
+      id
+      username
+    }
   }
-`;
+`
 
 const SEARCH_FRIEND = gql`
   query SearchFriend($usernameSearch: String!) {
-    search(usernameSearch: $usernameSearch) { id username }
+    search(usernameSearch: $usernameSearch) {
+      id
+      username
+    }
   }
-`;
+`
 
 const ADD_FRIEND = gql`
-  mutation FriendAdd($userId: ID!) { addFriend(userId: $userId) }
-`;
+  mutation FriendAdd($userId: ID!) {
+    addFriend(userId: $userId)
+  }
+`
 
 const REMOVE_FRIEND = gql`
-  mutation FriendDelete($userId: ID!) { deleteFriend(userId: $userId) }
-`;
+  mutation FriendDelete($userId: ID!) {
+    deleteFriend(userId: $userId)
+  }
+`
 
 const Friends = () => {
   const { t } = useTranslation();
-  const { isLoggedIn, loading: authLoading } = useAuth();
-  const { loading: loadingFriends, data: friendsData, refetch: refetchFriends } = useQuery(GET_FRIENDS);
-  const [searchFriends, { loading: searchLoading, data: searchData }] = useLazyQuery(SEARCH_FRIEND);
-  const [addFriendMutation] = useMutation(ADD_FRIEND);
-  const [removeFriendMutation] = useMutation(REMOVE_FRIEND);
+  const { isLoggedIn, user, loading: authLoading } = useAuth();
+  const { loading: loadingFriends, error: friendsError, data: friendsData, refetch: refetchFriends } = useQuery(GET_FRIENDS)
+  const [searchFriends, { loading: searchLoading, data: searchData }] = useLazyQuery(SEARCH_FRIEND)
+  const [addFriendMutation] = useMutation(ADD_FRIEND)
+  const [removeFriendMutation] = useMutation(REMOVE_FRIEND)
+
   const navigate = useNavigate();
 
-  const [initialSearchDone, setInitialSearchDone] = useState(false);
-  const [searchUsername, setSearchUsername] = useState('');
-  const [searchError, setSearchError] = useState('');
+  const [initialSearchDone, setInitialSearchDone] = useState(false)
+  const [searchUsername, setSearchUsername] = useState("")
+  const [searchError, setSearchError] = useState("")
   const [confirmingId, setConfirmingId] = useState(null);
   const [localSearch, setLocalSearch] = useState([]);
 
   useEffect(() => {
-    if (searchData?.search) setLocalSearch(searchData.search);
+    if (searchData?.search) {
+      setLocalSearch(searchData.search);
+    }
   }, [searchData]);
 
   useEffect(() => {
-    if (!authLoading && !isLoggedIn) navigate('/auth');
+    if (!authLoading && !isLoggedIn) {
+      navigate('/auth');
+    }
   }, [isLoggedIn, authLoading, navigate]);
 
   if (authLoading || !isLoggedIn) {
     return (
       <>
-        <NavBar /><PatchNotes /><WikiHelp />
+        <NavBar />
+        <PatchNotes />
+        <WikiHelp />
         <div id="section-account" className="section-content active">
           <div style={{ textAlign: 'center', padding: '100px' }}>
             <p>{authLoading ? t('friends.loading') : t('friends.redirecting')}</p>
@@ -73,19 +97,20 @@ const Friends = () => {
 
   const friends = friendsData?.friends || [];
   const pending_requests = friendsData?.pending_requests || [];
+  const searchResults = localSearch;
 
   const handleSearch = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
     if (!searchUsername.trim()) return;
-    setSearchError('');
-    setInitialSearchDone(true);
+    setSearchError("")
+    setInitialSearchDone(true)
     try {
       const { data } = await searchFriends({ variables: { usernameSearch: searchUsername } });
       if (data?.search) setLocalSearch(data.search);
-    } catch {
+    } catch (err) {
       setSearchError(t('friends.errors.searchFailed'));
     }
-  };
+  }
 
   const handleAddFriend = async (userId, fromSearch = true) => {
     try {
@@ -93,9 +118,9 @@ const Friends = () => {
       setLocalSearch(prev => prev.filter(u => u.id !== userId));
       if (!fromSearch) await refetchFriends();
     } catch (err) {
-      console.error('Add friend error', err);
+      console.error("Add friend error", err);
     }
-  };
+  }
 
   const handleRemove = async (friendId, confirm = true) => {
     if (!confirm || confirmingId === friendId) {
@@ -104,7 +129,7 @@ const Friends = () => {
         await refetchFriends();
         setConfirmingId(null);
       } catch (err) {
-        console.error('Remove friend error', err);
+        console.error("Remove friend error", err);
       }
     } else {
       setConfirmingId(friendId);
@@ -114,80 +139,88 @@ const Friends = () => {
 
   return (
     <>
-      <NavBar /><PatchNotes /><WikiHelp />
+      <NavBar />
+      <PatchNotes />
+      <WikiHelp />
       <div id="section-friends" className="section-content active">
         <div className="main" style={{ gridTemplateColumns: '1fr 1fr', maxWidth: '900px', alignItems: 'start' }}>
-
           {/* Add friend */}
           <div className="panel">
-            <div className="panel-header">
-              <span className="panel-title">{t('friends.addTitle')}</span>
-            </div>
+            <div className="panel-header"><span className="panel-title">{t('friends.addTitle')}</span></div>
             <div className="panel-body">
-              {searchError && (
-                <div style={{ color: 'var(--red)', marginBottom: '12px', fontSize: '14px' }}>{searchError}</div>
-              )}
+              {searchError && <div style={{ color: 'var(--red)', marginBottom: '12px', fontSize: '14px' }}>{searchError}</div>}
               <form id="search-form" onSubmit={handleSearch}>
                 <div className="label">{t('friends.searchLabel')}</div>
                 <div className="flex gap-8 mt-8">
                   <input
-                    type="text"
-                    placeholder={t('friends.searchPlaceholder')}
+                    type="text" placeholder={t('friends.searchPlaceholder')}
                     onChange={(e) => setSearchUsername(e.target.value)}
                     disabled={searchLoading}
                   />
-                  <button className="btn btn-primary btn-sm" style={{ whiteSpace: 'nowrap' }} disabled={searchLoading}>
+                  <button
+                    className="btn btn-primary btn-sm"
+                    style={{ whiteSpace: 'nowrap' }}
+                    disabled={searchLoading}
+                  >
                     {searchLoading ? <LoadingSpinner /> : t('friends.searchButton')}
                   </button>
                 </div>
-
-                {initialSearchDone && (
-                  searchLoading
-                    ? <div style={{ textAlign: 'center', padding: '10px' }}><LoadingSpinner /></div>
-                    : <>
-                      <hr className="divider" />
-                      <div className="label">{t('friends.resultsLabel')}</div>
-                      {localSearch.filter(x => !friends.some(f => f.id === x.id)).length === 0
-                        ? <div className="text-muted p-8">{t('friends.noResults')}</div>
-                        : localSearch
-                          .filter(x => !friends.some(f => f.id === x.id))
-                          .map(x => (
-                            <div key={x.id} className="flex-between search-result">
-                              <span>{x.username}</span>
-                              <button type="button" className="btn btn-outline btn-sm" onClick={() => handleAddFriend(x.id)}>
-                                {t('friends.addButton')}
-                              </button>
-                            </div>
-                          ))
-                      }
-                    </>
-                )}
-
-                {pending_requests.length > 0 && (
+                {
+                  initialSearchDone ?
+                    searchLoading ?
+                      <div style={{ textAlign: 'center', padding: '10px' }}><LoadingSpinner /></div>
+                      :
+                      <>
+                        <hr className="divider" />
+                        <div className="label">{t('friends.resultsLabel')}</div>
+                        {searchResults.length === 0 ? (
+                          <div className="text-muted p-8">{t('friends.noResults')}</div>
+                        ) : (
+                          searchResults
+                            .filter(x => !friends.some(f => f.id === x.id))
+                            .map(x => (
+                              <Link key={x.id} to={`/profile/${x.username}`} className="list-item-link">
+                                <div className="flex-between search-result">
+                                  <span>{x.username}</span>
+                                  <button
+                                    type="button"
+                                    className="btn btn-outline btn-sm"
+                                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleAddFriend(x.id); }}
+                                  >
+                                    {t('friends.addButton')}
+                                  </button>
+                                </div>
+                              </Link>
+                            ))
+                        )}
+                      </>
+                    : ""
+                }
+                {pending_requests.length != 0 ?
                   <>
                     <hr className="divider" />
                     <div className="label">{t('friends.pendingLabel')}</div>
-                    {pending_requests.map(f => (
-                      <div key={f.id} style={{ padding: '10px 0' }} className="flex-between">
-                        <div className="friend-info">
-                          <div className="avatar">{f.username.slice(0, 2).toUpperCase()}</div>
-                          <div className='friend-label'>
-                            <div style={{ fontWeight: 700 }}>{f.username}</div>
-                            <div style={{ fontSize: '14px' }} className="text-muted">{t('friends.wantsToFriend')}</div>
+                    {
+                      pending_requests.map(f => {
+                        return <Link key={f.id} to={`/profile/${f.username}`} className="list-item-link">
+                          <div className="flex-between pending-request-row">
+                            <div className="friend-info">
+                              <div className="avatar">{f.username.slice(0, 2).toUpperCase()}</div>
+                              <div className='friend-label'>
+                                <div style={{ fontWeight: 700 }}>{f.username}</div>
+                                <div style={{ fontSize: '14px' }} className="text-muted">{t('friends.wantsToFriend')}</div>
+                              </div>
+                            </div>
+                            <div className="flex gap-8">
+                              <button type="button" className="btn btn-primary btn-sm" onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleAddFriend(f.id, false); }}>{t('friends.accept')}</button>
+                              <button type="button" className="btn btn-outline btn-sm" onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleRemove(f.id, false); }}>{t('friends.decline')}</button>
+                            </div>
                           </div>
-                        </div>
-                        <div className="flex gap-8">
-                          <button type="button" className="btn btn-primary btn-sm" onClick={() => handleAddFriend(f.id, false)}>
-                            {t('friends.accept')}
-                          </button>
-                          <button type="button" className="btn btn-outline btn-sm" onClick={() => handleRemove(f.id, false)}>
-                            {t('friends.decline')}
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </>
-                )}
+                        </Link>
+                      })
+                    }
+                  </> : <></>
+                }
               </form>
             </div>
           </div>
@@ -214,27 +247,28 @@ const Friends = () => {
                       return statusB - statusA;
                     })
                     .map(friend => (
-                      <div className="friend-row" key={friend.id}>
-                        <div className="friend-info">
-                          <div className="avatar">{friend.username?.substring(0, 2).toUpperCase()}</div>
-                          <div className='friend-label'>
-                            <div style={{ fontWeight: 700 }}>{friend.username}</div>
-                            <div className='inline-status'>
-                              <div className={`dot ${friend.in_game ? 'in-game' : isUserOnline(friend.last_online) ? 'dot-online' : 'dot-offline'}`}></div>
-                              <div style={{ fontSize: '14px', color: isUserOnline(friend.last_online) || friend.in_game ? '#27ae60' : 'var(--ink-faint)' }}>
-                                {friend.in_game
-                                  ? t('friendsStats.status.inGame')
-                                  : isUserOnline(friend.last_online)
-                                    ? t('friendsStats.status.online')
-                                    : t('friendsStats.status.offline')}
+                      <Link key={friend.id} to={`/profile/${friend.username}`} className="list-item-link">
+                        <div className="friend-row">
+                          <div className="friend-info">
+                            <div className="avatar">{friend.username?.substring(0, 2).toUpperCase()}</div>
+                            <div className='friend-label'>
+                              <div style={{ fontWeight: 700 }}>{friend.username}</div>
+                              <div className='inline-status'>
+                                <div className={`dot ${friend.in_game ? 'in-game' : isUserOnline(friend.last_online) ? 'dot-online' : 'dot-offline'}`}></div>
+                                <div style={{ fontSize: '14px', color: isUserOnline(friend.last_online) || friend.in_game ? '#27ae60' : 'var(--ink-faint)' }}>
+                                  {friend.in_game ? 'in game' : isUserOnline(friend.last_online) ? 'online' : 'offline'}
+                                </div>
                               </div>
                             </div>
                           </div>
+                          <button
+                            className={`btn btn-sm btn-danger`}
+                            onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleRemove(friend.id); }}
+                          >
+                            {confirmingId === friend.id ? t('friends.confirmRemove') : t('friends.removeButton')}
+                          </button>
                         </div>
-                        <button className="btn btn-sm btn-danger" onClick={() => handleRemove(friend.id)}>
-                          {confirmingId === friend.id ? t('friends.confirmRemove') : t('friends.removeButton')}
-                        </button>
-                      </div>
+                      </Link>
                     ))
                 )}
               </div>
