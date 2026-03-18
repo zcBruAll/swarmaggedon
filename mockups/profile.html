@@ -1,0 +1,1271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Swarmaggedon — UI Mockup</title>
+<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
+<style>
+  /* ── RESET & BASE ─────────────────────────────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --paper:   #f4f0e8;
+    --paper2:  #ede8dc;
+    --paper3:  #e6e0d2;
+    --ink:     #2a2318;
+    --ink-mid: #5a5040;
+    --ink-faint:#a89880;
+    --red:     #c0392b;
+    --blue:    #2471a3;
+    --green:   #27ae60;
+    --line:    #c8bfad;
+    --ph: 'Patrick Hand', cursive;
+  }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--ph);
+    font-size: 18px;
+    line-height: 1.5;
+    min-height: 100vh;
+    background-image: repeating-linear-gradient(
+      180deg,
+      transparent, transparent 33px,
+      rgba(180,168,148,.18) 33px,
+      rgba(180,168,148,.18) 34px
+    );
+  }
+
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: var(--paper2); }
+  ::-webkit-scrollbar-thumb { background: var(--line); border-radius: 2px; }
+
+  /* ── PANELS ───────────────────────────────────────────────────────────── */
+  .panel {
+    background: #faf7f1;
+    border: 2px solid var(--ink);
+    border-radius: 2px;
+    box-shadow: 3px 3px 0 var(--ink);
+  }
+
+  .panel-header {
+    background: var(--paper3);
+    border-bottom: 2px solid var(--ink);
+    padding: 8px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .panel-title { font-size: 26px; color: var(--ink); }
+  .panel-body  { padding: 16px; }
+
+  /* ── NAV ──────────────────────────────────────────────────────────────── */
+  header {
+    background: var(--paper2);
+    border-bottom: 2.5px solid var(--ink);
+    box-shadow: 0 2px 0 var(--line);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+    height: 58px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    gap: 12px;
+  }
+
+  .logo {
+    font-size: 28px;
+    color: var(--ink);
+    letter-spacing: 1px;
+    position: relative;
+  }
+  .logo::after {
+    content: '';
+    position: absolute;
+    bottom: 5px; left: 0; right: 0;
+    height: 2.5px;
+    background: var(--red);
+    transform: rotate(-0.3deg) scaleX(1.05) translateX(-2px);
+    border-radius: 3px;
+  }
+
+  nav { display: flex; gap: 4px; }
+  .nav-btn {
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    font-family: var(--ph);
+    font-size: 19px;
+    cursor: pointer;
+    padding: 4px 14px;
+    color: var(--ink-mid);
+    transition: color .12s, border-color .12s;
+    margin-bottom: -2px;
+  }
+  .nav-btn:hover { color: var(--ink); }
+  .nav-btn.active { color: var(--ink); border-bottom-color: var(--ink); font-weight: 700; }
+
+  .online-badge { font-size: 15px; color: var(--green); }
+
+  /* ── PAGE SWITCHER ────────────────────────────────────────────────────── */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* ── TAGS / PILLS ─────────────────────────────────────────────────────── */
+  .tag {
+    display: inline-block;
+    font-size: 14px;
+    padding: 1px 8px;
+    border: 1.5px solid var(--line);
+    color: var(--ink-faint);
+    white-space: nowrap;
+  }
+  .tag-blue   { border-color: var(--blue);  color: var(--blue); }
+  .tag-green  { border-color: var(--green); color: var(--green); }
+  .tag-red    { border-color: var(--red);   color: var(--red); }
+
+  /* ── BUTTONS ──────────────────────────────────────────────────────────── */
+  .btn {
+    font-family: var(--ph);
+    font-size: 16px;
+    cursor: pointer;
+    padding: 5px 14px;
+    border-radius: 1px;
+    transition: all .1s;
+  }
+  .btn-primary {
+    background: var(--ink); color: var(--paper);
+    border: 2px solid var(--ink);
+  }
+  .btn-primary:hover { transform: translate(-1px,-1px); box-shadow: 2px 2px 0 var(--ink-mid); }
+  .btn-outline {
+    background: transparent; color: var(--ink-mid);
+    border: 1.5px solid var(--ink-mid);
+  }
+  .btn-outline:hover { border-color: var(--ink); color: var(--ink); }
+
+  /* ── DIVIDER ──────────────────────────────────────────────────────────── */
+  .divider { border: none; border-top: 1.5px dashed var(--line); margin: 12px 0; }
+
+  /* ── TABS ─────────────────────────────────────────────────────────────── */
+  .tabs {
+    display: flex;
+    border-bottom: 1.5px solid var(--line);
+    padding: 0 14px;
+    background: #faf7f1;
+  }
+  .tab-btn {
+    font-family: var(--ph);
+    font-size: 17px;
+    padding: 7px 13px;
+    cursor: pointer;
+    color: var(--ink-faint);
+    border: none;
+    border-bottom: 2px solid transparent;
+    background: none;
+    margin-bottom: -1.5px;
+    text-transform: capitalize;
+    transition: all .1s;
+  }
+  .tab-btn:hover { color: var(--ink); }
+  .tab-btn.active { color: var(--ink); border-bottom-color: var(--ink); font-weight: 700; }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* ══════════════════════════════════════════════════════════════════════
+     PROFILE PAGE
+  ══════════════════════════════════════════════════════════════════════ */
+  #page-profile .layout {
+    max-width: 1060px;
+    margin: 0 auto;
+    padding: 24px 20px;
+    display: grid;
+    grid-template-columns: 248px 1fr;
+    gap: 18px;
+    align-items: start;
+  }
+
+  /* Identity card */
+  .identity-card .ink-bg {
+    background: var(--ink);
+    padding: 22px 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  .avatar-lg {
+    width: 66px; height: 66px;
+    border: 3px solid var(--paper3);
+    background: var(--paper3);
+    border-radius: 50% 48% 52% 50% / 50% 52% 48% 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; font-weight: 700; color: var(--ink);
+  }
+  .identity-name   { font-size: 24px; color: #f4f0e8; }
+  .identity-rank   { font-size: 13px; border: 1.5px solid rgba(244,240,232,.3); color: rgba(244,240,232,.6); padding: 1px 12px; }
+  .identity-since  { font-size: 12px; color: rgba(244,240,232,.3); font-style: italic; }
+  .identity-footer { background: var(--paper3); border-top: 2px solid var(--ink); padding: 6px 14px; text-align: center; font-size: 13px; color: var(--ink-faint); font-style: italic; }
+
+  /* Quick stats grid */
+  .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .stat-box {
+    background: var(--paper2);
+    border: 1.5px solid var(--line);
+    padding: 7px 8px;
+    text-align: center;
+  }
+  .stat-value { font-size: 20px; color: var(--ink); }
+  .stat-label { font-size: 11px; color: var(--ink-faint); }
+
+  /* Achievement grid */
+  .ach-grid { display: grid; grid-template-columns: repeat(6,1fr); gap: 4px; margin-bottom: 10px; }
+  .ach-icon-btn {
+    aspect-ratio: 1;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    border: 2px solid var(--line);
+    background: var(--paper2);
+    cursor: pointer;
+    transition: transform .1s;
+  }
+  .ach-icon-btn:hover { transform: scale(1.12); }
+  .ach-icon-btn.locked { opacity: .3; filter: grayscale(1); }
+  .ach-progress { height: 5px; background: var(--paper3); border: 1px solid var(--line); margin-bottom: 8px; }
+  .ach-progress-fill { height: 100%; background: var(--blue); }
+
+  /* Overview tab */
+  .kpi-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 16px; }
+  .kpi-box { background: var(--paper2); border: 1.5px solid var(--line); padding: 14px 10px; text-align: center; }
+  .kpi-icon { font-size: 22px; margin-bottom: 3px; }
+  .kpi-val  { font-size: 26px; }
+  .kpi-lbl  { font-size: 11px; color: var(--ink-faint); }
+
+  .last-run-banner {
+    background: var(--ink);
+    padding: 12px 16px;
+    color: #f4f0e8;
+    margin-bottom: 14px;
+  }
+  .lr-label { font-size: 11px; color: rgba(244,240,232,.4); letter-spacing: 1px; margin-bottom: 3px; }
+  .lr-main  { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+  .lr-score { font-size: 28px; }
+  .lr-sub   { font-size: 14px; color: rgba(244,240,232,.5); }
+  .lr-tag   { font-size: 14px; border: 1px solid rgba(244,240,232,.25); color: rgba(244,240,232,.6); padding: 3px 11px; }
+
+  .chart-label { font-size: 13px; color: var(--ink-faint); margin-bottom: 6px; }
+  .bar-chart { display: flex; gap: 4px; align-items: flex-end; height: 56px; }
+  .bar-chart-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+  .bar-chart-bar { width: 100%; background: var(--blue); min-height: 4px; opacity: .7; }
+  .bar-chart-lbl { font-size: 10px; color: var(--ink-faint); }
+
+  /* History tab */
+  .history-head {
+    display: grid;
+    grid-template-columns: 90px 1fr 86px 46px 56px 76px 30px 32px;
+    gap: 6px;
+    padding: 6px 16px;
+    border-bottom: 2px solid var(--ink);
+    font-size: 12px;
+    color: var(--ink-faint);
+    letter-spacing: .5px;
+  }
+  .history-row {
+    display: grid;
+    grid-template-columns: 90px 1fr 86px 46px 56px 76px 30px 32px;
+    gap: 6px;
+    padding: 8px 16px;
+    border-bottom: 1px dashed var(--line);
+    align-items: center;
+    cursor: pointer;
+    transition: background .1s;
+  }
+  .history-row:hover { background: rgba(36,113,163,.04); }
+  .history-row.expanded { background: rgba(36,113,163,.06); border-bottom: none; }
+  .history-row.top { background: rgba(36,113,163,.025); }
+  .history-expand { display: none; background: rgba(36,113,163,.04); border-bottom: 1px dashed var(--line); padding: 10px 16px; }
+  .history-expand.open { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  .expand-section-title { font-size: 11px; color: var(--ink-faint); letter-spacing: .5px; margin-bottom: 4px; }
+  .expand-kv { font-size: 14px; color: var(--ink-mid); }
+  .goto-btn {
+    font-family: var(--ph);
+    font-size: 13px;
+    padding: 3px 9px;
+    background: var(--ink);
+    color: var(--paper);
+    border: none;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all .1s;
+  }
+  .goto-btn:hover { opacity: .85; }
+
+  /* ══════════════════════════════════════════════════════════════════════
+     GAME STATS PAGE
+  ══════════════════════════════════════════════════════════════════════ */
+  #page-game .layout {
+    max-width: 1060px;
+    margin: 0 auto;
+    padding: 24px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  /* Run selector */
+  .run-selector-panel .panel-body { display: flex; flex-direction: column; gap: 10px; }
+  .run-selector-hint { font-size: 12px; color: var(--ink-faint); letter-spacing: .5px; }
+
+  /* Filters row */
+  .filter-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .filter-row input[type=text] {
+    font-family: var(--ph);
+    font-size: 15px;
+    background: transparent;
+    border: none;
+    border-bottom: 1.5px solid var(--line);
+    color: var(--ink);
+    padding: 4px 6px;
+    outline: none;
+    width: 180px;
+    transition: border-color .15s;
+  }
+  .filter-row input[type=text]:focus { border-bottom-color: var(--blue); }
+  .filter-row input[type=text]::placeholder { color: var(--ink-faint); font-style: italic; }
+
+  .filter-select {
+    font-family: var(--ph);
+    font-size: 15px;
+    background: var(--paper2);
+    border: 1.5px solid var(--line);
+    color: var(--ink-mid);
+    padding: 4px 8px;
+    cursor: pointer;
+    outline: none;
+  }
+
+  /* Runs table */
+  .runs-table-head {
+    display: grid;
+    grid-template-columns: 94px 1fr 90px 46px 60px 78px 120px;
+    gap: 6px;
+    padding: 6px 16px;
+    border-bottom: 2px solid var(--ink);
+    font-size: 12px;
+    color: var(--ink-faint);
+    letter-spacing: .5px;
+    background: var(--paper3);
+  }
+  .th-sortable { cursor: pointer; user-select: none; }
+  .th-sortable:hover { color: var(--ink); }
+
+  .runs-table-body { max-height: 420px; overflow-y: auto; }
+  .run-row {
+    display: grid;
+    grid-template-columns: 94px 1fr 90px 46px 60px 78px 120px;
+    gap: 6px;
+    padding: 8px 16px;
+    border-bottom: 1px dashed var(--line);
+    align-items: center;
+    transition: background .1s;
+    cursor: default;
+  }
+  .run-row:hover { background: rgba(36,113,163,.04); }
+  .run-row:last-child { border-bottom: none; }
+  .run-row.selected { background: rgba(36,113,163,.07); border-left: 3px solid var(--blue); }
+  .score-blue { color: var(--blue); }
+  .wave-badge {
+    display: inline-block;
+    font-size: 13px;
+    padding: 1px 6px;
+    border: 1px solid var(--line);
+    color: var(--ink-mid);
+  }
+
+  /* Score bar inline */
+  .score-bar-wrap { display: flex; align-items: center; gap: 5px; }
+  .score-bar-track { flex: 1; height: 5px; background: var(--paper3); border: 1px solid var(--line); }
+  .score-bar-fill  { height: 100%; background: var(--blue); }
+
+  /* KPI strip */
+  .kpi-strip {
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    gap: 10px;
+  }
+  .kpi-strip .kpi-box { border: 2px solid var(--ink); box-shadow: 2px 2px 0 var(--ink); }
+
+  /* Detail layout */
+  .detail-layout {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 16px;
+    align-items: start;
+  }
+
+  /* Augment timeline */
+  .timeline-filters { display: flex; gap: 4px; }
+  .tf-btn {
+    font-family: var(--ph);
+    font-size: 12px;
+    padding: 1px 9px;
+    border: 1.5px solid var(--line);
+    color: var(--ink-faint);
+    background: transparent;
+    cursor: pointer;
+    text-transform: capitalize;
+    transition: all .1s;
+  }
+  .tf-btn:hover { border-color: var(--ink-mid); color: var(--ink-mid); }
+  .tf-btn.active { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+
+  .timeline-body { max-height: 360px; overflow-y: auto; }
+  .tl-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 9px 16px;
+    border-bottom: 1px dashed var(--line);
+  }
+  .tl-row:last-child { border-bottom: none; }
+  .tl-wave {
+    width: 40px; height: 40px;
+    background: var(--ink);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .tl-wave-lbl { font-size: 10px; color: rgba(244,240,232,.4); line-height: 1; }
+  .tl-wave-num { font-size: 18px; color: #f4f0e8; line-height: 1; }
+  .tl-icon {
+    width: 36px; height: 36px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 17px;
+    border: 2px solid var(--line);
+    background: var(--paper2);
+    flex-shrink: 0;
+  }
+  .tl-name { font-size: 18px; color: var(--ink); }
+  .tl-type { font-size: 12px; color: var(--ink-faint); text-transform: capitalize; }
+  .rarity-pill { font-size: 11px; padding: 1px 7px; border: 1px solid; flex-shrink: 0; }
+
+  /* Build summary */
+  .build-kv {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+    border-bottom: 1px dashed var(--line);
+    font-size: 15px;
+  }
+  .build-kv:last-child { border-bottom: none; }
+  .build-k { color: var(--ink-mid); }
+  .build-v { color: var(--ink); }
+
+  /* Empty state */
+  .empty-state { padding: 24px 16px; color: var(--ink-faint); font-style: italic; font-size: 16px; text-align: center; }
+
+  /* ── ACHIEVEMENTS MODAL ───────────────────────────────────────────────── */
+  .modal-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,.45);
+    z-index: 500;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(3px);
+  }
+  .modal-overlay.open { display: flex; }
+  .modal-box {
+    background: var(--paper);
+    border: 2px solid var(--ink);
+    box-shadow: 5px 5px 0 var(--ink);
+    width: 500px;
+    max-height: 74vh;
+    display: flex;
+    flex-direction: column;
+  }
+  .modal-header {
+    background: var(--paper3);
+    border-bottom: 2px solid var(--ink);
+    padding: 8px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .modal-close {
+    background: none; border: none;
+    font-family: var(--ph); font-size: 22px;
+    cursor: pointer; color: var(--ink);
+  }
+  .modal-progress { height: 4px; background: var(--paper3); border-bottom: 1px solid var(--line); }
+  .modal-progress-fill { height: 100%; background: var(--blue); }
+  .modal-body { overflow-y: auto; }
+  .modal-section-head {
+    padding: 6px 16px;
+    background: var(--paper2);
+    border-bottom: 1px solid var(--line);
+    font-size: 12px;
+    color: var(--ink-faint);
+    letter-spacing: 1px;
+  }
+  .ach-row-modal {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    border-bottom: 1px dashed var(--line);
+  }
+  .ach-row-modal:last-child { border-bottom: none; }
+  .ach-row-modal.locked { opacity: .5; }
+  .ach-icon-modal {
+    width: 42px; height: 42px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    border: 2px solid var(--line);
+    background: var(--paper2);
+    flex-shrink: 0;
+  }
+  .ach-name  { font-size: 18px; color: var(--ink); }
+  .ach-desc  { font-size: 12px; color: var(--ink-faint); }
+  .ach-meta  { text-align: right; flex-shrink: 0; }
+  .ach-date  { font-size: 11px; color: var(--ink-faint); margin-top: 3px; }
+
+  /* ── TOOLTIP ──────────────────────────────────────────────────────────── */
+  [data-tip] { position: relative; }
+  [data-tip]::after {
+    content: attr(data-tip);
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--ink);
+    color: #f4f0e8;
+    font-size: 12px;
+    padding: 3px 8px;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity .15s;
+    z-index: 10;
+  }
+  [data-tip]:hover::after { opacity: 1; }
+
+  /* ── PAGINATION ───────────────────────────────────────────────────────── */
+  .pagination {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-top: 1.5px dashed var(--line);
+    background: var(--paper2);
+  }
+  .pg-btn {
+    font-family: var(--ph);
+    font-size: 15px;
+    padding: 2px 10px;
+    border: 1.5px solid var(--line);
+    background: transparent;
+    color: var(--ink-mid);
+    cursor: pointer;
+    transition: all .1s;
+  }
+  .pg-btn:hover:not(:disabled) { border-color: var(--ink); color: var(--ink); }
+  .pg-btn:disabled { opacity: .4; cursor: not-allowed; }
+  .pg-btn.current { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  .pg-info { font-size: 14px; color: var(--ink-faint); margin-left: auto; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════
+     NAVIGATION
+════════════════════════════════════════════════════════════ -->
+<header>
+  <span class="logo">Swarmaggedon</span>
+  <nav>
+    <button class="nav-btn active" onclick="showPage('profile', this)">Profile</button>
+    <button class="nav-btn"       onclick="showPage('game',    this)">Game Stats</button>
+  </nav>
+  <span class="online-badge">● ShadowBlade42</span>
+</header>
+
+<!-- ═══════════════════════════════════════════════════════════
+     PROFILE PAGE
+════════════════════════════════════════════════════════════ -->
+<div id="page-profile" class="page active">
+  <div class="layout">
+
+    <!-- ── LEFT COLUMN ── -->
+    <div style="display:flex;flex-direction:column;gap:14px">
+
+      <!-- Identity -->
+      <div class="panel identity-card">
+        <div class="ink-bg">
+          <div class="avatar-lg">SB</div>
+          <span class="identity-name">ShadowBlade42</span>
+          <span class="identity-rank">Global rank #14</span>
+          <span class="identity-since">Member since Dec 2024</span>
+        </div>
+        <div class="identity-footer">6 / 12 achievements unlocked</div>
+      </div>
+
+      <!-- Quick stats -->
+      <div class="panel">
+        <div class="panel-header"><span class="panel-title" style="font-size:21px">Quick stats</span></div>
+        <div class="panel-body" style="padding:10px 14px">
+          <div class="stat-grid">
+            <div class="stat-box" style="transform:rotate(-.3deg)">
+              <div class="stat-value">47</div><div class="stat-label">Games played</div>
+            </div>
+            <div class="stat-box" style="transform:rotate(.3deg)">
+              <div class="stat-value">55,800</div><div class="stat-label">High score</div>
+            </div>
+            <div class="stat-box" style="transform:rotate(-.2deg)">
+              <div class="stat-value">31</div><div class="stat-label">Best wave</div>
+            </div>
+            <div class="stat-box" style="transform:rotate(.4deg)">
+              <div class="stat-value">00:42:20</div><div class="stat-label">Best run</div>
+            </div>
+            <div class="stat-box" style="transform:rotate(.3deg)">
+              <div class="stat-value">8.2K</div><div class="stat-label">Total kills</div>
+            </div>
+            <div class="stat-box" style="transform:rotate(-.3deg)">
+              <div class="stat-value">13.3h</div><div class="stat-label">Playtime</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Achievements -->
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title" style="font-size:21px">Achievements</span>
+          <span class="tag tag-blue">6 / 12</span>
+        </div>
+        <div class="panel-body" style="padding:10px 14px">
+          <div class="ach-grid" id="ach-grid-preview">
+            <!-- filled by JS -->
+          </div>
+          <div class="ach-progress"><div class="ach-progress-fill" style="width:50%"></div></div>
+          <button class="btn btn-outline" style="width:100%;text-align:center;font-size:15px" onclick="openAchModal()">
+            View all achievements →
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── RIGHT COLUMN ── -->
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div class="panel">
+        <div class="tabs">
+          <button class="tab-btn active" onclick="switchTab(this,'overview')">overview</button>
+          <button class="tab-btn"        onclick="switchTab(this,'history')">history</button>
+          <button class="tab-btn"        onclick="switchTab(this,'detailed stats')">detailed stats</button>
+        </div>
+
+        <!-- OVERVIEW -->
+        <div id="tab-overview" class="tab-content active" style="padding:18px">
+          <div class="kpi-row">
+            <div class="kpi-box" style="transform:rotate(-.2deg)">
+              <div class="kpi-icon">🏆</div>
+              <div class="kpi-val" style="color:var(--blue)">55,800</div>
+              <div class="kpi-lbl">Best score</div>
+            </div>
+            <div class="kpi-box" style="transform:rotate(.2deg)">
+              <div class="kpi-icon">🌊</div>
+              <div class="kpi-val" style="color:var(--green)">31</div>
+              <div class="kpi-lbl">Best wave</div>
+            </div>
+            <div class="kpi-box" style="transform:rotate(-.3deg)">
+              <div class="kpi-icon">⚔️</div>
+              <div class="kpi-val" style="color:var(--red)">8,241</div>
+              <div class="kpi-lbl">Total kills</div>
+            </div>
+          </div>
+
+          <div class="last-run-banner">
+            <div class="lr-label">LAST RUN — 12 Mar 2025</div>
+            <div class="lr-main">
+              <div>
+                <div class="lr-score">48,200 pts</div>
+                <div class="lr-sub">Wave 23 · 312 kills · 00:30:42</div>
+              </div>
+              <span class="lr-tag">range · laser</span>
+            </div>
+          </div>
+
+          <div class="chart-label">score over last 7 runs</div>
+          <div class="bar-chart" id="score-bars"><!-- JS fills --></div>
+          <div style="display:flex;justify-content:space-between;margin-top:3px">
+            <span style="font-size:10px;color:var(--ink-faint)">7 runs ago</span>
+            <span style="font-size:10px;color:var(--ink-faint)">latest</span>
+          </div>
+        </div>
+
+        <!-- HISTORY -->
+        <div id="tab-history" class="tab-content">
+          <div class="history-head">
+            <span>DATE</span><span>WEAPON</span><span>SCORE</span>
+            <span>WAVE</span><span>KILLS</span><span>TIME</span>
+            <span></span><span></span>
+          </div>
+          <div id="profile-history-rows"><!-- JS fills --></div>
+        </div>
+
+        <!-- DETAILED STATS -->
+        <div id="tab-detailed stats" class="tab-content" style="padding:14px 18px;display:grid;grid-template-columns:1fr 1fr;gap:18px">
+          <div>
+            <div style="font-size:13px;color:var(--ink-faint);margin-bottom:8px;letter-spacing:.5px">— combat —</div>
+            <div class="build-kv"><span class="build-k">Avg score / run</span><span class="build-v">28,800</span></div>
+            <div class="build-kv"><span class="build-k">Avg wave reached</span><span class="build-v">14.2</span></div>
+            <div class="build-kv"><span class="build-k">Avg kills / run</span><span class="build-v">175</span></div>
+            <div class="build-kv"><span class="build-k">Kill rate</span><span class="build-v">9.5 / min</span></div>
+            <div class="build-kv"><span class="build-k">Boss kills</span><span class="build-v">7</span></div>
+          </div>
+          <div>
+            <div style="font-size:13px;color:var(--ink-faint);margin-bottom:8px;letter-spacing:.5px">— survival —</div>
+            <div class="build-kv"><span class="build-k">Avg run length</span><span class="build-v">18m 40s</span></div>
+            <div class="build-kv"><span class="build-k">Longest run</span><span class="build-v">00:42:20</span></div>
+            <div class="build-kv"><span class="build-k">Total playtime</span><span class="build-v">13.3h</span></div>
+            <div class="build-kv"><span class="build-k">Runs past wave 20</span><span class="build-v">4</span></div>
+            <div class="build-kv"><span class="build-k">Fav weapon</span><span class="build-v">range · laser</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     GAME STATS PAGE
+════════════════════════════════════════════════════════════ -->
+<div id="page-game" class="page">
+  <div class="layout">
+
+    <!-- Run selector: filters + paginated table -->
+    <div class="panel run-selector-panel">
+      <div class="panel-header">
+        <span class="panel-title" style="font-size:22px">Runs</span>
+        <span class="tag" id="run-count-tag">47 runs</span>
+      </div>
+      <div class="panel-body" style="padding:10px 16px 0">
+        <div class="filter-row">
+          <input type="text" id="run-search" placeholder="search weapon, wave…" oninput="applyFilters()">
+          <select class="filter-select" id="sort-select" onchange="applyFilters()">
+            <option value="date-desc">Latest first</option>
+            <option value="date-asc">Oldest first</option>
+            <option value="score-desc">Highest score</option>
+            <option value="score-asc">Lowest score</option>
+            <option value="wave-desc">Highest wave</option>
+          </select>
+          <select class="filter-select" id="weapon-filter" onchange="applyFilters()">
+            <option value="">All weapons</option>
+            <option value="range">range</option>
+            <option value="melee">melee</option>
+          </select>
+          <button class="btn btn-outline" style="font-size:13px;padding:3px 10px" onclick="clearFilters()">Clear</button>
+        </div>
+      </div>
+      <div style="margin-top:10px">
+        <div class="runs-table-head">
+          <span class="th-sortable" onclick="sortBy('date')">DATE ↕</span>
+          <span class="th-sortable" onclick="sortBy('weapon')">WEAPON</span>
+          <span class="th-sortable" onclick="sortBy('score')">SCORE ↕</span>
+          <span class="th-sortable" onclick="sortBy('wave')">WAVE ↕</span>
+          <span>KILLS</span>
+          <span>TIME</span>
+          <span style="grid-column:span 1">DETAILS</span>
+        </div>
+        <div class="runs-table-body" id="runs-table-body"><!-- JS fills --></div>
+        <div class="pagination" id="pagination"><!-- JS fills --></div>
+      </div>
+    </div>
+
+    <!-- Selected run detail -->
+    <div id="run-detail-section" style="display:none;flex-direction:column;gap:14px">
+
+      <!-- KPI strip -->
+      <div class="kpi-strip" id="run-kpis"><!-- JS fills --></div>
+
+      <!-- Timeline + sidebar -->
+      <div class="detail-layout">
+
+        <!-- Augment timeline -->
+        <div class="panel">
+          <div class="panel-header">
+            <span class="panel-title" style="font-size:22px">Augment timeline</span>
+            <div class="timeline-filters" id="tl-filters">
+              <button class="tf-btn active" onclick="filterTimeline('all',this)">all</button>
+              <button class="tf-btn" onclick="filterTimeline('weapon',this)">weapon</button>
+              <button class="tf-btn" onclick="filterTimeline('enchant',this)">enchant</button>
+              <button class="tf-btn" onclick="filterTimeline('augment',this)">augment</button>
+            </div>
+          </div>
+          <div class="timeline-body" id="timeline-body"><!-- JS fills --></div>
+        </div>
+
+        <!-- Right sidebar -->
+        <div style="display:flex;flex-direction:column;gap:14px">
+
+          <!-- Build summary -->
+          <div class="panel">
+            <div class="panel-header"><span class="panel-title" style="font-size:21px">Build summary</span></div>
+            <div class="panel-body" id="build-summary"><!-- JS fills --></div>
+          </div>
+
+          <!-- All runs mini chart (for context) -->
+          <div class="panel">
+            <div class="panel-header"><span class="panel-title" style="font-size:21px">Score context</span></div>
+            <div class="panel-body" id="score-context"><!-- JS fills --></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="run-detail-placeholder" class="panel" style="text-align:center;padding:40px 20px">
+      <div style="font-size:32px;margin-bottom:8px">👆</div>
+      <div style="color:var(--ink-faint);font-size:16px;font-style:italic">Select a run above to inspect its details</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     ACHIEVEMENTS MODAL
+════════════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="ach-modal" onclick="closeAchModal(event)">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <span class="panel-title">Achievements</span>
+      <div style="display:flex;align-items:center;gap:10px">
+        <span class="tag tag-blue">6 / 12</span>
+        <button class="modal-close" onclick="closeAchModal()">×</button>
+      </div>
+    </div>
+    <div class="modal-progress"><div class="modal-progress-fill" style="width:50%"></div></div>
+    <div class="modal-body" id="ach-modal-body"><!-- JS fills --></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     JAVASCRIPT
+════════════════════════════════════════════════════════════ -->
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────────
+
+const ACHIEVEMENTS = [
+  {id:1, name:"First Blood",     desc:"Kill your first enemy",                icon:"🗡️", unlocked:true,  date:"2024-12-01", rarity:"Common"},
+  {id:2, name:"Wave Breaker",    desc:"Survive 10 waves",                     icon:"🌊", unlocked:true,  date:"2024-12-03", rarity:"Common"},
+  {id:3, name:"Boss Slayer",     desc:"Defeat a boss enemy",                  icon:"💀", unlocked:true,  date:"2024-12-05", rarity:"Rare"},
+  {id:4, name:"Untouchable",     desc:"Survive a wave without taking damage", icon:"🛡️", unlocked:true,  date:"2024-12-10", rarity:"Rare"},
+  {id:5, name:"Swarm King",      desc:"Kill 1,000 enemies total",             icon:"👑", unlocked:true,  date:"2025-01-02", rarity:"Epic"},
+  {id:6, name:"Marathon",        desc:"Survive over 1 hour total",            icon:"⏱️", unlocked:true,  date:"2025-01-15", rarity:"Common"},
+  {id:7, name:"Legendary Run",   desc:"Score over 100,000 in one run",        icon:"⭐", unlocked:false, date:null, rarity:"Legendary"},
+  {id:8, name:"Speed Demon",     desc:"Reach wave 20 in under 15 minutes",   icon:"⚡", unlocked:false, date:null, rarity:"Epic"},
+  {id:9, name:"Pacifist",        desc:"Clear a wave using only AOE",          icon:"💫", unlocked:false, date:null, rarity:"Rare"},
+  {id:10,name:"Enchanted",       desc:"Equip a Legendary enchant",            icon:"✨", unlocked:false, date:null, rarity:"Legendary"},
+  {id:11,name:"Chain Reaction",  desc:"Kill 5 enemies with one chain bullet", icon:"🔗", unlocked:false, date:null, rarity:"Rare"},
+  {id:12,name:"Laser Focus",     desc:"Deal 500 dmg with a single laser shot",icon:"🔴", unlocked:false, date:null, rarity:"Epic"},
+];
+
+const RC = {Common:"#8a9ba8", Rare:"#3498db", Epic:"#9b59b6", Legendary:"#f1c40f"};
+
+// Generate 47 sample runs
+const WEAPONS = ["range · laser","range · pierce","range · aoe","range · chain","range · single","range · rifle","melee · charge","melee · cleave","melee · lunge","melee · frenzy"];
+const RUNS = (() => {
+  const runs = [];
+  let d = new Date("2025-03-12");
+  for (let i = 0; i < 47; i++) {
+    const wave    = Math.max(3, Math.floor(Math.random() * 35) + 2);
+    const kills   = Math.floor(wave * (8 + Math.random() * 12));
+    const dur     = wave * (60 + Math.random() * 40);
+    const score   = Math.floor(kills * (80 + Math.random() * 120) + wave * 200);
+    const weapon  = WEAPONS[Math.floor(Math.random() * WEAPONS.length)];
+    runs.push({id: i+1, date: d.toISOString().split('T')[0], score, wave, kills, duration: Math.floor(dur), weapon});
+    d = new Date(d - (1 + Math.random() * 2) * 86400000);
+  }
+  return runs;
+})();
+
+// Sample pull histories for a couple of runs
+const PULLS = {
+  default: [
+    {wave:1,  type:"weapon",  name:"range · pierce",   rarity:"Common",    icon:"🏹"},
+    {wave:3,  type:"augment", name:"Damage +18%",       rarity:"Rare",      icon:"⚔️"},
+    {wave:5,  type:"augment", name:"Max HP +12%",       rarity:"Common",    icon:"❤️"},
+    {wave:7,  type:"augment", name:"Range +22%",        rarity:"Rare",      icon:"📏"},
+    {wave:10, type:"enchant", name:"Laser",             rarity:"Epic",      icon:"🔴"},
+    {wave:12, type:"augment", name:"Damage +41%",       rarity:"Epic",      icon:"⚔️"},
+    {wave:14, type:"augment", name:"Cooldown -14%",     rarity:"Common",    icon:"⏱️"},
+    {wave:17, type:"augment", name:"Move Speed +9%",    rarity:"Rare",      icon:"💨"},
+    {wave:20, type:"augment", name:"AOE Radius +18%",   rarity:"Rare",      icon:"💫"},
+    {wave:22, type:"augment", name:"Damage +55%",       rarity:"Legendary", icon:"⚔️"},
+  ]
+};
+
+// ── HELPERS ───────────────────────────────────────────────────────────────
+
+const fmtTime  = s => { const h=Math.floor(s/3600), m=Math.floor((s%3600)/60), sec=s%60; return `${pad(h)}:${pad(m)}:${pad(sec)}`; };
+const fmtDate  = d => new Date(d).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+const fmtNum   = n => new Intl.NumberFormat().format(n);
+const fmtShort = n => n>=1000?(n/1000).toFixed(1)+"K":""+n;
+const pad      = n => String(n).padStart(2,'0');
+
+// ── PAGE SWITCHING ────────────────────────────────────────────────────────
+
+function showPage(id, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ── TABS ──────────────────────────────────────────────────────────────────
+
+function switchTab(btn, tabId) {
+  const panel = btn.closest('.panel');
+  panel.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  panel.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  const tc = document.getElementById('tab-' + tabId);
+  if (tc) tc.classList.add('active');
+}
+
+// ── ACHIEVEMENTS ──────────────────────────────────────────────────────────
+
+function buildAchGrid() {
+  const grid = document.getElementById('ach-grid-preview');
+  grid.innerHTML = ACHIEVEMENTS.map(a => `
+    <button class="ach-icon-btn ${a.unlocked?'':'locked'}"
+      style="border-color:${a.unlocked?RC[a.rarity]:'var(--line)'}"
+      data-tip="${a.name}"
+      onclick="openAchModal()">${a.unlocked ? a.icon : '🔒'}</button>
+  `).join('');
+}
+
+function buildAchModal() {
+  const body = document.getElementById('ach-modal-body');
+  const unlocked = ACHIEVEMENTS.filter(a=>a.unlocked);
+  const locked   = ACHIEVEMENTS.filter(a=>!a.unlocked);
+  let html = '';
+  [['UNLOCKED', unlocked], ['LOCKED', locked]].forEach(([label, list]) => {
+    html += `<div class="modal-section-head">${label} (${list.length})</div>`;
+    list.forEach(a => {
+      html += `
+        <div class="ach-row-modal ${a.unlocked?'':'locked'}">
+          <div class="ach-icon-modal" style="border-color:${a.unlocked?RC[a.rarity]:'var(--line)'}">
+            ${a.unlocked ? a.icon : '🔒'}
+          </div>
+          <div style="flex:1">
+            <div class="ach-name">${a.name}</div>
+            <div class="ach-desc">${a.desc}</div>
+          </div>
+          <div class="ach-meta">
+            <span class="rarity-pill" style="color:${RC[a.rarity]};border-color:${RC[a.rarity]}">${a.rarity}</span>
+            ${a.unlocked && a.date ? `<div class="ach-date">${fmtDate(a.date)}</div>` : ''}
+          </div>
+        </div>`;
+    });
+  });
+  body.innerHTML = html;
+}
+
+function openAchModal() {
+  buildAchModal();
+  document.getElementById('ach-modal').classList.add('open');
+}
+
+function closeAchModal(e) {
+  if (!e || e.target === document.getElementById('ach-modal'))
+    document.getElementById('ach-modal').classList.remove('open');
+}
+
+// ── PROFILE: SCORE BARS ───────────────────────────────────────────────────
+
+function buildScoreBars() {
+  const recent = RUNS.slice(0, 7).reverse();
+  const max = Math.max(...recent.map(r=>r.score));
+  const el  = document.getElementById('score-bars');
+  el.innerHTML = recent.map(r => `
+    <div class="bar-chart-col">
+      <div class="bar-chart-bar" title="${fmtNum(r.score)} pts" style="height:${Math.round((r.score/max)*100)}%;opacity:${.5+recent.indexOf(r)*.07}"></div>
+      <div class="bar-chart-lbl">W${r.wave}</div>
+    </div>`).join('');
+}
+
+// ── PROFILE: HISTORY ROWS ─────────────────────────────────────────────────
+
+function buildProfileHistory() {
+  const recent = RUNS.slice(0, 10);
+  const el = document.getElementById('profile-history-rows');
+  el.innerHTML = recent.map((r, i) => `
+    <div class="history-row ${i===0?'top':''}" id="phr-${r.id}" onclick="toggleProfileExpand(${r.id}, this)">
+      <span style="font-size:13px;color:var(--ink-faint)">${fmtDate(r.date)}</span>
+      <span style="font-size:16px">${r.weapon}</span>
+      <span class="score-blue" style="font-size:16px">${fmtNum(r.score)}</span>
+      <span style="color:var(--ink-mid)">W${r.wave}</span>
+      <span style="color:var(--ink-mid)">${r.kills}</span>
+      <span style="font-size:13px;color:var(--ink-faint)">${fmtTime(r.duration)}</span>
+      <span style="color:var(--ink-faint);font-size:13px">▼</span>
+      <button class="goto-btn" title="Open in Game Stats" onclick="goToRunDetail(event, ${r.id})">→ details</button>
+    </div>
+    <div class="history-expand" id="phe-${r.id}">
+      <div>
+        <div class="expand-section-title">— efficiency —</div>
+        <div class="expand-kv">Score/wave: ${fmtNum(Math.round(r.score/r.wave))}</div>
+        <div class="expand-kv">Kills/min: ${(r.kills/(r.duration/60)).toFixed(1)}</div>
+      </div>
+      <div>
+        <div class="expand-section-title">— timing —</div>
+        <div class="expand-kv">Duration: ${fmtTime(r.duration)}</div>
+        <div class="expand-kv">Avg time/wave: ${fmtTime(Math.round(r.duration/r.wave))}</div>
+      </div>
+      <div>
+        <div class="expand-section-title">— loadout —</div>
+        <div class="expand-kv" style="font-size:16px">${r.weapon}</div>
+        <button class="goto-btn" style="margin-top:6px;font-size:14px" onclick="goToRunDetail(event, ${r.id})">Open in Game Stats →</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleProfileExpand(id, row) {
+  const expand = document.getElementById('phe-' + id);
+  const arrow  = row.querySelector('span:nth-child(7)');
+  const isOpen = expand.classList.contains('open');
+  // close all
+  document.querySelectorAll('.history-expand.open').forEach(e => e.classList.remove('open'));
+  document.querySelectorAll('.history-row.expanded').forEach(r => { r.classList.remove('expanded'); r.querySelector('span:nth-child(7)').textContent='▼'; });
+  if (!isOpen) {
+    expand.classList.add('open');
+    row.classList.add('expanded');
+    arrow.textContent = '▲';
+  }
+}
+
+function goToRunDetail(e, runId) {
+  e.stopPropagation();
+  // switch to game stats page
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-game').classList.add('active');
+  document.querySelector('.nav-btn:nth-child(2)').classList.add('active');
+  // open that run
+  selectRun(runId);
+  // scroll to detail
+  setTimeout(() => document.getElementById('run-detail-section').scrollIntoView({behavior:'smooth', block:'start'}), 50);
+}
+
+// ── GAME STATS: RUNS TABLE ────────────────────────────────────────────────
+
+let filteredRuns = [...RUNS];
+let currentPage  = 1;
+const PAGE_SIZE  = 15;
+let selectedRunId = null;
+let tlFilter = 'all';
+
+function applyFilters() {
+  const q    = document.getElementById('run-search').value.toLowerCase();
+  const sort = document.getElementById('sort-select').value;
+  const wpn  = document.getElementById('weapon-filter').value;
+
+  filteredRuns = RUNS.filter(r => {
+    if (wpn && !r.weapon.startsWith(wpn)) return false;
+    if (q && !r.weapon.includes(q) && !String(r.wave).includes(q) && !String(r.score).includes(q)) return false;
+    return true;
+  });
+
+  filteredRuns.sort((a,b) => {
+    if (sort === 'date-desc')  return new Date(b.date) - new Date(a.date);
+    if (sort === 'date-asc')   return new Date(a.date) - new Date(b.date);
+    if (sort === 'score-desc') return b.score - a.score;
+    if (sort === 'score-asc')  return a.score - b.score;
+    if (sort === 'wave-desc')  return b.wave - a.wave;
+    return 0;
+  });
+
+  currentPage = 1;
+  renderRunsTable();
+  document.getElementById('run-count-tag').textContent = filteredRuns.length + ' runs';
+}
+
+function clearFilters() {
+  document.getElementById('run-search').value = '';
+  document.getElementById('weapon-filter').value = '';
+  document.getElementById('sort-select').value = 'date-desc';
+  applyFilters();
+}
+
+function sortBy(col) {
+  const sel = document.getElementById('sort-select');
+  if (col === 'date')  sel.value = sel.value === 'date-desc' ? 'date-asc' : 'date-desc';
+  if (col === 'score') sel.value = sel.value === 'score-desc' ? 'score-asc' : 'score-desc';
+  if (col === 'wave')  sel.value = 'wave-desc';
+  applyFilters();
+}
+
+function renderRunsTable() {
+  const maxScore  = Math.max(...RUNS.map(r=>r.score));
+  const start     = (currentPage - 1) * PAGE_SIZE;
+  const pageRuns  = filteredRuns.slice(start, start + PAGE_SIZE);
+  const tbody     = document.getElementById('runs-table-body');
+
+  if (pageRuns.length === 0) {
+    tbody.innerHTML = '<div class="empty-state">No runs match your filters.</div>';
+    document.getElementById('pagination').innerHTML = '';
+    return;
+  }
+
+  tbody.innerHTML = pageRuns.map(r => `
+    <div class="run-row ${selectedRunId===r.id?'selected':''}" onclick="selectRun(${r.id})">
+      <span style="font-size:13px;color:var(--ink-faint)">${fmtDate(r.date)}</span>
+      <span style="font-size:15px">${r.weapon}</span>
+      <div class="score-bar-wrap">
+        <span class="score-blue" style="font-size:15px;white-space:nowrap">${fmtNum(r.score)}</span>
+        <div class="score-bar-track"><div class="score-bar-fill" style="width:${Math.round(r.score/maxScore*100)}%"></div></div>
+      </div>
+      <span class="wave-badge">W${r.wave}</span>
+      <span style="color:var(--ink-mid);font-size:15px">${r.kills}</span>
+      <span style="font-size:13px;color:var(--ink-faint)">${fmtTime(r.duration)}</span>
+      <button class="goto-btn" style="font-size:13px" onclick="event.stopPropagation();selectRun(${r.id})">Inspect →</button>
+    </div>
+  `).join('');
+
+  renderPagination();
+}
+
+function renderPagination() {
+  const total  = filteredRuns.length;
+  const pages  = Math.ceil(total / PAGE_SIZE);
+  const pg     = document.getElementById('pagination');
+
+  if (pages <= 1) { pg.innerHTML = ''; return; }
+
+  let html = `<button class="pg-btn" onclick="gotoPage(${currentPage-1})" ${currentPage===1?'disabled':''}>‹</button>`;
+
+  // Window of 5 pages
+  let start = Math.max(1, currentPage - 2);
+  let end   = Math.min(pages, start + 4);
+  start     = Math.max(1, end - 4);
+
+  if (start > 1) html += `<button class="pg-btn" onclick="gotoPage(1)">1</button>${start>2?'<span style="color:var(--ink-faint);padding:0 4px">…</span>':''}`;
+  for (let i = start; i <= end; i++)
+    html += `<button class="pg-btn ${i===currentPage?'current':''}" onclick="gotoPage(${i})">${i}</button>`;
+  if (end < pages) html += `${end<pages-1?'<span style="color:var(--ink-faint);padding:0 4px">…</span>':''}<button class="pg-btn" onclick="gotoPage(${pages})">${pages}</button>`;
+
+  html += `<button class="pg-btn" onclick="gotoPage(${currentPage+1})" ${currentPage===pages?'disabled':''}>›</button>`;
+  html += `<span class="pg-info">Showing ${(currentPage-1)*PAGE_SIZE+1}–${Math.min(currentPage*PAGE_SIZE, total)} of ${total}</span>`;
+  pg.innerHTML = html;
+}
+
+function gotoPage(p) {
+  const pages = Math.ceil(filteredRuns.length / PAGE_SIZE);
+  if (p < 1 || p > pages) return;
+  currentPage = p;
+  renderRunsTable();
+}
+
+// ── GAME STATS: RUN DETAIL ────────────────────────────────────────────────
+
+function selectRun(id) {
+  selectedRunId = id;
+  const run = RUNS.find(r => r.id === id);
+  if (!run) return;
+
+  renderRunsTable(); // re-highlight
+
+  // KPIs
+  document.getElementById('run-kpis').innerHTML = [
+    {icon:'🏆', label:'Score',    value: fmtNum(run.score),      color:'var(--blue)'},
+    {icon:'🌊', label:'Wave',     value: run.wave,               color:'var(--green)'},
+    {icon:'⚔️', label:'Kills',   value: run.kills,              color:'var(--red)'},
+    {icon:'⏱️', label:'Duration', value: fmtTime(run.duration),  color:'var(--ink)'},
+  ].map(k => `
+    <div class="kpi-box" style="text-align:center">
+      <div class="kpi-icon">${k.icon}</div>
+      <div class="kpi-val" style="color:${k.color};font-size:24px">${k.value}</div>
+      <div class="kpi-lbl">${k.label}</div>
+    </div>`).join('');
+
+  // Timeline
+  renderTimeline(run);
+
+  // Build summary
+  const pulls = PULLS[run.id] || PULLS.default;
+  const highestRarity = ['Legendary','Epic','Rare','Common'].find(r => pulls.some(p => p.rarity === r)) || 'Common';
+  document.getElementById('build-summary').innerHTML = [
+    ['Final weapon',    run.weapon],
+    ['Augments taken',  pulls.filter(p=>p.type==='augment').length],
+    ['Weapon changes',  pulls.filter(p=>p.type==='weapon').length],
+    ['Enchants applied',pulls.filter(p=>p.type==='enchant').length],
+    ['Highest rarity',  `<span style="color:${RC[highestRarity]}">${highestRarity}</span>`],
+    ['Score / wave',    fmtNum(Math.round(run.score/run.wave))],
+    ['Kills / min',     (run.kills/(run.duration/60)).toFixed(1)],
+  ].map(([k,v]) => `<div class="build-kv"><span class="build-k">${k}</span><span class="build-v">${v}</span></div>`).join('');
+
+  // Score context bar chart
+  const maxScore = Math.max(...RUNS.map(r=>r.score));
+  document.getElementById('score-context').innerHTML = `
+    <div style="font-size:13px;color:var(--ink-faint);margin-bottom:8px">this run vs all runs</div>
+    ${RUNS.slice(0,10).map(r=>`
+    <div onclick="selectRun(${r.id})" style="margin-bottom:7px;cursor:pointer;opacity:${r.id===id?1:.55};transition:opacity .1s">
+      <div style="display:flex;justify-content:space-between;margin-bottom:2px">
+        <span style="font-size:13px;color:var(--ink)">W${r.wave} · ${fmtDate(r.date)}</span>
+        <span style="font-size:13px;color:var(--blue)">${fmtShort(r.score)}</span>
+      </div>
+      <div style="height:6px;background:var(--paper3);border:1px solid var(--line)">
+        <div style="height:100%;background:${r.id===id?'var(--blue)':'#9ab8ca'};width:${Math.round(r.score/maxScore*100)}%;transition:background .2s"></div>
+      </div>
+    </div>`).join('')}
+  `;
+
+  document.getElementById('run-detail-section').style.display = 'flex';
+  document.getElementById('run-detail-placeholder').style.display = 'none';
+}
+
+function renderTimeline(run) {
+  const pulls = PULLS[run.id] || PULLS.default;
+  const filtered = tlFilter === 'all' ? pulls : pulls.filter(p => p.type === tlFilter);
+  const el = document.getElementById('timeline-body');
+
+  if (filtered.length === 0) {
+    el.innerHTML = '<div class="empty-state">No pulls of this type.</div>';
+    return;
+  }
+
+  el.innerHTML = filtered.map(p => `
+    <div class="tl-row">
+      <div class="tl-wave"><span class="tl-wave-lbl">W</span><span class="tl-wave-num">${p.wave}</span></div>
+      <div class="tl-icon" style="border-color:${RC[p.rarity]}">${p.icon}</div>
+      <div style="flex:1">
+        <div class="tl-name">${p.name}</div>
+        <div class="tl-type">${p.type}</div>
+      </div>
+      <span class="rarity-pill" style="color:${RC[p.rarity]};border-color:${RC[p.rarity]}">${p.rarity}</span>
+    </div>`).join('');
+}
+
+function filterTimeline(type, btn) {
+  tlFilter = type;
+  document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const run = RUNS.find(r => r.id === selectedRunId);
+  if (run) renderTimeline(run);
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────
+
+buildAchGrid();
+buildScoreBars();
+buildProfileHistory();
+applyFilters();
+</script>
+</body>
+</html>

@@ -6,6 +6,7 @@ import Dashboard from './pages/Dashboard'
 import Account from './pages/Account'
 import Friends from './pages/Friends'
 import Auth from './pages/Auth'
+import Profile from './pages/Profile'
 import { AuthProvider } from './context/AuthContext'
 import Admin from './pages/Admin'
 
@@ -18,6 +19,7 @@ function App() {
             <Route path="/" element={<Dashboard />} />
             <Route path="/account" element={<Account />} />
             <Route path="/friends" element={<Friends />} />
+            <Route path="/profile/:username?" element={<Profile />} />
             <Route path="/game" element={<Game />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/admin" element={<Admin />} />

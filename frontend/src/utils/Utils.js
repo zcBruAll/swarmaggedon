@@ -88,5 +88,5 @@ export const formatToRealTime = (duration) => {
     const minutes = Math.floor((duration % 3600) / 60)
     const seconds = duration % 60
 
-    return (hours != 0 ? hours.toString() + "h" : "") + (minutes != 0 ? minutes.toString() + "m" : "") + seconds + "s"
+    return (hours != 0 ? hours.toString() + "h " : "") + (minutes != 0 ? minutes.toString() + "m " : "") + seconds + "s"
 }

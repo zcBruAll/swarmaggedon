@@ -15,7 +15,7 @@ export const runTypeDefs = gql`
     }
 
     extend type User {
-        runs: [Run]
+        runs(first: Int, offset: Int): [Run]
         last_run: Run
     }
 
@@ -26,10 +26,15 @@ export const runTypeDefs = gql`
 
 export const runResolvers = {
     User: {
-        runs: async (user, _, {}) => {
+        runs: async (user, {first: f, offset: o}, {}) => {
+            let first = f || 0
+            let offset = o || 0
             const results = await getDB().collection(COLLECTION_RUNS).find({
                 user_id: user.id.toString()
-            }).toArray()
+            },{
+                limit: first,
+                skip: offset
+            }).sort({$natural:-1}).toArray()
 
             return results || []
         },

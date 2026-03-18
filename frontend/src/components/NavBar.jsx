@@ -116,8 +116,8 @@ function NavBar() {
         </Link>
         {isLoggedIn && (
           <>
-            <Link to="/account" className={`nav-link ${location.pathname === '/account' ? 'active' : ''}`}>
-              {t('nav.account')}
+            <Link to="/profile" className={`nav-link ${location.pathname === '/profile' ? 'active' : ''}`}>
+              {t('nav.profile')}
             </Link>
             <Link to="/friends" className={`nav-link ${location.pathname === '/friends' ? 'active' : ''}`}>
               {t('nav.friends')}

@@ -13,6 +13,7 @@ export const userTypeDefs = gql`
         last_online: Float
         rank: Int
         in_game: Boolean
+        is_friend: Boolean
         date_created: Float!
     }
     
@@ -28,6 +29,8 @@ export const userTypeDefs = gql`
         pending_requests: [User]
 
         search(usernameSearch: String!): [User]
+
+        user_by_username(username: String!): User
     }
 
     extend type Mutation {
@@ -204,7 +207,23 @@ export const userResolvers = {
             }
 
             return ret
-        }
+        },
+        user_by_username: async (_, {username}, __) => {
+            if (!username) throw new Error("You must provide an username")
+
+            const user_data = await getDB().collection(COLLECTION_USERS).findOne(
+                { username: username }
+            )
+
+            if (!user_data) throw new Error("User not found")
+
+            return {
+                id: user_data._id,
+                username: user_data.username,
+                email: user_data.email,
+                date_created: user_data.date_created
+            }
+        },
     },
     User: {
         rank: async (parent, _, {}) => {
@@ -223,7 +242,19 @@ export const userResolvers = {
             ]).toArray();
 
             return (betterPlayers[0]?.count || 0) + 1;
-        }
+        },
+        is_friend: async (parent, _, {user: loggedin_info}) => {
+            if (!loggedin_info) return null
+            const current_friend_status = await getDB().collection(COLLECTION_FRIENDS).findOne({
+                $or: [
+                    { requester_id: loggedin_info.id, accepter_id: parent.id.toString() },
+                    { requester_id: parent.id.toString(), accepter_id: loggedin_info.id }
+                ]
+            })
+
+            if (!current_friend_status) return false
+            else return current_friend_status.pending ? null : true
+        },
     },
     Mutation: {
         addFriend: async (_, {userId: id}, {user: loggedin_info}) => {

@@ -11,6 +11,10 @@ export const statsTypeDefs = gql`
         best_wave: Int
         total_kills: Int
         total_time: Int
+        avg_wave: Float
+        total_score: Int
+        total_boss_kills: Int
+        total_runs_past_20: Int
     }
     
     extend type User {
@@ -31,7 +35,21 @@ export const statsResolvers = {
                         best_time: { $max: "$duration" },
                         best_wave: { $max: "$wave" },
                         total_kills: { $sum: "$kills" },
-                        total_time: { $sum: "$duration" }
+                        total_time: { $sum: "$duration" },
+                        avg_wave: {$avg: "$wave" },
+                        total_score: { $sum: "$score" },
+                        total_boss_kills: { 
+                            $sum: { 
+                                $floor: { 
+                                    $divide: [{ $subtract: ["$wave", 1] }, 10] 
+                                } 
+                            } 
+                        },
+                        total_runs_past_20: { 
+                            $sum: { 
+                                $cond: [{ $gt: ["$wave", 20] }, 1, 0] 
+                            } 
+                        },
                     }
                 },
                 {
@@ -42,12 +60,27 @@ export const statsResolvers = {
                         best_time: 1,
                         best_wave: 1,
                         total_kills: 1,
-                        total_time: 1
+                        total_time: 1,
+                        avg_wave: 1,
+                        total_score: 1,
+                        total_boss_kills: 1,
+                        total_runs_past_20: 1,
                     }
                 }
             ]).toArray()
 
-            return run_data[0] || { total_games: 0, high_score: 0, best_wave: 0, best_time: 0, total_kills: 0, total_time: 0 }
+            return run_data[0] || { 
+                total_games: 0, 
+                high_score: 0, 
+                best_wave: 0, 
+                best_time: 0, 
+                total_kills: 0, 
+                total_time: 0, 
+                avg_wave: 0, 
+                total_score: 0,
+                total_boss_kills: 0,
+                total_runs_past_20: 0
+            }
         }
     }
 }
