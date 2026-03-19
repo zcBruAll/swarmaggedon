@@ -70,6 +70,10 @@
     font-style: italic;
 }
 
+.admin-tabs {
+    margin-bottom: 20px;
+}
+
 .admin-filter-panel {
     margin-bottom: 20px;
 }
@@ -133,10 +137,6 @@
     padding-bottom: 4px;
 }
 
-.admin-runs-title {
-    font-size: 24px;
-}
-
 .admin-runs-header-right {
     display: flex;
     align-items: center;
@@ -169,8 +169,26 @@
     width: 100%;
     border-collapse: collapse;
     font-family: 'Patrick Hand';
-    min-width: 760px;
 }
+
+.admin-table-runs { min-width: 760px; }
+.admin-table-runs th:nth-child(1) { width: 18%; }
+.admin-table-runs th:nth-child(2) { width: 11%; }
+.admin-table-runs th:nth-child(3) { width: 7%;  }
+.admin-table-runs th:nth-child(4) { width: 7%;  }
+.admin-table-runs th:nth-child(5) { width: 10%; }
+.admin-table-runs th:nth-child(6) { width: 18%; }
+.admin-table-runs th:nth-child(7) { width: 8%;  }
+.admin-table-runs th:nth-child(8) { width: 21%; }
+
+/* Column widths for the users table */
+.admin-table-users { min-width: 700px; }
+.admin-table-users th:nth-child(1) { width: 18%; }
+.admin-table-users th:nth-child(2) { width: 24%; }
+.admin-table-users th:nth-child(3) { width: 8%;  }
+.admin-table-users th:nth-child(4) { width: 14%; }
+.admin-table-users th:nth-child(5) { width: 16%; }
+.admin-table-users th:nth-child(6) { width: 20%; }
 
 .admin-table thead tr {
     background: var(--paper3);
@@ -260,9 +278,20 @@
     white-space: nowrap;
 }
 
+.admin-td-email {
+    font-size: 15px;
+    color: var(--ink-faint);
+    white-space: nowrap;
+}
+
 .admin-td-actions {
     display: flex;
     gap: 5px;
+}
+
+.admin-td-actions-wrap {
+    flex-wrap: wrap;
+    gap: 4px;
 }
 
 .admin-btn-flag {
@@ -285,4 +314,76 @@
     font-size: 18px;
     color: var(--ink-faint);
     font-style: italic;
+}
+
+.admin-user-search-form {
+    width: 100%;
+}
+
+.admin-user-search-input {
+    flex: 1 1 280px;
+}
+
+.admin-users-empty-hint {
+    text-align: center;
+    padding: 48px 0;
+    color: var(--ink-faint);
+    font-family: 'Patrick Hand', cursive;
+    font-size: 18px;
+    font-style: italic;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.45);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(2px);
+    padding: 20px;
+}
+
+.modal-body {
+    padding: 20px;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    color: var(--ink);
+    font-size: 24px;
+    cursor: pointer;
+    font-family: 'Patrick Hand';
+    line-height: 1;
+}
+
+.admin-reset-modal {
+    width: 100%;
+    max-width: 400px;
+}
+
+.admin-reset-modal-title {
+    font-size: 22px;
+}
+
+.admin-reset-modal-subtitle {
+    margin-bottom: 12px;
+    font-size: 16px;
+    color: var(--ink-mid);
+}
+
+.admin-reset-success {
+    color: var(--blue);
+}
+
+.admin-reset-modal-footer {
+    padding-top: 12px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
 }
