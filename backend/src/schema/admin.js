@@ -2,6 +2,7 @@ import { gql } from 'graphql-tag';
 import { COLLECTION_USERS, COLLECTION_RUNS, getDB } from '../config/db.js';
 import { ObjectId } from 'mongodb';
 import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
 
 export const adminTypeDefs = gql`
     type RunWithUser {
@@ -49,6 +50,7 @@ export const adminTypeDefs = gql`
             username: String
             cheaterOnly: Boolean
         ): [AdminUser]
+        adminSearchUsers(query: String!): [AdminUser]
     }
 
     extend type Mutation {
@@ -56,6 +58,7 @@ export const adminTypeDefs = gql`
         adminDeleteRunsByUser(userId: ID!): Int
         adminSetCheater(userId: ID!, cheater: Boolean!): Boolean
         adminDeleteUser(userId: ID!): Boolean
+        adminResetPassword(userId: ID!, newPassword: String!): Boolean
     }
 `;
 
@@ -98,7 +101,6 @@ export const adminResolvers = {
             const db = getDB();
             const skip = (page - 1) * limit;
 
-            // Build match for runs
             const runMatch = {};
             if (minScore != null) runMatch.score = { ...(runMatch.score || {}), $gte: minScore };
             if (maxScore != null) runMatch.score = { ...(runMatch.score || {}), $lte: maxScore };
@@ -106,7 +108,6 @@ export const adminResolvers = {
             const sortField = ['date', 'score', 'wave', 'kills', 'duration'].includes(sortBy) ? sortBy : 'date';
             const sortOrder = sortDir === 'asc' ? 1 : -1;
 
-            // Build user filter if needed
             let userIdFilter = null;
             if (username) {
                 const users = await db.collection(COLLECTION_USERS).find(
@@ -119,7 +120,6 @@ export const adminResolvers = {
             }
 
             if (cheaterOnly) {
-                // Get cheater user ids
                 const cheaters = await db.collection(COLLECTION_USERS).find(
                     { cheater: true },
                     { projection: { _id: 1 } }
@@ -207,6 +207,47 @@ export const adminResolvers = {
                 run_count: u.run_stats?.[0]?.count || 0,
             }));
         },
+
+        adminSearchUsers: async (_, { query }, context) => {
+            verifyAdmin(context);
+
+            const db = getDB();
+            const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+            const users = await db.collection(COLLECTION_USERS).aggregate([
+                {
+                    $match: {
+                        $or: [
+                            { username: { $regex: escaped, $options: 'i' } },
+                            { email: { $regex: escaped, $options: 'i' } },
+                        ]
+                    }
+                },
+                { $sort: { date_created: -1 } },
+                { $limit: 20 },
+                {
+                    $lookup: {
+                        from: COLLECTION_RUNS,
+                        let: { uid: { $toString: '$_id' } },
+                        pipeline: [
+                            { $match: { $expr: { $eq: ['$user_id', '$$uid'] } } },
+                            { $count: 'count' }
+                        ],
+                        as: 'run_stats'
+                    }
+                }
+            ]).toArray();
+
+            return users.map(u => ({
+                id: u._id.toString(),
+                username: u.username,
+                email: u.email,
+                cheater: u.cheater || false,
+                date_created: u.date_created,
+                last_online: u.last_online,
+                run_count: u.run_stats?.[0]?.count || 0,
+            }));
+        },
     },
 
     Mutation: {
@@ -237,6 +278,17 @@ export const adminResolvers = {
             await db.collection(COLLECTION_USERS).deleteOne({ _id: new ObjectId(userId) });
             await db.collection(COLLECTION_RUNS).updateMany({ user_id: userId }, { $set: { user_id: null } });
             return true;
+        },
+
+        adminResetPassword: async (_, { userId, newPassword }, context) => {
+            verifyAdmin(context);
+            if (!newPassword || newPassword.length < 4) throw new Error('Password too short');
+            const hashed = bcrypt.hashSync(newPassword, Number(process.env.SALT_ROUNDS) || 10);
+            const result = await getDB().collection(COLLECTION_USERS).updateOne(
+                { _id: new ObjectId(userId) },
+                { $set: { password: hashed } }
+            );
+            return result.modifiedCount > 0;
         },
     }
 }
