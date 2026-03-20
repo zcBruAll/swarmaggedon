@@ -1,36 +1,31 @@
 export const TEAM = {
     PLAYER: 'player',
     ENEMY: 'enemy',
-}
+};
 
 export function createWorld() {
     const actors = [];
     const toSpawn = [];
+    const events = [];
 
     let score = 0;
     let kills = 0;
     let wave = 0;
     let elapsed = 0;
 
-    const events = [];
-
     function actorsOnTeam(team) {
         return actors.filter(a => a.team === team && a.hp > 0 && !a.dead);
     }
 
     function nearestActor(x, y, team, exclude = null) {
-        let best = null;
-        let bestDist = Infinity;
+        let best = null, bestDist = Infinity;
         for (const a of actors) {
             if (a.team !== team) continue;
             if (a === exclude) continue;
             if (a.hp <= 0 || a.dead) continue;
             if (a.isActor && a.targetable === false) continue;
             const d = Math.hypot(a.x - x, a.y - y);
-            if (d < bestDist) {
-                bestDist = d;
-                best = a;
-            }
+            if (d < bestDist) { bestDist = d; best = a; }
         }
         return best;
     }
@@ -44,14 +39,8 @@ export function createWorld() {
         });
     }
 
-    function spawnActor(actor) {
-        toSpawn.push(actor);
-    }
-
-    function flushSpawns() {
-        for (const a of toSpawn) actors.push(a);
-        toSpawn.length = 0;
-    }
+    function spawnActor(actor) { toSpawn.push(actor); }
+    function flushSpawns() { for (const a of toSpawn) actors.push(a); toSpawn.length = 0; }
 
     function aoeBlast(x, y, radius, damage, targetTeam, exclude = null) {
         for (const a of actors) {
@@ -72,9 +61,7 @@ export function createWorld() {
             const a = actors[r];
             const isDead = a.hp <= 0 || a.dead;
 
-            if (isDead && a.onDeath) {
-                a.onDeath(world);
-            }
+            if (isDead && a.onDeath) a.onDeath(world);
 
             if (isDead && a.score) {
                 score += a.score;
@@ -84,8 +71,8 @@ export function createWorld() {
 
                 const attacker = a._lastAttacker;
                 if (attacker?.weapon?.enchant === 'detonator') {
-                    const w = attacker.weapon;
-                    aoeBlast(a.x, a.y, w.detonateRadius, w.detonateDamage, a.team, a);
+                    const wpn = attacker.weapon;
+                    aoeBlast(a.x, a.y, wpn.detonateRadius, wpn.detonateDamage, a.team, a);
                 }
             }
 
@@ -94,15 +81,8 @@ export function createWorld() {
         actors.length = w;
     }
 
-    function emit(event) {
-        events.push(event);
-    }
-
-    function flushEvents() {
-        const copy = events.slice();
-        events.length = 0;
-        return copy;
-    }
+    function emit(event) { events.push(event); }
+    function flushEvents() { const copy = events.slice(); events.length = 0; return copy; }
 
     const world = {
         actors,
@@ -125,6 +105,7 @@ export function createWorld() {
         get wave() { return wave; },
         set wave(v) { wave = v; },
         get elapsed() { return elapsed; },
+
         addScore(n) { score += n; },
         addKill() { kills += 1; },
         addElapsed(dt) { elapsed += dt; },

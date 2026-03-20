@@ -23,6 +23,7 @@
     "title": "Wiki / Help",
     "tabs": {
       "controls": "🎮 Controls",
+      "classes": "🧑 Classes",
       "enemies": "👾 Enemies",
       "weapons": "⚔️ Weapons",
       "augments": "✦ Augments"
@@ -35,17 +36,130 @@
       "keys": {
         "moveUpLeftDownRight": "Move up / left / down / right",
         "arrowKeys": "Arrow keys also work",
-        "mouseAim": "Aim - your character auto-faces the nearest enemy",
-        "lmbCharge": "Charge attack (Charge enchant only)",
+        "mouseAim": "Aim — your character auto-faces the nearest enemy",
+        "lmbCharge": "Charge attack (Charge enchant) — or deploy selected drone (Engineer)",
+        "tabCycle": "Cycle through orbiting drones to select one (Engineer only)",
+        "rmbRecall": "Recall nearest deployed drone — or recover a nearby wrecked drone (Engineer only)",
         "escPause": "Pause / Resume"
       },
       "hud": {
         "topRight": "Score · Time survived · Current wave · Kill count",
         "bottomLeft": "Your HP bar, weapon type & stats",
         "bottomRight": "Item slots (6 max) with cooldown bars",
-        "topBar": "Wave timer - fills up as time passes"
+        "topBar": "Wave timer — fills up as time passes",
+        "bottomCenter": "Drone status bar (Engineer only) — shows each drone's state and HP"
       },
-      "tip": "Attacks fire automatically - just stay in range of enemies."
+      "tip": "Attacks fire automatically — just stay in range of enemies."
+    },
+    "classes": {
+      "intro": "Choose your class at the start of every run. Each class has a different playstyle and starting conditions.",
+      "brawler": {
+        "name": "Brawler ⚔️",
+        "stats": [
+          [
+            "HP",
+            "100"
+          ],
+          [
+            "Speed",
+            "180"
+          ],
+          [
+            "Weapon",
+            "Melee only"
+          ],
+          [
+            "Playstyle",
+            "Aggressive"
+          ]
+        ],
+        "desc": "Starts with a melee weapon pick. Fights at close range — high risk, high reward. Pairs best with cooldown and damage augments to chain kills quickly.",
+        "tip": "Stay mobile. Melee weapons have small arcs, so positioning matters more than for rangers."
+      },
+      "ranger": {
+        "name": "Ranger 🔫",
+        "stats": [
+          [
+            "HP",
+            "100"
+          ],
+          [
+            "Speed",
+            "180"
+          ],
+          [
+            "Weapon",
+            "Ranged only"
+          ],
+          [
+            "Playstyle",
+            "Kiting"
+          ]
+        ],
+        "desc": "Starts with a ranged weapon pick. Easiest class to learn — you can deal damage while retreating. Pairs well with bullet speed, range, and AoE enchants.",
+        "tip": "Kite in wide circles. Shooters will try to orbit you at mid range — keep moving to break their rhythm."
+      },
+      "engineer": {
+        "name": "Engineer 🤖",
+        "stats": [
+          [
+            "HP",
+            "160"
+          ],
+          [
+            "Speed",
+            "210"
+          ],
+          [
+            "Weapon",
+            "4 drones"
+          ],
+          [
+            "Playstyle",
+            "Strategic"
+          ]
+        ],
+        "desc": "Has no personal weapon — four drones fight for you. Two are ranged, two are melee. Survives by managing drone placement, repairs, and wave resets. Upgrades between waves buff your drones and yourself directly instead of picking weapons.",
+        "droneTitle": "Drone controls",
+        "droneRows": [
+          [
+            "Tab",
+            "Cycle through orbiting drones to select one — the selected drone is highlighted with a gold ring"
+          ],
+          [
+            "LMB",
+            "Deploy the selected drone to the cursor position (defaults to first available if nothing is selected)"
+          ],
+          [
+            "RMB",
+            "Recall the nearest deployed drone to cursor — or recover a nearby wrecked drone back to orbit"
+          ]
+        ],
+        "statesTitle": "Drone states",
+        "states": [
+          [
+            "Orbiting",
+            "Escorts you in an evenly-spaced ring. Attacks nearby enemies at reduced power (55% damage, 70% range, 1.45× cooldown). Heals passively at 6 hp/s. Takes only 55% damage. Deploy it to unlock full stats."
+          ],
+          [
+            "Deployed",
+            "Stationary turret. Full weapon stats. Field-repairable by standing next to it (12 hp/s)."
+          ],
+          [
+            "Wrecked",
+            "Destroyed in place. Stand within repair radius to restore it over 2.5 s. Progress resets slowly if you walk away."
+          ],
+          [
+            "Recalling",
+            "Flying back to you after being recalled or repaired. Returns to orbit on arrival."
+          ]
+        ],
+        "waveClearTitle": "Wave clear bonus",
+        "waveClear": "When a wave ends, all deployed drones recall automatically and all drone HP is restored to full. Use this window to regroup and re-select before the next wave.",
+        "enchantTitle": "Drone enchants",
+        "enchant": "At wave 15 and wave 30 you choose an enchant for one drone type (ranged or melee). Each screen shows exactly 3 enchant options. On the second screen, the type you haven't enchanted yet is offered first — but if both are already enchanted you can freely change either.",
+        "tip": "Orbit is a safety net, not a strategy. Deployed drones deal significantly more than orbiting ones — use Tab to pre-select the right type, then place it before the wave gets close."
+      }
     },
     "enemies": {
       "runner": {
@@ -54,7 +168,7 @@
           "fast",
           "fragile"
         ],
-        "desc": "Rushes directly at you. Low HP but high speed - dangerous in groups. Appears every wave from wave 1."
+        "desc": "Rushes directly at you. Low HP but high speed — dangerous in groups. Appears every wave from wave 1."
       },
       "brute": {
         "name": "Brute",
@@ -63,7 +177,7 @@
           "tanky",
           "heavy hit"
         ],
-        "desc": "Slow melee fighter with high HP and massive damage per swing. Appears from wave 4+."
+        "desc": "Slow melee fighter with high HP and massive damage per swing. Appears from wave 4."
       },
       "shooter": {
         "name": "Shooter",
@@ -71,7 +185,7 @@
           "ranged",
           "kites"
         ],
-        "desc": "Maintains distance and fires projectiles. Tries to orbit you at ideal range. Appears from wave 5+."
+        "desc": "Maintains distance and fires projectiles. Tries to orbit you at ideal range. Appears from wave 5."
       },
       "boss": {
         "name": "Boss",
@@ -86,36 +200,36 @@
     "weapons": {
       "rangedTitle": "🔫 Ranged",
       "meleeTitle": "⚔️ Melee",
-      "tip": "Enchants are unlocked at wave 20 and offered as a special reward. You can only have one enchant at a time.",
+      "tip": "Enchants are unlocked at wave 20 for Brawler and Ranger, and at waves 15 and 30 for Engineer (applied per drone type). You can only have one enchant at a time.",
       "ranged": {
-        "single": "Standard single bullet. Reliable baseline - solid damage, decent range.",
+        "single": "Standard single bullet. Reliable baseline — solid damage, decent range.",
         "rifle": "Fires a burst of bullets in quick succession. Great sustained DPS against tanky enemies.",
         "pierce": "Bullet travels through multiple enemies. Devastating against tight Runner packs.",
-        "aoe": "Bullet explodes on impact. Damages all enemies in a radius - great for crowd control.",
+        "aoe": "Bullet explodes on impact. Damages all enemies in a radius — great for crowd control.",
         "chain": "Bullet bounces to nearby enemies after each hit. Excellent in dense waves.",
         "laser": "Charges briefly then fires an instant-hit beam. Massive damage, wide width. Hold position during charge.",
         "smg": "Very fast fire rate with bullet spread. Shreds anything that gets close, lower per-bullet damage."
       },
       "melee": {
         "single": "Standard melee swing with a 90° arc. Simple and effective at close range.",
-        "sweetspot": "Deals 75% more damage on enemies on the range edge but 75% less otherwise.",
-        "momentum": "Each kills grants a stack that increases damages and reduces cooldown. Gets reset on damage taken or after not killing any ennemies in 1.5",
-        "charge": "Hold LMB to charge - damage and range scale with charge time. Massive burst potential.",
+        "sweetspot": "Deals 75% more damage to enemies at the edge of range, 75% less to enemies too close.",
+        "momentum": "Each kill adds a stack that increases damage and reduces cooldown. Resets on taking damage or after 1.5s without a kill.",
+        "charge": "Hold LMB to charge — damage and range scale with charge time. Massive burst potential.",
         "lifesteal": "Each hit heals you for a percentage of damage dealt. Makes staying in melee range safer.",
         "detonator": "Enemies you kill explode, dealing AoE damage to nearby foes. Devastating in dense packs — each kill can chain into the next."
       }
     },
     "augments": {
       "howTitle": "How augments work",
-      "howDesc": "After each wave you choose 1 of 3 random augments. Each has a rarity that determines the bonus magnitude - higher rarity = bigger % boost. Boss reward screens always offer at least Rare quality.",
+      "howDesc": "After each wave you choose 1 of 3 random augments. Each has a rarity that determines the bonus magnitude — higher rarity = bigger % boost. Boss reward screens always offer at least Rare quality. You get 2 rerolls per run. Engineer upgrades buff your drones or yourself directly instead of weapon stats.",
       "raritiesTitle": "Rarities",
       "statsTitle": "Stat reference",
-      "tip": "All bonuses are multiplicative - stacking the same stat compounds over time. A 15% Damage boost on top of existing upgrades is always 15% of your current value.",
+      "tip": "All bonuses are multiplicative — stacking the same stat compounds over time. A 15% Damage boost on top of existing upgrades is always 15% of your current value.",
       "rarities": {
         "common": {
           "name": "Common",
           "chance": "75%",
-          "desc": "Small bonuses, 5-15% improvements."
+          "desc": "Small bonuses, 5–15% improvements."
         },
         "rare": {
           "name": "Rare",
@@ -148,7 +262,7 @@
         ],
         "moveSpeed": [
           "Move Speed",
-          "Increases your movement speed. Very strong - mobility is survival."
+          "Increases your movement speed. Very strong — mobility is survival."
         ],
         "cooldown": [
           "Cooldown",
@@ -176,7 +290,7 @@
         ],
         "lifesteal": [
           "Lifesteal",
-          "HP stolen per hit percentage (Lifesteal enchant)."
+          "HP stolen per hit as a percentage (Lifesteal enchant)."
         ],
         "maxStacks": [
           "Max Stacks",
@@ -184,19 +298,19 @@
         ],
         "damagePerStack": [
           "Per-stack DMG",
-          "Percentage increasing weapon damages for each stack (Momentum enchant)."
+          "Percentage damage increase per stack (Momentum enchant)."
         ],
         "cooldownPerStack": [
           "Per-stack CD",
-          "Percentage reducing weapon cooldown for each stack (Momentum enchant)."
+          "Percentage cooldown reduction per stack (Momentum enchant)."
         ],
         "detonateRadius": [
           "Detonate Radius",
-          "Radius of the detonation (Detonation enchant)."
+          "Radius of the detonation (Detonator enchant)."
         ],
         "detonateDamage": [
           "Detonate Damage",
-          "Detonation basis damages (Detonation enchant)."
+          "Base detonation damage (Detonator enchant)."
         ]
       }
     }
@@ -284,7 +398,7 @@
     "startGame": "▶ Start game",
     "neverPlayed": "You've never played before",
     "lastRun": "Last run <1>{{time}}</1>, reached wave <2>{{wave}}</2> in <3>{{duration}}</3> and scoring <4>{{score}}</4> points.",
-    "createAccount": "Create an account to see your stats !",
+    "createAccount": "Create an account to see your stats!",
     "globalBar": {
       "playersOnline_one": "Player online",
       "playersOnline_other": "Players online",
@@ -418,7 +532,14 @@
       "cooldownPerStack": "CD per Stack",
       "stacks": "Stacks",
       "detonateRadius": "Detonate Radius",
-      "detonateDamage": "Detonate Damage"
+      "detonateDamage": "Detonate Damage",
+      "droneHp": "All Drone HP",
+      "rangeDamage": "🔫 Damage",
+      "rangeFireRate": "🔫 Fire Rate",
+      "rangeRange": "🔫 Range",
+      "meleeDamage": "⚔️ Damage",
+      "meleeFireRate": "⚔️ Fire Rate",
+      "meleeRange": "⚔️ Range"
     },
     "choiceProps": {
       "cooldown": "cooldown",
