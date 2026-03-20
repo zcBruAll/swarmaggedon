@@ -37,8 +37,9 @@
         "moveUpLeftDownRight": "Se déplacer en haut / gauche / bas / droite",
         "arrowKeys": "Les touches fléchées fonctionnent aussi",
         "mouseAim": "Viser — votre personnage fait automatiquement face à l'ennemi le plus proche",
-        "lmbCharge": "Attaque chargée (enchantement Charge) — ou déployer un drone (Ingénieur)",
-        "rmbRecall": "Rappeler le drone le plus proche (Ingénieur uniquement)",
+        "lmbCharge": "Attaque chargée (enchantement Charge) — ou déployer le drone sélectionné (Ingénieur)",
+        "tabCycle": "Parcourir les drones en orbite pour en sélectionner un (Ingénieur uniquement)",
+        "rmbRecall": "Rappeler le drone déployé le plus proche — ou récupérer un drone endommagé à proximité (Ingénieur uniquement)",
         "escPause": "Pause / Reprendre"
       },
       "hud": {
@@ -103,11 +104,11 @@
         "stats": [
           [
             "PV",
-            "140"
+            "160"
           ],
           [
             "Vitesse",
-            "160"
+            "210"
           ],
           [
             "Arme",
@@ -118,31 +119,31 @@
             "Stratégique"
           ]
         ],
-        "desc": "N'a pas d'arme personnelle — quatre drones combattent à votre place. Deux sont à distance, deux au corps-à-corps. Survit en gérant le placement des drones, les réparations et les réinitialisations de vague.",
-        "droneTitle": "Mécaniques des drones",
+        "desc": "N'a pas d'arme personnelle — quatre drones combattent à votre place. Deux sont à distance, deux au corps-à-corps. Survit en gérant le placement des drones, les réparations et les réinitialisations de vague. Les améliorations entre les vagues renforcent vos drones et vous-même directement.",
+        "droneTitle": "Contrôles des drones",
         "droneRows": [
           [
+            "Tab",
+            "Parcourir les drones en orbite pour en sélectionner un — le drone sélectionné est mis en évidence par un anneau doré"
+          ],
+          [
             "Clic gauche",
-            "Déployer le drone en orbite à la position du curseur"
+            "Déployer le drone sélectionné à la position du curseur (le premier disponible si rien n'est sélectionné)"
           ],
           [
             "Clic droit",
             "Rappeler le drone déployé le plus proche — ou récupérer un drone endommagé à proximité"
-          ],
-          [
-            "Rester près d'un drone",
-            "Réparer un drone endommagé (2,5s) ou soigner un drone déployé (8 PV/s)"
           ]
         ],
         "statesTitle": "États des drones",
         "states": [
           [
             "En orbite",
-            "Vous escorte. Attaque les ennemis proches mais avec une puissance réduite (35% dégâts, 55% portée, 1,8× recharge). Se régénère passivement à 4 PV/s. Déployez-le pour débloquer ses statistiques complètes."
+            "Vous escorte en anneau régulièrement espacé. Attaque les ennemis proches à puissance réduite (55% dégâts, 70% portée, 1,45× recharge). Se régénère passivement à 6 PV/s. Reçoit seulement 55% des dégâts. Déployez-le pour débloquer ses statistiques complètes."
           ],
           [
             "Déployé",
-            "Tourelle stationnaire. Statistiques d'arme complètes. Réparable sur le terrain en restant à côté."
+            "Tourelle stationnaire. Statistiques d'arme complètes. Réparable sur le terrain en restant à côté (12 PV/s)."
           ],
           [
             "Épave",
@@ -150,12 +151,14 @@
           ],
           [
             "Rappel",
-            "Revient vers vous après avoir été rappelé ou réparé. Passe en orbite à l'arrivée."
+            "Revient vers vous après avoir été rappelé ou réparé. Retourne en orbite à l'arrivée."
           ]
         ],
         "waveClearTitle": "Bonus de fin de vague",
-        "waveClear": "Quand une vague se termine, tous les drones déployés rentrent automatiquement et tous les PV des drones sont restaurés à leur maximum. Utilisez cela pour vous regrouper avant la prochaine vague.",
-        "tip": "L'orbite est un filet de sécurité, pas une stratégie. Les drones déployés infligent 3× plus de dégâts que les drones en orbite — engagez-les tôt et réparez entre les vagues."
+        "waveClear": "Quand une vague se termine, tous les drones déployés rentrent automatiquement et tous les PV des drones sont restaurés à leur maximum. Profitez de ce moment pour vous repositionner et re-sélectionner avant la prochaine vague.",
+        "enchantTitle": "Enchantements des drones",
+        "enchant": "Aux vagues 15 et 30, vous choisissez un enchantement pour un type de drone (à distance ou corps-à-corps). Chaque écran propose exactement 3 options d'enchantement. Au second écran, le type non encore enchanté est proposé en priorité — mais si les deux ont déjà un enchantement, vous pouvez librement en changer un.",
+        "tip": "L'orbite est un filet de sécurité, pas une stratégie. Les drones déployés infligent bien plus que les drones en orbite — utilisez Tab pour pré-sélectionner le bon type, puis placez-le avant que la vague n'approche."
       }
     },
     "enemies": {
@@ -197,7 +200,7 @@
     "weapons": {
       "rangedTitle": "🔫 À distance",
       "meleeTitle": "⚔️ Corps-à-corps",
-      "tip": "Les enchantements se débloquent à la vague 20 et sont proposés comme récompense spéciale. Vous ne pouvez avoir qu'un seul enchantement à la fois.",
+      "tip": "Les enchantements se débloquent à la vague 20 pour le Bagarreur et le Ranger, et aux vagues 15 et 30 pour l'Ingénieur (appliqués par type de drone). Vous ne pouvez avoir qu'un seul enchantement à la fois.",
       "ranged": {
         "single": "Balle unique standard. Base fiable — dégâts solides, portée correcte.",
         "rifle": "Tire une rafale de balles en succession rapide. Excellent DPS soutenu contre les ennemis résistants.",
@@ -218,7 +221,7 @@
     },
     "augments": {
       "howTitle": "Comment fonctionnent les améliorations",
-      "howDesc": "Après chaque vague, choisissez 1 amélioration parmi 3 aléatoires. Chacune a une rareté qui détermine l'ampleur du bonus — rareté plus élevée = bonus plus grand. Les écrans de récompense de Boss proposent toujours au moins une qualité Rare. Vous disposez de 2 relances par partie.",
+      "howDesc": "Après chaque vague, choisissez 1 amélioration parmi 3 aléatoires. Chacune a une rareté qui détermine l'ampleur du bonus — rareté plus élevée = bonus plus grand. Les écrans de récompense de Boss proposent toujours au moins une qualité Rare. Vous disposez de 2 relances par partie. Les améliorations de l'Ingénieur renforcent vos drones ou vous-même directement.",
       "raritiesTitle": "Raretés",
       "statsTitle": "Référence des statistiques",
       "tip": "Tous les bonus sont multiplicatifs — cumuler la même statistique se compose dans le temps. Un bonus de 15% de Dégâts sur des améliorations existantes représente toujours 15% de votre valeur actuelle.",
@@ -529,7 +532,14 @@
       "cooldownPerStack": "CD par Stack",
       "stacks": "Stacks",
       "detonateRadius": "Rayon détonation",
-      "detonateDamage": "Dégâts détonation"
+      "detonateDamage": "Dégâts détonation",
+      "droneHp": "PV tous drones",
+      "rangeDamage": "🔫 Dégâts",
+      "rangeFireRate": "🔫 Cadence",
+      "rangeRange": "🔫 Portée",
+      "meleeDamage": "⚔️ Dégâts",
+      "meleeFireRate": "⚔️ Cadence",
+      "meleeRange": "⚔️ Portée"
     },
     "choiceProps": {
       "cooldown": "recharge",

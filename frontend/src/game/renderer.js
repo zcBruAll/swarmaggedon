@@ -23,12 +23,11 @@ export function drawBackground(ctx, width, height, camera) {
 
 export function drawActors(ctx, camera, actors, canvasW, canvasH) {
     const scale = camera.scale ?? 1;
+    const engineer = actors.find(a => a.drawType === 'engineer');
 
     ctx.save();
     ctx.scale(scale, scale);
     ctx.translate(-camera.x, -camera.y);
-
-    const engineer = actors.find(a => a.drawType === 'engineer');
 
     for (const actor of actors) {
         switch (actor.drawType) {
@@ -123,6 +122,9 @@ function drawDrone(ctx, drone, engineer) {
     if (drone.state === DRONE_STATE.STASH) return;
 
     const color = drone.weaponType === 'melee' ? DRONE_COLOR_MELEE : DRONE_COLOR_RANGE;
+    const isSelected = engineer &&
+        drone.state === DRONE_STATE.ORBITING &&
+        engineer.selectedDroneIndex === drone.index;
 
     if (engineer &&
         (drone.state === DRONE_STATE.DEPLOYED ||
@@ -144,7 +146,7 @@ function drawDrone(ctx, drone, engineer) {
     ctx.rotate(drone.angle);
 
     switch (drone.state) {
-        case DRONE_STATE.ORBITING: _drawDroneOrbiting(ctx, drone, color); break;
+        case DRONE_STATE.ORBITING: _drawDroneOrbiting(ctx, drone, color, isSelected); break;
         case DRONE_STATE.DEPLOYED: _drawDroneActive(ctx, drone, color); break;
         case DRONE_STATE.RECALLING: _drawDroneActive(ctx, drone, color); break;
         case DRONE_STATE.WRECKED: _drawDroneWrecked(ctx, drone); break;
@@ -159,7 +161,7 @@ function drawDrone(ctx, drone, engineer) {
         drone.state === DRONE_STATE.ORBITING) && drone.hp < drone.maxHp) {
         _drawDroneHpBar(ctx, drone, color);
     }
-    
+
     if ((drone.state === DRONE_STATE.DEPLOYED && drone._deployTimer <= 0) ||
         drone.state === DRONE_STATE.ORBITING) {
         _drawWeaponArc(ctx, drone, true);
@@ -167,26 +169,23 @@ function drawDrone(ctx, drone, engineer) {
 }
 
 function _drawDroneActive(ctx, drone, color) {
-    // Soft glow
     ctx.beginPath();
     ctx.arc(0, 0, drone.radius + 5, 0, Math.PI * 2);
     ctx.fillStyle = color + '22';
     ctx.fill();
 
-    // Diamond body
     ctx.beginPath();
     _diamondPath(ctx, 0, 0, drone.radius);
     ctx.fillStyle = color;
     ctx.fill();
 
-    // Forward nub
     ctx.beginPath();
     ctx.arc(drone.radius * 0.55, 0, 2.5, 0, Math.PI * 2);
     ctx.fillStyle = '#f4f0e8';
     ctx.fill();
 }
 
-function _drawDroneOrbiting(ctx, drone, color) {
+function _drawDroneOrbiting(ctx, drone, color, isSelected) {
     _drawDroneActive(ctx, drone, color);
 
     const cdRatio = drone.weapon
@@ -200,10 +199,19 @@ function _drawDroneOrbiting(ctx, drone, color) {
     ctx.globalAlpha = pulse;
     ctx.stroke();
     ctx.globalAlpha = 1;
+
+    if (isSelected) {
+        ctx.beginPath();
+        ctx.arc(0, 0, drone.radius + 11, 0, Math.PI * 2);
+        ctx.strokeStyle = '#f1c40f';
+        ctx.lineWidth = 2.5;
+        ctx.globalAlpha = 0.9;
+        ctx.stroke();
+        ctx.globalAlpha = 1;
+    }
 }
 
 function _drawDroneWrecked(ctx, drone) {
-    // Broken X
     const s = drone.radius * 0.7;
     ctx.strokeStyle = DRONE_COLOR_WRECK;
     ctx.lineWidth = 2.5;
@@ -213,7 +221,6 @@ function _drawDroneWrecked(ctx, drone) {
     ctx.moveTo(s, -s); ctx.lineTo(-s, s);
     ctx.stroke();
 
-    // Dashed circle
     ctx.beginPath();
     ctx.arc(0, 0, drone.radius, 0.3, Math.PI * 2 - 0.3);
     ctx.strokeStyle = 'rgba(192,57,43,0.45)';
@@ -351,7 +358,7 @@ function _drawWeaponArc(ctx, bearer, subtleArea = true) {
         weaponRange = weapon.range * (weapon.chargeTime * weapon.rngSpeed) / 100;
     }
 
-    const readyRatio = laserCharging ? 1 : 1 - (Math.max(0, weapon.cooldownTime) / weapon.cooldown);
+    const readyRatio = laserCharging ? 1 : 1 - Math.min(1, Math.max(0, weapon.cooldownTime) / weapon.cooldown);
     const halfSpread = (weaponAngle / 2) * (Math.PI / 180);
     const arcRadius = bearer.radius + weaponRange;
 

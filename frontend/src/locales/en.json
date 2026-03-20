@@ -37,8 +37,9 @@
         "moveUpLeftDownRight": "Move up / left / down / right",
         "arrowKeys": "Arrow keys also work",
         "mouseAim": "Aim — your character auto-faces the nearest enemy",
-        "lmbCharge": "Charge attack (Charge enchant) — or deploy a drone (Engineer)",
-        "rmbRecall": "Recall nearest drone (Engineer only)",
+        "lmbCharge": "Charge attack (Charge enchant) — or deploy selected drone (Engineer)",
+        "tabCycle": "Cycle through orbiting drones to select one (Engineer only)",
+        "rmbRecall": "Recall nearest deployed drone — or recover a nearby wrecked drone (Engineer only)",
         "escPause": "Pause / Resume"
       },
       "hud": {
@@ -103,11 +104,11 @@
         "stats": [
           [
             "HP",
-            "140"
+            "160"
           ],
           [
             "Speed",
-            "160"
+            "210"
           ],
           [
             "Weapon",
@@ -118,44 +119,46 @@
             "Strategic"
           ]
         ],
-        "desc": "Has no personal weapon — four drones fight for you. Two are ranged, two are melee. Survives by managing drone placement, repairs, and wave resets.",
-        "droneTitle": "Drone mechanics",
+        "desc": "Has no personal weapon — four drones fight for you. Two are ranged, two are melee. Survives by managing drone placement, repairs, and wave resets. Upgrades between waves buff your drones and yourself directly instead of picking weapons.",
+        "droneTitle": "Drone controls",
         "droneRows": [
           [
+            "Tab",
+            "Cycle through orbiting drones to select one — the selected drone is highlighted with a gold ring"
+          ],
+          [
             "LMB",
-            "Deploy orbiting drone to cursor position"
+            "Deploy the selected drone to the cursor position (defaults to first available if nothing is selected)"
           ],
           [
             "RMB",
-            "Recall nearest deployed drone — or recover a nearby wrecked drone"
-          ],
-          [
-            "Stand near drone",
-            "Field-repair a wrecked drone (2.5s) or heal a damaged deployed drone (8 hp/s)"
+            "Recall the nearest deployed drone to cursor — or recover a nearby wrecked drone back to orbit"
           ]
         ],
         "statesTitle": "Drone states",
         "states": [
           [
             "Orbiting",
-            "Escorts you. Attacks enemies that come close but at reduced power (35% damage, 55% range, 1.8× cooldown). Heals passively at 4 hp/s. Deploy it to unlock full stats."
+            "Escorts you in an evenly-spaced ring. Attacks nearby enemies at reduced power (55% damage, 70% range, 1.45× cooldown). Heals passively at 6 hp/s. Takes only 55% damage. Deploy it to unlock full stats."
           ],
           [
             "Deployed",
-            "Stationary turret. Full weapon stats. Field-repairable by standing next to it."
+            "Stationary turret. Full weapon stats. Field-repairable by standing next to it (12 hp/s)."
           ],
           [
             "Wrecked",
-            "Destroyed in place. Stand within repair radius to restore it over 2.5s. Progress resets slowly if you walk away."
+            "Destroyed in place. Stand within repair radius to restore it over 2.5 s. Progress resets slowly if you walk away."
           ],
           [
             "Recalling",
-            "Flying back to you after being recalled or repaired. Becomes orbiting on arrival."
+            "Flying back to you after being recalled or repaired. Returns to orbit on arrival."
           ]
         ],
         "waveClearTitle": "Wave clear bonus",
-        "waveClear": "When a wave ends, all deployed drones recall home automatically and all drone HP is restored to full. Use this to regroup before the next wave.",
-        "tip": "Orbit is a safety net, not a strategy. Deployed drones deal 3× more damage than orbiting ones — commit them early and repair between waves."
+        "waveClear": "When a wave ends, all deployed drones recall automatically and all drone HP is restored to full. Use this window to regroup and re-select before the next wave.",
+        "enchantTitle": "Drone enchants",
+        "enchant": "At wave 15 and wave 30 you choose an enchant for one drone type (ranged or melee). Each screen shows exactly 3 enchant options. On the second screen, the type you haven't enchanted yet is offered first — but if both are already enchanted you can freely change either.",
+        "tip": "Orbit is a safety net, not a strategy. Deployed drones deal significantly more than orbiting ones — use Tab to pre-select the right type, then place it before the wave gets close."
       }
     },
     "enemies": {
@@ -197,7 +200,7 @@
     "weapons": {
       "rangedTitle": "🔫 Ranged",
       "meleeTitle": "⚔️ Melee",
-      "tip": "Enchants are unlocked at wave 20 and offered as a special reward. You can only have one enchant at a time.",
+      "tip": "Enchants are unlocked at wave 20 for Brawler and Ranger, and at waves 15 and 30 for Engineer (applied per drone type). You can only have one enchant at a time.",
       "ranged": {
         "single": "Standard single bullet. Reliable baseline — solid damage, decent range.",
         "rifle": "Fires a burst of bullets in quick succession. Great sustained DPS against tanky enemies.",
@@ -218,7 +221,7 @@
     },
     "augments": {
       "howTitle": "How augments work",
-      "howDesc": "After each wave you choose 1 of 3 random augments. Each has a rarity that determines the bonus magnitude — higher rarity = bigger % boost. Boss reward screens always offer at least Rare quality. You get 2 rerolls per run.",
+      "howDesc": "After each wave you choose 1 of 3 random augments. Each has a rarity that determines the bonus magnitude — higher rarity = bigger % boost. Boss reward screens always offer at least Rare quality. You get 2 rerolls per run. Engineer upgrades buff your drones or yourself directly instead of weapon stats.",
       "raritiesTitle": "Rarities",
       "statsTitle": "Stat reference",
       "tip": "All bonuses are multiplicative — stacking the same stat compounds over time. A 15% Damage boost on top of existing upgrades is always 15% of your current value.",
@@ -529,7 +532,14 @@
       "cooldownPerStack": "CD per Stack",
       "stacks": "Stacks",
       "detonateRadius": "Detonate Radius",
-      "detonateDamage": "Detonate Damage"
+      "detonateDamage": "Detonate Damage",
+      "droneHp": "All Drone HP",
+      "rangeDamage": "🔫 Damage",
+      "rangeFireRate": "🔫 Fire Rate",
+      "rangeRange": "🔫 Range",
+      "meleeDamage": "⚔️ Damage",
+      "meleeFireRate": "⚔️ Fire Rate",
+      "meleeRange": "⚔️ Range"
     },
     "choiceProps": {
       "cooldown": "cooldown",

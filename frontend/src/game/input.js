@@ -12,6 +12,7 @@ export const input = {
     mouseDown: false,
     mouseClicked: false,
     rightMouseClicked: false,
+    tabPressed: false,
 };
 
 function onKeyDown(e) {
@@ -20,6 +21,10 @@ function onKeyDown(e) {
         case 'ARROWDOWN': case 'S': input.keys.down = true; e.preventDefault(); break;
         case 'ARROWLEFT': case 'A': input.keys.left = true; e.preventDefault(); break;
         case 'ARROWRIGHT': case 'D': input.keys.right = true; e.preventDefault(); break;
+        case 'TAB':
+            input.tabPressed = true;
+            e.preventDefault();
+            break;
     }
 }
 
@@ -75,4 +80,5 @@ export function destroyInput(canvas) {
 export function flushInput() {
     input.mouseClicked = false;
     input.rightMouseClicked = false;
+    input.tabPressed = false;
 }

@@ -26,6 +26,7 @@ function ControlsTab() {
                 {[
                     [['Mouse'], t('wiki.controls.keys.mouseAim')],
                     [['LMB Hold'], t('wiki.controls.keys.lmbCharge')],
+                    [['Tab'], t('wiki.controls.keys.tabCycle')],
                     [['RMB'], t('wiki.controls.keys.rmbRecall')],
                 ].map(([keys, desc], i) => (
                     <div className='wiki-row' key={i}>
@@ -98,10 +99,7 @@ function ClassesTab() {
                         }}
                     >
                         {/* Class name */}
-                        <div style={{
-                            display: 'flex', alignItems: 'center',
-                            gap: 8, marginBottom: 6,
-                        }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
                             <strong style={{ fontSize: '1.1rem', color }}>
                                 {t(`wiki.classes.${key}.name`)}
                             </strong>
@@ -127,9 +125,10 @@ function ClassesTab() {
                             {t(`wiki.classes.${key}.desc`)}
                         </div>
 
-                        {/* Engineer-specific drone section */}
+                        {/* Engineer-specific sections */}
                         {isDrone && (
                             <>
+                                {/* Drone controls */}
                                 <div className='wiki-section-title' style={{ marginTop: 10 }}>
                                     {t('wiki.classes.engineer.droneTitle')}
                                 </div>
@@ -142,6 +141,7 @@ function ClassesTab() {
                                     </div>
                                 ))}
 
+                                {/* Drone states */}
                                 <div className='wiki-section-title' style={{ marginTop: 10 }}>
                                     {t('wiki.classes.engineer.statesTitle')}
                                 </div>
@@ -154,11 +154,20 @@ function ClassesTab() {
                                     </div>
                                 ))}
 
+                                {/* Wave clear bonus */}
                                 <div className='wiki-section-title' style={{ marginTop: 10 }}>
                                     {t('wiki.classes.engineer.waveClearTitle')}
                                 </div>
                                 <div className='wiki-desc' style={{ marginBottom: 6 }}>
                                     {t('wiki.classes.engineer.waveClear')}
+                                </div>
+
+                                {/* Drone enchants — new section */}
+                                <div className='wiki-section-title' style={{ marginTop: 10 }}>
+                                    {t('wiki.classes.engineer.enchantTitle')}
+                                </div>
+                                <div className='wiki-desc' style={{ marginBottom: 6 }}>
+                                    {t('wiki.classes.engineer.enchant')}
                                 </div>
                             </>
                         )}

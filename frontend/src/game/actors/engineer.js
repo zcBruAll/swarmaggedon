@@ -1,6 +1,6 @@
 import { TEAM } from '../world.js';
 import { WEAPON_TYPE, WEAPON_ENCHANT } from '../weapon.js';
-import { createDrone, DRONE_STATE, DRONE_ORBIT_RADIUS, DRONE_REPAIR_RADIUS } from './drone.js';
+import { createDrone, DRONE_STATE, DRONE_ORBIT_RADIUS, DRONE_REPAIR_RADIUS, tickOrbitPhase } from './drone.js';
 
 const DRONE_LOADOUTS = [
     { type: WEAPON_TYPE.RANGE, enchant: WEAPON_ENCHANT.SINGLE },
@@ -18,7 +18,6 @@ export function createEngineer(canvasWidth, canvasHeight) {
         d.state = DRONE_STATE.ORBITING;
         d.x = cx;
         d.y = cy;
-        d.orbitAngle = (i / DRONE_LOADOUTS.length) * Math.PI * 2;
         return d;
     });
 
@@ -34,16 +33,24 @@ export function createEngineer(canvasWidth, canvasHeight) {
         radius: 14,
         angle: 0,
 
-        hp: 140,
-        maxHp: 140,
-        speed: 200,
+        hp: 160,
+        maxHp: 160,
+        speed: 210,
+
+        iFramesTime: 0,
 
         weapon: undefined,
         items: [],
         drones,
         dead: false,
 
+        selectedDroneIndex: -1,
+
         update(dt, world, inputState) {
+            tickOrbitPhase(dt);
+
+            if (this.iFramesTime > 0) this.iFramesTime -= Math.min(dt, this.iFramesTime);
+
             this._move(dt, inputState);
             this._faceNearestEnemy(world);
             this._updateDrones(dt, world, inputState);
@@ -64,16 +71,57 @@ export function createEngineer(canvasWidth, canvasHeight) {
             if (nearest) this.angle = Math.atan2(nearest.y - this.y, nearest.x - this.x);
         },
 
+        _orbitingDrones() {
+            return this.drones
+                .filter(d => d.state === DRONE_STATE.ORBITING)
+                .sort((a, b) => a.index - b.index);
+        },
+
+        _selectedDrone() {
+            if (this.selectedDroneIndex < 0) return null;
+            const d = this.drones[this.selectedDroneIndex];
+            return d?.state === DRONE_STATE.ORBITING ? d : null;
+        },
+
         _updateDrones(dt, world, inputState) {
             for (const drone of this.drones) {
                 drone.update(dt, world, this);
             }
 
+            const orbiting = this._orbitingDrones();
+
+            if (this.selectedDroneIndex !== -1 && this._selectedDrone() === null) {
+                this.selectedDroneIndex = -1;
+            }
+
+            if (inputState?.tabPressed) {
+                if (orbiting.length === 0) {
+                    this.selectedDroneIndex = -1;
+                } else {
+                    const current = this._selectedDrone();
+                    const currentPos = current ? orbiting.indexOf(current) : -1;
+                    const nextPos = (currentPos + 1) % orbiting.length;
+                    this.selectedDroneIndex = orbiting[nextPos].index;
+                }
+            }
+
             if (inputState?.mouseClicked) {
-                const best = this.drones
-                    .filter(d => d.state === DRONE_STATE.ORBITING)
-                    .sort((a, b) => b.hp - a.hp)[0];
-                if (best) best.deploy(inputState.mouse.x, inputState.mouse.y);
+                const mx = inputState.mouse.x;
+                const my = inputState.mouse.y;
+                const target = this._selectedDrone() ?? orbiting[0] ?? null;
+                if (target) {
+                    const prevPos = orbiting.indexOf(target);
+                    target.deploy(mx, my);
+
+                    // Auto-advance to next orbiting drone after deploying
+                    const remaining = this._orbitingDrones();
+                    if (remaining.length > 0) {
+                        const nextPos = prevPos % remaining.length;
+                        this.selectedDroneIndex = remaining[nextPos].index;
+                    } else {
+                        this.selectedDroneIndex = -1;
+                    }
+                }
             }
 
             if (inputState?.rightMouseClicked) {
@@ -104,7 +152,9 @@ export function createEngineer(canvasWidth, canvasHeight) {
         },
 
         takeDamage(amount) {
+            if (this.iFramesTime > 0) return;
             this.hp -= Math.min(amount, this.hp);
+            this.iFramesTime = 0.45;
         },
 
         heal(amount) {
@@ -115,6 +165,19 @@ export function createEngineer(canvasWidth, canvasHeight) {
             const ratio = this.hp / this.maxHp;
             this.maxHp = Math.round(this.maxHp * (1 + percent / 100));
             this.hp = Math.round(this.maxHp * ratio);
+        },
+
+        buffDrones(stat, multiplier, droneType = null) {
+            for (const drone of this.drones) {
+                if (droneType && drone.weaponType !== droneType) continue;
+                if (drone.weapon && drone.weapon[stat] !== undefined) {
+                    drone.weapon[stat] = parseFloat((drone.weapon[stat] * multiplier).toFixed(2));
+                }
+            }
+        },
+
+        buffAllDrones(stat, multiplier) {
+            this.buffDrones(stat, multiplier, null);
         },
 
         equipWeapon(_weapon) { /* engineer has no personal weapon */ },

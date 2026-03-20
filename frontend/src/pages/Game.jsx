@@ -76,58 +76,38 @@ function ClassSelectOverlay({ onSelect }) {
                 fontFamily: "'Patrick Hand', cursive",
               }}
             >
-              {/* Icon + label */}
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <span style={{ fontSize: 'clamp(22px, 4vw, 32px)', lineHeight: 1 }}>
-                  {cls.icon}
-                </span>
-                <span style={{
-                  fontSize: 'clamp(20px, 3.5vw, 28px)',
-                  fontWeight: 700,
-                  color: isHovered ? cls.color : cls.color,
-                }}>
+                <span style={{ fontSize: 'clamp(22px, 4vw, 32px)', lineHeight: 1 }}>{cls.icon}</span>
+                <span style={{ fontSize: 'clamp(20px, 3.5vw, 28px)', fontWeight: 700, color: cls.color }}>
                   {cls.label}
                 </span>
               </div>
 
-              {/* Description */}
               <p style={{
-                fontSize: 'clamp(12px, 1.8vw, 15px)',
-                lineHeight: 1.35,
-                color: isHovered ? 'rgba(244,240,232,0.75)' : '#5a5040',
-                margin: 0,
+                fontSize: 'clamp(12px, 1.8vw, 15px)', lineHeight: 1.35,
+                color: isHovered ? 'rgba(244,240,232,0.75)' : '#5a5040', margin: 0,
               }}>
                 {cls.description}
               </p>
 
-              {/* Stats */}
               <div style={{
                 borderTop: `1.5px dashed ${isHovered ? 'rgba(244,240,232,0.2)' : '#c8bfad'}`,
-                paddingTop: 8,
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 3,
+                paddingTop: 8, display: 'flex', flexDirection: 'column', gap: 3,
               }}>
                 {cls.stats.map(s => (
                   <div key={s.key} style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
+                    display: 'flex', justifyContent: 'space-between',
                     fontSize: 'clamp(11px, 1.6vw, 14px)',
                   }}>
-                    <span style={{ color: isHovered ? 'rgba(244,240,232,0.55)' : '#a89880' }}>
-                      {s.key}
-                    </span>
+                    <span style={{ color: isHovered ? 'rgba(244,240,232,0.55)' : '#a89880' }}>{s.key}</span>
                     <span style={{ fontWeight: 700 }}>{s.value}</span>
                   </div>
                 ))}
               </div>
 
-              {/* Start hint */}
               <div style={{
                 fontSize: 'clamp(10px, 1.4vw, 12px)',
-                color: isHovered ? cls.color : cls.color + 'cc',
-                fontStyle: 'italic',
-                marginTop: 2,
+                color: cls.color + 'cc', fontStyle: 'italic', marginTop: 2,
               }}>
                 {cls.startWeaponHint}
               </div>
@@ -168,7 +148,6 @@ function Game() {
     }
   }, [addRun]);
 
-  // Flush raw HUD into React state at ~15fps
   useEffect(() => {
     const id = setInterval(() => setHud({ ...hudRawRef.current }), 66);
     return () => clearInterval(id);
@@ -211,7 +190,46 @@ function Game() {
   const tRarity = (name) => t(`game.rarities.${name}`, { defaultValue: name });
   const tProp = (prop) => t(`game.choiceProps.${prop}`, { defaultValue: prop });
 
+  const ENGINEER_ATTR_LABELS = {
+    maxHp: 'Engineer HP',
+    moveSpeed: 'Move Speed',
+    droneHp: 'All Drone HP',
+    rangeDamage: '🔫 Damage',
+    rangeFireRate: '🔫 Fire Rate',
+    rangeRange: '🔫 Range',
+    meleeDamage: '⚔️ Damage',
+    meleeFireRate: '⚔️ Fire Rate',
+    meleeRange: '⚔️ Range',
+  };
+  const tEngAttr = (attr) => ENGINEER_ATTR_LABELS[attr] ?? attr;
+
   const hud = hudRawRef.current;
+
+  const handleChoiceClick = (choice) => {
+    switch (choice.type) {
+      case CHOICE_TYPE.AUGMENT:
+        choice.func(choice.arg, choice.bonus);
+        break;
+      case CHOICE_TYPE.WEAPON:
+        choice.func(choice.arg, choice.wpn);
+        break;
+      case CHOICE_TYPE.ENCHANT:
+        choice.func(choice.arg, choice.enchant);
+        break;
+      case CHOICE_TYPE.BOSS_REWARD:
+        choice.func(choice.arg, choice.bonus);
+        break;
+      case CHOICE_TYPE.ENGINEER_UPGRADE:
+        choice.func(choice.bonus);
+        break;
+      case CHOICE_TYPE.ENGINEER_ENCHANT:
+        choice.func(hud.player, { enchant: choice.enchant, droneType: choice.droneType });
+        break;
+      default:
+        if (choice.func) choice.func(choice.arg, choice.bonus ?? choice.wpn ?? choice.enchant);
+    }
+    engineRef.current.madeChoice();
+  };
 
   return (
     <>
@@ -257,29 +275,24 @@ function Game() {
         {/* ── Choice screen ── */}
         {hud.gameState === GAME_STATE.CHOICE && (
           <div className="overlay choice">
-            <span className="choice-title">{t('game.chooseAugment')}</span>
+            <span className="choice-title">
+              { t('game.chooseAugment') }
+            </span>
             <div className="choice-list">
               {hud.choices.map((choice) => (
                 <div
                   className="choice-card"
                   key={choice.id}
                   style={{ borderColor: choice.rarityColor }}
-                  onClick={() => {
-                    choice.func(
-                      choice.arg,
-                      choice.type === CHOICE_TYPE.AUGMENT ? choice.bonus
-                        : choice.type === CHOICE_TYPE.WEAPON ? choice.wpn
-                          : choice.enchant,
-                    );
-                    engineRef.current.madeChoice();
-                  }}
+                  onClick={() => handleChoiceClick(choice)}
                 >
                   <span className="choice-rarity" style={{ backgroundColor: choice.rarityColor }}>
                     {tRarity(choice.rarityName)}
                   </span>
                   <img className="choice-img" src={choice.icon || 'temp.png'} alt="icon" />
 
-                  {choice.type === CHOICE_TYPE.AUGMENT && (
+                  {/* Standard augment */}
+                  {(choice.type === CHOICE_TYPE.AUGMENT || choice.type === CHOICE_TYPE.BOSS_REWARD) && (
                     <>
                       <span className="choice-attr">{tAttr(choice.attr)}</span>
                       <div className="choice-stats-container">
@@ -290,6 +303,7 @@ function Game() {
                     </>
                   )}
 
+                  {/* Weapon pick */}
                   {choice.type === CHOICE_TYPE.WEAPON && (
                     <>
                       <span className="choice-attr">{tWeaponLabel(choice.wpn)}</span>
@@ -304,6 +318,7 @@ function Game() {
                     </>
                   )}
 
+                  {/* Standard enchant */}
                   {choice.type === CHOICE_TYPE.ENCHANT && (
                     <>
                       <span className="choice-attr">{tEnchant(choice.attr)}</span>
@@ -331,6 +346,71 @@ function Game() {
                           );
                         })}
                       </div>
+                    </>
+                  )}
+
+                  {/* ── Engineer upgrade ── */}
+                  {choice.type === CHOICE_TYPE.ENGINEER_UPGRADE && (
+                    <>
+                      <span className="choice-attr">{tEngAttr(choice.attr)}</span>
+                      <div className="choice-stats-container">
+                        <span className="choice-curr">{t('game.choice.current', {
+                          value:
+                            typeof choice.curr === 'number' ? choice.curr.toFixed(choice.curr % 1 === 0 ? 0 : 2) : choice.curr
+                        })}</span>
+                        <span className="choice-bonus">{choice.bonus > 0 ? '+' : ''}{choice.bonus}%</span>
+                        <span className="choice-new">{t('game.choice.newValue', {
+                          value:
+                            typeof choice.new === 'number' ? choice.new.toFixed(choice.new % 1 === 0 ? 0 : 2) : choice.new
+                        })}</span>
+                      </div>
+                    </>
+                  )}
+
+                  {/* ── Engineer enchant ── */}
+                  {choice.type === CHOICE_TYPE.ENGINEER_ENCHANT && (
+                    <>
+                      {/* Drone type label */}
+                      <span style={{
+                        fontFamily: "'Patrick Hand', cursive",
+                        fontSize: 'clamp(11px, 1.8vw, 14px)',
+                        color: choice.droneColor,
+                        fontWeight: 700,
+                        marginBottom: 2,
+                      }}>
+                        {choice.droneTypeLabel}
+                      </span>
+                      <span className="choice-attr">{tEnchant(choice.enchant?.name)}</span>
+                      {/* Enchant-specific props */}
+                      {choice.enchant?.props?.length > 0 && (
+                        <div className="choice-stats-container enchant">
+                          {choice.enchant.props.map((prop) => (
+                            <div className="choice-enchant-attr" key={prop}>
+                              <span className="choice-enchant-attr-title">{tProp(prop)}</span>
+                              <span className="choice-enchant-attr-value">{choice.enchant[prop]}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      {/* Bonus/malus props */}
+                      {choice.enchant?.bonusProps?.length > 0 && (
+                        <div className="choice-stats-container enchant">
+                          {choice.enchant.bonusProps.map((prop) => {
+                            const value = choice.enchant[prop];
+                            const diff = value - 100;
+                            const isBonus = prop === 'cooldown' ? diff < 0 : diff > 0;
+                            const cls = diff === 0 ? '' : isBonus ? 'bonus' : 'malus';
+                            return (
+                              <div className="choice-enchant-attr" key={prop}>
+                                <span className="choice-enchant-attr-title">{tProp(prop)}</span>
+                                <span className={`choice-enchant-attr-value ${cls}`}>
+                                  {diff >= 0 && '+'}{diff}%
+                                </span>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
                     </>
                   )}
                 </div>
@@ -450,7 +530,7 @@ function Game() {
                 </>
               )}
 
-              {/* Engineer: no weapon stats, show drone summary instead */}
+              {/* Engineer summary instead of weapon stats */}
               {hud.isEngineer && (
                 <div style={{ fontSize: 'clamp(8px, 1.3vw, 11px)', color: 'rgba(42,35,24,0.45)', marginTop: 3 }}>
                   {hud.drones?.filter(d => d.state === 'deployed').length ?? 0} deployed ·{' '}
@@ -534,19 +614,15 @@ function Game() {
                 }}>
                   <span style={{ fontSize: 14, lineHeight: 1 }}>{typeIcon}</span>
                   <span style={{
-                    fontSize: 8,
-                    textTransform: 'uppercase',
-                    color: stateColor,
-                    letterSpacing: '0.3px',
-                    lineHeight: 1,
+                    fontSize: 8, textTransform: 'uppercase',
+                    color: stateColor, letterSpacing: '0.3px', lineHeight: 1,
                   }}>
                     {drone.state}
                   </span>
                   {drone.state !== 'stash' && (
                     <div style={{ width: '100%', height: 3, background: 'rgba(42,35,24,0.15)', borderRadius: 2, overflow: 'hidden' }}>
                       <div style={{
-                        width: `${Math.round(hpPct * 100)}%`,
-                        height: '100%',
+                        width: `${Math.round(hpPct * 100)}%`, height: '100%',
                         background: drone.state === 'wrecked' ? '#c0392b' : hpPct > 0.5 ? stateColor : '#e67e22',
                         transition: 'width 0.1s',
                       }} />
@@ -556,8 +632,7 @@ function Game() {
                     <div style={{ width: '100%', height: 3, background: 'rgba(0,0,0,0.15)', borderRadius: 2, overflow: 'hidden' }}>
                       <div style={{
                         width: `${Math.round(drone.repairProgress * 100)}%`,
-                        height: '100%',
-                        background: '#27ae60',
+                        height: '100%', background: '#27ae60',
                       }} />
                     </div>
                   )}
@@ -570,17 +645,12 @@ function Game() {
         {/* ── Engineer input hints ── */}
         {hud.gameState === GAME_STATE.RUNNING && hud.isEngineer && (
           <div style={{
-            position: 'fixed',
-            top: 18,
-            left: 'clamp(8px, 2vw, 16px)',
-            fontFamily: "'Patrick Hand', cursive",
-            fontSize: 'clamp(9px, 1.4vw, 12px)',
-            color: 'rgba(42,35,24,0.4)',
-            pointerEvents: 'none',
-            zIndex: 201,
-            lineHeight: 1.6,
+            position: 'fixed', top: 18, left: 'clamp(8px, 2vw, 16px)',
+            fontFamily: "'Patrick Hand', cursive", fontSize: 'clamp(9px, 1.4vw, 12px)',
+            color: 'rgba(42,35,24,0.4)', pointerEvents: 'none', zIndex: 201, lineHeight: 1.6,
           }}>
-            <div>LMB — deploy drone</div>
+            <div>Tab — select drone</div>
+            <div>LMB — deploy selected</div>
             <div>RMB — recall drone</div>
           </div>
         )}

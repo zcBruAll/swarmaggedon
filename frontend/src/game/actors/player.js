@@ -1,6 +1,8 @@
 import { createWeapon, tryAttack, WEAPON_TYPE, WEAPON_ENCHANT } from '../weapon.js';
 import { TEAM } from '../world.js';
 
+const PLAYER_IFRAME_DURATION = 0.45;
+
 export function createPlayer(canvasWidth, canvasHeight) {
     return {
         isActor: true,
@@ -22,12 +24,13 @@ export function createPlayer(canvasWidth, canvasHeight) {
         weapon: undefined,
         items: [],
 
+        iFramesTime: 0,
         dead: false,
 
         update(dt, world, inputState) {
+            if (this.iFramesTime > 0) this.iFramesTime -= Math.min(dt, this.iFramesTime);
             this._move(dt, inputState);
             this._faceNearestEnemy(world);
-
             tryAttack(this.weapon, this, world, dt, inputState);
         },
 
@@ -49,7 +52,9 @@ export function createPlayer(canvasWidth, canvasHeight) {
         },
 
         takeDamage(amount) {
+            if (this.iFramesTime > 0) return;
             this.hp -= Math.min(amount, this.hp);
+            this.iFramesTime = PLAYER_IFRAME_DURATION;
             if (this.weapon?.enchant === WEAPON_ENCHANT.MOMENTUM) {
                 this.weapon.stacks = 0;
                 this.weapon.decayTime = 0;

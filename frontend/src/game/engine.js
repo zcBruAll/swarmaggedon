@@ -6,7 +6,11 @@ import { DRONE_STATE } from './actors/drone.js';
 import { initInput, destroyInput, flushInput, input } from './input.js';
 import { drawBackground, drawActors } from './renderer.js';
 import { WEAPON_ENCHANT } from './weapon.js';
-import { CHOICE_TYPE, getChoices, getEnchantChoices, getWeaponChoices, getBossRewardChoices } from './choice.js';
+import {
+    CHOICE_TYPE,
+    getChoices, getEnchantChoices, getWeaponChoices, getBossRewardChoices,
+    getEngineerUpgradeChoices, getEngineerEnchantChoices,
+} from './choice.js';
 
 export const GAME_STATE = {
     CLASS_SELECT: 'class_select',
@@ -51,8 +55,8 @@ export const CLASS_DEFS = [
         icon: '🤖',
         description: 'Commands up to 4 drones that attack for you. Repair them to keep fighting.',
         stats: [
-            { key: 'HP', value: '120' },
-            { key: 'Speed', value: '160' },
+            { key: 'HP', value: '160' },
+            { key: 'Speed', value: '210' },
             { key: 'Weapon', value: '4 Drones' },
             { key: 'Playstyle', value: 'Strategic' },
         ],
@@ -65,6 +69,9 @@ const CAMERA_FREE_SPACE = 35;
 const WAVE_MSG_DURATION = 2;
 export const WAVE_INTERVAL = 60;
 const BASE_WIDTH = 700;
+
+const ENCHANT_WAVE_STANDARD = 20;
+const ENGINEER_ENCHANT_WAVES = [15, 30];
 
 export function createEngine(canvas, onHUDUpdate) {
     const ctx = canvas.getContext('2d');
@@ -85,6 +92,7 @@ export function createEngine(canvas, onHUDUpdate) {
 
     let rerollsLeft = 2;
     let currentChoiceType = null;
+    let engineerEnchantWave = 0;
 
     function _computeScale() { return Math.min(1, canvas.width / BASE_WIDTH); }
 
@@ -98,6 +106,7 @@ export function createEngine(canvas, onHUDUpdate) {
     function init() {
         world = createWorld();
         wave = 0;
+        engineerEnchantWave = 0;
 
         if (playerClass === 'engineer') {
             player = createEngineer(canvas.width, canvas.height);
@@ -186,7 +195,6 @@ export function createEngine(canvas, onHUDUpdate) {
         let w = 0;
         for (let r = 0; r < world.actors.length; r++) {
             const a = world.actors[r];
-
             if (a.drawType === 'drone') { world.actors[w++] = a; continue; }
 
             const isDead = a.hp <= 0 || a.dead;
@@ -232,15 +240,28 @@ export function createEngine(canvas, onHUDUpdate) {
                 player.heal(20);
 
                 if (_isEngineer()) {
-                    for (const drone of player.drones) {
-                        drone.resetForNextWave(player);
-                    }
+                    for (const drone of player.drones) drone.resetForNextWave(player);
                 }
 
                 const completedWave = wave;
                 let choiceType;
-                if (completedWave === 20) choiceType = CHOICE_TYPE.ENCHANT;
-                else if (completedWave % BOSS_WAVE_INTERVAL === 0) choiceType = CHOICE_TYPE.BOSS_REWARD;
+
+                if (_isEngineer()) {
+                    if (ENGINEER_ENCHANT_WAVES.includes(completedWave)) {
+                        engineerEnchantWave += 1;
+                        choiceType = CHOICE_TYPE.ENGINEER_ENCHANT;
+                    } else if (completedWave % BOSS_WAVE_INTERVAL === 0) {
+                        choiceType = CHOICE_TYPE.BOSS_REWARD;
+                    } else {
+                        choiceType = CHOICE_TYPE.ENGINEER_UPGRADE;
+                    }
+                } else {
+                    if (completedWave === ENCHANT_WAVE_STANDARD) {
+                        choiceType = CHOICE_TYPE.ENCHANT;
+                    } else if (completedWave % BOSS_WAVE_INTERVAL === 0) {
+                        choiceType = CHOICE_TYPE.BOSS_REWARD;
+                    }
+                }
 
                 _openChoiceScreen(choiceType);
             }
@@ -261,34 +282,36 @@ export function createEngine(canvas, onHUDUpdate) {
         gameState = GAME_STATE.CHOICE;
         currentChoiceType = type;
 
-        const target = _choiceTarget();
-        switch (type) {
-            case CHOICE_TYPE.WEAPON: choices = getWeaponChoices(wave, target); break;
-            case CHOICE_TYPE.ENCHANT: choices = getEnchantChoices(wave, target); break;
-            case CHOICE_TYPE.BOSS_REWARD: choices = getBossRewardChoices(wave, target); break;
-            default: choices = getChoices(wave, target); break;
-        }
+        if (_isEngineer()) {
+            switch (type) {
+                case CHOICE_TYPE.ENGINEER_ENCHANT:
+                    choices = getEngineerEnchantChoices(wave, player, engineerEnchantWave);
+                    break;
+                case CHOICE_TYPE.BOSS_REWARD:
+                    choices = getEngineerUpgradeChoices(wave, player, 'RARE');
+                    break;
+                default:
+                    choices = getEngineerUpgradeChoices(wave, player);
+                    break;
+            }
+        } else {
+            switch (type) {
+                case CHOICE_TYPE.WEAPON: choices = getWeaponChoices(wave, player); break;
+                case CHOICE_TYPE.ENCHANT: choices = getEnchantChoices(wave, player); break;
+                case CHOICE_TYPE.BOSS_REWARD: choices = getBossRewardChoices(wave, player); break;
+                default: choices = getChoices(wave, player); break;
+            }
 
-        if (type === CHOICE_TYPE.WEAPON && wave <= 1 && playerClass !== 'engineer') {
-            choices = choices.filter(c => {
-                if (!c.wpn) return true;
-                return c.wpn.type === (playerClass === 'melee' ? 'melee' : 'range');
-            });
-            if (choices.length === 0) choices = getWeaponChoices(wave, target);
+            if (type === CHOICE_TYPE.WEAPON && wave <= 1) {
+                choices = choices.filter(c => {
+                    if (!c.wpn) return true;
+                    return c.wpn.type === (playerClass === 'melee' ? 'melee' : 'range');
+                });
+                if (choices.length === 0) choices = getWeaponChoices(wave, player);
+            }
         }
 
         _emitHUD();
-    }
-
-    function _choiceTarget() {
-        if (!_isEngineer()) return player;
-        const drone = player.drones.find(d => d.weapon) ?? player.drones[0];
-        return {
-            ...player,
-            weapon: drone?.weapon,
-            speed: player.speed,
-            increaseMaxHp: (p) => player.increaseMaxHp(p),
-        };
     }
 
     function _updateCamera() {
