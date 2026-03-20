@@ -10,72 +10,48 @@ export const input = {
         y: 0,
     },
     mouseDown: false,
-}
+    mouseClicked: false,
+    rightMouseClicked: false,
+};
 
 function onKeyDown(e) {
-    const key = e.key;
-    switch (key.toUpperCase()) {
-        case "ARROWUP":
-        case "W":
-            input.keys.up = true;
-            e.preventDefault();
-            break;
-        case "ARROWDOWN":
-        case "S":
-            input.keys.down = true;
-            e.preventDefault();
-            break;
-        case "ARROWLEFT":
-        case "A":
-            input.keys.left = true;
-            e.preventDefault();
-            break;
-        case "ARROWRIGHT":
-        case "D":
-            input.keys.right = true;
-            e.preventDefault();
-            break;
+    switch (e.key.toUpperCase()) {
+        case 'ARROWUP': case 'W': input.keys.up = true; e.preventDefault(); break;
+        case 'ARROWDOWN': case 'S': input.keys.down = true; e.preventDefault(); break;
+        case 'ARROWLEFT': case 'A': input.keys.left = true; e.preventDefault(); break;
+        case 'ARROWRIGHT': case 'D': input.keys.right = true; e.preventDefault(); break;
     }
 }
 
 function onKeyUp(e) {
-    const key = e.key;
-    switch (key.toUpperCase()) {
-        case "ARROWUP":
-        case "W":
-            input.keys.up = false;
-            e.preventDefault();
-            break;
-        case "ARROWDOWN":
-        case "S":
-            input.keys.down = false;
-            e.preventDefault();
-            break;
-        case "ARROWLEFT":
-        case "A":
-            input.keys.left = false;
-            e.preventDefault();
-            break;
-        case "ARROWRIGHT":
-        case "D":
-            input.keys.right = false;
-            e.preventDefault();
-            break;
+    switch (e.key.toUpperCase()) {
+        case 'ARROWUP': case 'W': input.keys.up = false; e.preventDefault(); break;
+        case 'ARROWDOWN': case 'S': input.keys.down = false; e.preventDefault(); break;
+        case 'ARROWLEFT': case 'A': input.keys.left = false; e.preventDefault(); break;
+        case 'ARROWRIGHT': case 'D': input.keys.right = false; e.preventDefault(); break;
     }
 }
 
 function onMouseMove(e) {
-    const x = e.clientX;
-    const y = e.clientY;
-    input.mouse = { x, y };
+    input.mouse = { x: e.clientX, y: e.clientY };
 }
 
 function onMouseDown(e) {
-    input.mouseDown = (e.buttons & 1) === 1;
+    if ((e.buttons & 1) === 1) input.mouseDown = true;
 }
 
 function onMouseUp(e) {
-    input.mouseDown = !(input.mouseDown && !((e.buttons & 1) === 1));
+    if ((e.button === 0) && !((e.buttons & 1) === 1)) {
+        input.mouseDown = false;
+        input.mouseClicked = true;
+    }
+    if (e.button === 2) {
+        input.rightMouseClicked = true;
+    }
+}
+
+function onContextMenu(e) {
+    e.preventDefault();
 }
 
 export function initInput(canvas) {
@@ -84,6 +60,7 @@ export function initInput(canvas) {
     canvas.addEventListener('mousemove', onMouseMove);
     canvas.addEventListener('mousedown', onMouseDown);
     canvas.addEventListener('mouseup', onMouseUp);
+    canvas.addEventListener('contextmenu', onContextMenu);
 }
 
 export function destroyInput(canvas) {
@@ -92,8 +69,10 @@ export function destroyInput(canvas) {
     canvas.removeEventListener('mousemove', onMouseMove);
     canvas.removeEventListener('mousedown', onMouseDown);
     canvas.removeEventListener('mouseup', onMouseUp);
+    canvas.removeEventListener('contextmenu', onContextMenu);
 }
 
-export function flushInput(canvas) {
-    // TODO: Flush inputs that lasts a single frame (e.g. mouse click if added)
+export function flushInput() {
+    input.mouseClicked = false;
+    input.rightMouseClicked = false;
 }

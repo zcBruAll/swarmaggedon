@@ -23,6 +23,7 @@
     "title": "Wiki / Aide",
     "tabs": {
       "controls": "🎮 Contrôles",
+      "classes": "🧑 Classes",
       "enemies": "👾 Ennemis",
       "weapons": "⚔️ Armes",
       "augments": "✦ Améliorations"
@@ -35,17 +36,127 @@
       "keys": {
         "moveUpLeftDownRight": "Se déplacer en haut / gauche / bas / droite",
         "arrowKeys": "Les touches fléchées fonctionnent aussi",
-        "mouseAim": "Viser - votre personnage fait automatiquement face à l'ennemi le plus proche",
-        "lmbCharge": "Attaque chargée (enchantement Charge uniquement)",
+        "mouseAim": "Viser — votre personnage fait automatiquement face à l'ennemi le plus proche",
+        "lmbCharge": "Attaque chargée (enchantement Charge) — ou déployer un drone (Ingénieur)",
+        "rmbRecall": "Rappeler le drone le plus proche (Ingénieur uniquement)",
         "escPause": "Pause / Reprendre"
       },
       "hud": {
         "topRight": "Score · Temps survécu · Vague actuelle · Nombre de kills",
         "bottomLeft": "Barre de PV, type d'arme et statistiques",
         "bottomRight": "Emplacements d'objets (6 max) avec barres de recharge",
-        "topBar": "Minuteur de vague - se remplit avec le temps"
+        "topBar": "Minuteur de vague — se remplit avec le temps",
+        "bottomCenter": "Barre d'état des drones (Ingénieur uniquement) — affiche l'état et les PV de chaque drone"
       },
-      "tip": "Les attaques se déclenchent automatiquement - restez simplement à portée des ennemis."
+      "tip": "Les attaques se déclenchent automatiquement — restez simplement à portée des ennemis."
+    },
+    "classes": {
+      "intro": "Choisissez votre classe au début de chaque partie. Chaque classe a un style de jeu et des conditions de départ différents.",
+      "brawler": {
+        "name": "Bagarreur ⚔️",
+        "stats": [
+          [
+            "PV",
+            "100"
+          ],
+          [
+            "Vitesse",
+            "180"
+          ],
+          [
+            "Arme",
+            "Corps-à-corps uniquement"
+          ],
+          [
+            "Style",
+            "Agressif"
+          ]
+        ],
+        "desc": "Commence avec un choix d'arme de corps-à-corps. Combat à courte portée — risque élevé, récompense élevée. Fonctionne mieux avec des améliorations de recharge et de dégâts pour enchaîner les kills rapidement.",
+        "tip": "Restez mobile. Les armes de corps-à-corps ont des arcs étroits, donc le positionnement est plus important que pour les Rangers."
+      },
+      "ranger": {
+        "name": "Ranger 🔫",
+        "stats": [
+          [
+            "PV",
+            "100"
+          ],
+          [
+            "Vitesse",
+            "180"
+          ],
+          [
+            "Arme",
+            "À distance uniquement"
+          ],
+          [
+            "Style",
+            "Kitage"
+          ]
+        ],
+        "desc": "Commence avec un choix d'arme à distance. La classe la plus facile à prendre en main — vous pouvez infliger des dégâts en reculant. Fonctionne bien avec la vitesse de balle, la portée et les enchantements de zone.",
+        "tip": "Kitez en larges cercles. Les Tireurs essaieront de vous orbiter à mi-portée — continuez à bouger pour briser leur rythme."
+      },
+      "engineer": {
+        "name": "Ingénieur 🤖",
+        "stats": [
+          [
+            "PV",
+            "140"
+          ],
+          [
+            "Vitesse",
+            "160"
+          ],
+          [
+            "Arme",
+            "4 drones"
+          ],
+          [
+            "Style",
+            "Stratégique"
+          ]
+        ],
+        "desc": "N'a pas d'arme personnelle — quatre drones combattent à votre place. Deux sont à distance, deux au corps-à-corps. Survit en gérant le placement des drones, les réparations et les réinitialisations de vague.",
+        "droneTitle": "Mécaniques des drones",
+        "droneRows": [
+          [
+            "Clic gauche",
+            "Déployer le drone en orbite à la position du curseur"
+          ],
+          [
+            "Clic droit",
+            "Rappeler le drone déployé le plus proche — ou récupérer un drone endommagé à proximité"
+          ],
+          [
+            "Rester près d'un drone",
+            "Réparer un drone endommagé (2,5s) ou soigner un drone déployé (8 PV/s)"
+          ]
+        ],
+        "statesTitle": "États des drones",
+        "states": [
+          [
+            "En orbite",
+            "Vous escorte. Attaque les ennemis proches mais avec une puissance réduite (35% dégâts, 55% portée, 1,8× recharge). Se régénère passivement à 4 PV/s. Déployez-le pour débloquer ses statistiques complètes."
+          ],
+          [
+            "Déployé",
+            "Tourelle stationnaire. Statistiques d'arme complètes. Réparable sur le terrain en restant à côté."
+          ],
+          [
+            "Épave",
+            "Détruit sur place. Restez dans le rayon de réparation pour le restaurer en 2,5s. La progression se réinitialise lentement si vous vous éloignez."
+          ],
+          [
+            "Rappel",
+            "Revient vers vous après avoir été rappelé ou réparé. Passe en orbite à l'arrivée."
+          ]
+        ],
+        "waveClearTitle": "Bonus de fin de vague",
+        "waveClear": "Quand une vague se termine, tous les drones déployés rentrent automatiquement et tous les PV des drones sont restaurés à leur maximum. Utilisez cela pour vous regrouper avant la prochaine vague.",
+        "tip": "L'orbite est un filet de sécurité, pas une stratégie. Les drones déployés infligent 3× plus de dégâts que les drones en orbite — engagez-les tôt et réparez entre les vagues."
+      }
     },
     "enemies": {
       "runner": {
@@ -54,7 +165,7 @@
           "rapide",
           "fragile"
         ],
-        "desc": "Fonce directement sur vous. Peu de PV mais très rapide - dangereux en groupe. Apparaît dès la vague 1."
+        "desc": "Fonce directement sur vous. Peu de PV mais très rapide — dangereux en groupe. Apparaît dès la vague 1."
       },
       "brute": {
         "name": "Brute",
@@ -88,29 +199,29 @@
       "meleeTitle": "⚔️ Corps-à-corps",
       "tip": "Les enchantements se débloquent à la vague 20 et sont proposés comme récompense spéciale. Vous ne pouvez avoir qu'un seul enchantement à la fois.",
       "ranged": {
-        "single": "Balle unique standard. Base fiable - dégâts solides, portée correcte.",
+        "single": "Balle unique standard. Base fiable — dégâts solides, portée correcte.",
         "rifle": "Tire une rafale de balles en succession rapide. Excellent DPS soutenu contre les ennemis résistants.",
         "pierce": "La balle traverse plusieurs ennemis. Dévastateur contre les groupes de Coureurs serrés.",
-        "aoe": "La balle explose à l'impact. Inflige des dégâts à tous les ennemis dans un rayon - idéal pour contrôler les foules.",
+        "aoe": "La balle explose à l'impact. Inflige des dégâts à tous les ennemis dans un rayon — idéal pour contrôler les foules.",
         "chain": "La balle rebondit sur les ennemis proches après chaque impact. Excellent dans les vagues denses.",
         "laser": "Se charge brièvement puis tire un rayon à impact instantané. Dégâts massifs, grande largeur. Restez immobile pendant la charge.",
         "smg": "Cadence de tir très rapide avec dispersion. Déchiquète tout ce qui s'approche, mais moins de dégâts par balle."
       },
       "melee": {
         "single": "Coup de corps-à-corps standard avec un arc de 90°. Simple et efficace à courte portée.",
-        "sweetspot": "Inflige 75% plus de dégâts aux ennemis en bord de portée mais 75% moins autrement.",
-        "momentum": "Cumulez des stacks en tuant : augmente les dégâts et le CD. Perdu si blessé ou après 1.5s.",
-        "charge": "Maintenez le clic gauche pour charger - dégâts et portée augmentent avec le temps de charge. Potentiel de burst massif.",
-        "detonator": "Les ennemis tués explosent, infligeant des dégâts de zone aux ennemis proches. Dévastateur dans les groupes denses - chaque kill peut en déclencher un autre.",
-        "lifesteal": "Chaque coup vous soigne d'un pourcentage des dégâts infligés. Rend le corps-à-corps plus sûr."
+        "sweetspot": "Inflige 75% plus de dégâts aux ennemis en bord de portée, 75% moins aux ennemis trop proches.",
+        "momentum": "Chaque kill ajoute un stack qui augmente les dégâts et réduit la recharge. Perdu si blessé ou après 1,5s sans kill.",
+        "charge": "Maintenez le clic gauche pour charger — dégâts et portée augmentent avec le temps de charge. Potentiel de burst massif.",
+        "lifesteal": "Chaque coup vous soigne d'un pourcentage des dégâts infligés. Rend le corps-à-corps plus sûr.",
+        "detonator": "Les ennemis tués explosent, infligeant des dégâts de zone aux ennemis proches. Dévastateur dans les groupes denses — chaque kill peut en déclencher un autre."
       }
     },
     "augments": {
       "howTitle": "Comment fonctionnent les améliorations",
-      "howDesc": "Après chaque vague, choisissez 1 amélioration parmi 3 aléatoires. Chacune a une rareté qui détermine l'ampleur du bonus - rareté plus élevée = bonus plus grand en %. Les écrans de récompense de Boss proposent toujours au moins une qualité Rare.",
+      "howDesc": "Après chaque vague, choisissez 1 amélioration parmi 3 aléatoires. Chacune a une rareté qui détermine l'ampleur du bonus — rareté plus élevée = bonus plus grand. Les écrans de récompense de Boss proposent toujours au moins une qualité Rare. Vous disposez de 2 relances par partie.",
       "raritiesTitle": "Raretés",
       "statsTitle": "Référence des statistiques",
-      "tip": "Tous les bonus sont multiplicatifs - cumuler la même statistique se compose dans le temps. Un bonus de 15% de Dégâts sur des améliorations existantes représente toujours 15% de votre valeur actuelle.",
+      "tip": "Tous les bonus sont multiplicatifs — cumuler la même statistique se compose dans le temps. Un bonus de 15% de Dégâts sur des améliorations existantes représente toujours 15% de votre valeur actuelle.",
       "rarities": {
         "common": {
           "name": "Commun",
@@ -148,7 +259,7 @@
         ],
         "moveSpeed": [
           "Vitesse",
-          "Augmente votre vitesse de déplacement. Très fort - la mobilité, c'est la survie."
+          "Augmente votre vitesse de déplacement. Très fort — la mobilité, c'est la survie."
         ],
         "cooldown": [
           "Recharge",
@@ -180,7 +291,7 @@
         ],
         "maxStacks": [
           "Stacks max.",
-          "Stacks maximum stackable (enchantement Momentum)."
+          "Stacks maximum accumulables (enchantement Momentum)."
         ],
         "damagePerStack": [
           "DGT par stack",
@@ -192,11 +303,11 @@
         ],
         "detonateRadius": [
           "Rayon détonation",
-          "Rayon de la détonation (enchantement Détonation)."
+          "Rayon de la détonation (enchantement Détonateur)."
         ],
         "detonateDamage": [
           "Dégâts détonation",
-          "Dégâts de base de la détonation (enchantement Détonation)."
+          "Dégâts de base de la détonation (enchantement Détonateur)."
         ]
       }
     }

@@ -26,6 +26,7 @@ function ControlsTab() {
                 {[
                     [['Mouse'], t('wiki.controls.keys.mouseAim')],
                     [['LMB Hold'], t('wiki.controls.keys.lmbCharge')],
+                    [['RMB'], t('wiki.controls.keys.rmbRecall')],
                 ].map(([keys, desc], i) => (
                     <div className='wiki-row' key={i}>
                         <div style={{ display: 'flex', gap: '4px', minWidth: '90px' }}>
@@ -54,6 +55,7 @@ function ControlsTab() {
                     ['Bottom-left', t('wiki.controls.hud.bottomLeft')],
                     ['Bottom-right', t('wiki.controls.hud.bottomRight')],
                     ['Top bar', t('wiki.controls.hud.topBar')],
+                    ['Bottom-center', t('wiki.controls.hud.bottomCenter')],
                 ].map(([label, desc], i) => (
                     <div className='wiki-row' key={i}>
                         <span className='wiki-key' style={{ minWidth: '90px', fontSize: '0.8rem' }}>{label}</span>
@@ -65,14 +67,121 @@ function ControlsTab() {
     );
 }
 
+function ClassesTab() {
+    const { t } = useTranslation();
+
+    const classes = [
+        { key: 'brawler', color: '#8e44ad' },
+        { key: 'ranger', color: '#2471a3' },
+        { key: 'engineer', color: '#27ae60' },
+    ];
+
+    return (
+        <div className='wiki-body'>
+            <div className='wiki-desc' style={{ marginBottom: 14 }}>
+                {t('wiki.classes.intro')}
+            </div>
+
+            {classes.map(({ key, color }, ci) => {
+                const stats = t(`wiki.classes.${key}.stats`, { returnObjects: true });
+                const isDrone = key === 'engineer';
+                const droneRows = isDrone ? t('wiki.classes.engineer.droneRows', { returnObjects: true }) : [];
+                const droneStates = isDrone ? t('wiki.classes.engineer.states', { returnObjects: true }) : [];
+
+                return (
+                    <div
+                        key={key}
+                        className='wiki-section'
+                        style={{
+                            paddingBottom: 14,
+                            borderBottom: ci < classes.length - 1 ? '1px dashed var(--line)' : 'none',
+                        }}
+                    >
+                        {/* Class name */}
+                        <div style={{
+                            display: 'flex', alignItems: 'center',
+                            gap: 8, marginBottom: 6,
+                        }}>
+                            <strong style={{ fontSize: '1.1rem', color }}>
+                                {t(`wiki.classes.${key}.name`)}
+                            </strong>
+                        </div>
+
+                        {/* Stat grid */}
+                        <div style={{
+                            display: 'grid',
+                            gridTemplateColumns: 'repeat(2, 1fr)',
+                            gap: '2px 12px',
+                            marginBottom: 8,
+                        }}>
+                            {stats.map(([label, val], i) => (
+                                <div key={i} style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                    <span className='wiki-desc' style={{ color: 'var(--ink-faint)' }}>{label}</span>
+                                    <span className='wiki-desc' style={{ fontWeight: 700 }}>{val}</span>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* Description */}
+                        <div className='wiki-desc' style={{ marginBottom: 8 }}>
+                            {t(`wiki.classes.${key}.desc`)}
+                        </div>
+
+                        {/* Engineer-specific drone section */}
+                        {isDrone && (
+                            <>
+                                <div className='wiki-section-title' style={{ marginTop: 10 }}>
+                                    {t('wiki.classes.engineer.droneTitle')}
+                                </div>
+                                {droneRows.map(([input, desc], i) => (
+                                    <div className='wiki-row' key={i}>
+                                        <span className='wiki-key' style={{ minWidth: '90px', fontSize: '0.8rem' }}>
+                                            {input}
+                                        </span>
+                                        <span className='wiki-desc'>{desc}</span>
+                                    </div>
+                                ))}
+
+                                <div className='wiki-section-title' style={{ marginTop: 10 }}>
+                                    {t('wiki.classes.engineer.statesTitle')}
+                                </div>
+                                {droneStates.map(([state, desc], i) => (
+                                    <div className='wiki-row' key={i} style={{ alignItems: 'flex-start' }}>
+                                        <span className='wiki-key' style={{ minWidth: '72px', fontSize: '0.78rem' }}>
+                                            {state}
+                                        </span>
+                                        <span className='wiki-desc'>{desc}</span>
+                                    </div>
+                                ))}
+
+                                <div className='wiki-section-title' style={{ marginTop: 10 }}>
+                                    {t('wiki.classes.engineer.waveClearTitle')}
+                                </div>
+                                <div className='wiki-desc' style={{ marginBottom: 6 }}>
+                                    {t('wiki.classes.engineer.waveClear')}
+                                </div>
+                            </>
+                        )}
+
+                        {/* Tip */}
+                        <div className='wiki-tip'>
+                            {t(`wiki.classes.${key}.tip`)}
+                        </div>
+                    </div>
+                );
+            })}
+        </div>
+    );
+}
+
 function EnemiesTab() {
     const { t } = useTranslation();
 
     const enemies = [
-        { key: 'runner', color: '#e74c3c', tagColors: ['#e74c3c', '#7f8c8d'] },
-        { key: 'brute', color: '#8e44ad', tagColors: ['#7f8c8d', '#8e44ad', '#c0392b'] },
-        { key: 'shooter', color: '#e67e22', tagColors: ['#2471a3', '#e67e22'] },
-        { key: 'boss', color: '#c0392b', tagColors: ['#c0392b', '#8e44ad', '#f1c40f'] },
+        { key: 'runner', color: '#e74c3c' },
+        { key: 'brute', color: '#8e44ad' },
+        { key: 'shooter', color: '#e67e22' },
+        { key: 'boss', color: '#c0392b' },
     ];
 
     return (
@@ -80,7 +189,10 @@ function EnemiesTab() {
             {enemies.map((e, i) => {
                 const tags = t(`wiki.enemies.${e.key}.tags`, { returnObjects: true });
                 return (
-                    <div key={i} className='wiki-section' style={{ paddingBottom: '12px', borderBottom: i < enemies.length - 1 ? '1px dashed var(--line)' : 'none' }}>
+                    <div key={i} className='wiki-section' style={{
+                        paddingBottom: '12px',
+                        borderBottom: i < enemies.length - 1 ? '1px dashed var(--line)' : 'none',
+                    }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '5px' }}>
                             <div className='wiki-enemy' style={{ backgroundColor: e.color }} />
                             <strong style={{ fontSize: '1.1rem' }}>{t(`wiki.enemies.${e.key}.name`)}</strong>
@@ -90,9 +202,7 @@ function EnemiesTab() {
                                 ))}
                             </div>
                         </div>
-                        <div className='wiki-desc' style={{ marginBottom: '5px' }}>
-                            {t(`wiki.enemies.${e.key}.desc`)}
-                        </div>
+                        <div className='wiki-desc'>{t(`wiki.enemies.${e.key}.desc`)}</div>
                     </div>
                 );
             })}
@@ -164,7 +274,7 @@ function AugmentsTab() {
     const statKeys = [
         'maxHp', 'damage', 'range', 'moveSpeed', 'cooldown',
         'bulletSpeed', 'aoeRadius', 'pierce', 'laserWidth', 'chainRadius', 'lifesteal',
-        'cooldownPerStack', 'damagePerStack', 'maxStacks', 'detonateRadius', 'detonateDamage'
+        'cooldownPerStack', 'damagePerStack', 'maxStacks', 'detonateRadius', 'detonateDamage',
     ];
 
     return (
@@ -207,8 +317,14 @@ function AugmentsTab() {
     );
 }
 
-const TAB_IDS = ['controls', 'enemies', 'weapons', 'augments'];
-const TAB_COMPONENTS = { controls: ControlsTab, enemies: EnemiesTab, weapons: WeaponsTab, augments: AugmentsTab };
+const TAB_IDS = ['controls', 'classes', 'enemies', 'weapons', 'augments'];
+const TAB_COMPONENTS = {
+    controls: ControlsTab,
+    classes: ClassesTab,
+    enemies: EnemiesTab,
+    weapons: WeaponsTab,
+    augments: AugmentsTab,
+};
 
 export function WikiHelp() {
     const { t } = useTranslation();
