@@ -1,7 +1,7 @@
 {
   "nav": {
     "dashboard": "Tableau de bord",
-    "account": "Compte",
+    "profile": "Profil",
     "friends": "Amis",
     "loginRegister": "Connexion / Inscription",
     "connected": "● connecté"
@@ -354,7 +354,7 @@
     "security": "— sécurité —",
     "usernameLabel": "pseudo",
     "emailLabel": "e-mail",
-    "updateButton": "mettre à jour",
+    "updateButton": "Mettre à jour",
     "deleteAccount": "Supprimer le compte",
     "logout": "Se déconnecter",
     "currentPassword": "mot de passe actuel",
@@ -369,7 +369,35 @@
       "passwordMismatch": "Les nouveaux mots de passe ne correspondent pas."
     },
     "loading": "Chargement des détails du compte...",
-    "redirecting": "Redirection vers la connexion..."
+    "redirecting": "Redirection vers la connexion...",
+    "memberSince": "Membre depuis {{since}}",
+    "lastRun": "DERNIÈRE PARTIE — il y a {{since}}",
+    "achievements": {
+      "title": "Succès"
+    },
+    "recentRecords": "Records récents",
+    "recentRecordsTable": {
+      "date": "Date",
+      "score": "Score",
+      "wave": "Vague",
+      "duration": "Durée"
+    },
+    "detailedStatistics": {
+      "title": "Statistiques détaillées",
+      "combatTitle": "— combat —",
+      "survivalTitle": "— survie —",
+      "avgScoreRun": "Score moyen / partie",
+      "avgWaveReached": "Vague moyenne atteinte",
+      "avgKillsRun": "Kills moyens / partie",
+      "killRate": "Taux de kills",
+      "killRateValue": "{{value}} kills/min",
+      "bossKills": "Boss tués",
+      "avgRunLength": "Durée moyenne / partie",
+      "longestRun": "Partie la plus longue",
+      "totalPlaytime": "Temps de jeu total",
+      "runsPast20": "Parties passées vague 20",
+      "favouriteWeapon": "Arme favorite"
+    }
   },
   "accountDelete": {
     "title": "Supprimer le compte",
@@ -397,7 +425,7 @@
     "playTitle": "Prêt à survivre ? ✦",
     "startGame": "▶ Lancer la partie",
     "neverPlayed": "Vous n'avez jamais joué",
-    "lastRun": "Dernière partie <1>{{time}}</1>, atteint la vague <2>{{wave}}</2> en <3>{{duration}}</3> avec <4>{{score}}</4> points.",
+    "lastRun": "Dernière partie <1>il y a {{time}}</1>, atteint la vague <2>{{wave}}</2> en <3>{{duration}}</3> avec <4>{{score}}</4> points.",
     "createAccount": "Créez un compte pour voir vos statistiques !",
     "globalBar": {
       "playersOnline_one": "Joueur en ligne",
@@ -601,5 +629,17 @@
     "message": "Vous devez être authentifié pour accéder à cette section."
   },
   "appName": "Swarmaggedon",
-  "appNameDev": "SwarmaggedonDEV"
+  "appNameDev": "SwarmaggedonDEV",
+  "utils": {
+    "never": "jamais",
+    "justNow": "à l'instant",
+    "units": {
+      "minute": "m",
+      "hour": "h",
+      "day": "j",
+      "month": "m",
+      "year": "a"
+    },
+    "comingSoon": "Prochainement..."
+  }
 }

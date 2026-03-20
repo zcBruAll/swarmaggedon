@@ -1,7 +1,7 @@
 {
   "nav": {
     "dashboard": "Dashboard",
-    "account": "Account",
+    "profile": "Profile",
     "friends": "Friends",
     "loginRegister": "Login / Register",
     "connected": "● connected"
@@ -354,7 +354,7 @@
     "security": "— security —",
     "usernameLabel": "username",
     "emailLabel": "email",
-    "updateButton": "update",
+    "updateButton": "Update",
     "deleteAccount": "Delete account",
     "logout": "Log out",
     "currentPassword": "current password",
@@ -369,7 +369,35 @@
       "passwordMismatch": "New passwords do not match."
     },
     "loading": "Loading account details...",
-    "redirecting": "Redirecting to login..."
+    "redirecting": "Redirecting to login...",
+    "memberSince": "Member since {{since}}",
+    "lastRun": "LAST RUN — {{since}} ago",
+    "achievements": {
+      "title": "Achievements"
+    },
+    "recentRecords": "Recent Records",
+    "recentRecordsTable": {
+      "date": "Date",
+      "score": "Score",
+      "wave": "Wave",
+      "duration": "Duration"
+    },
+    "detailedStatistics": {
+      "title": "Detailed Statistics",
+      "combatTitle": "— combat —",
+      "survivalTitle": "— survival —",
+      "avgScoreRun": "Avg score / run",
+      "avgWaveReached": "Avg wave reached",
+      "avgKillsRun": "Avg kills / run",
+      "killRate": "Kill rate",
+      "killRateValue": "{{value}} kills/min",
+      "bossKills": "Boss kills",
+      "avgRunLength": "Avg run length",
+      "longestRun": "Longest run",
+      "totalPlaytime": "Total playtime",
+      "runsPast20": "Runs past wave 20",
+      "favouriteWeapon": "Favourite weapon"
+    }
   },
   "accountDelete": {
     "title": "Delete Account",
@@ -601,5 +629,17 @@
     "message": "You must be authenticated to access this section."
   },
   "appName": "Swarmaggedon",
-  "appNameDev": "SwarmaggedonDEV"
+  "appNameDev": "SwarmaggedonDEV",
+  "utils": {
+    "never": "never",
+    "justNow": "just now",
+    "units": {
+      "minute": "m",
+      "hour": "h",
+      "day": "d",
+      "month": "mo",
+      "year": "y"
+    },
+    "comingSoon": "Coming soon..."
+  }
 }

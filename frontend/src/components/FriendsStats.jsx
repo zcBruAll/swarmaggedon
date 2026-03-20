@@ -3,6 +3,7 @@ import '../assets/style/components/FriendsStats.css';
 import { formatTotalToHours, isUserOnline } from '../utils/Utils.js';
 import { useQuery } from '@apollo/client/react';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 
 const GET_FRIENDS = gql`
   query User {
@@ -59,26 +60,28 @@ function FriendsStats() {
                 return (b.stats?.high_score || 0) - (a.stats?.high_score || 0);
               })
               .map(friend => (
-                <div className="friend-stat-row" key={friend.id}>
-                  <div className="avatar">{friend.username?.substring(0, 2).toUpperCase()}</div>
-                  <span>{friend.username}</span>
-                  <span className="score">{friend.stats?.high_score?.toLocaleString() || 0}</span>
-                  <span className="text-muted">
-                    {formatTotalToHours(friend.stats?.total_time).toFixed(
-                      friend.stats?.total_time / 3600 > 10 ? 0 : 1
-                    )}h
-                  </span>
-                  <span className="game-state">
-                    <span className={`dot ${isUserOnline(friend.last_online) || friend.in_game ? 'dot-online' : 'dot-offline'}`}></span>
-                    <span className={isUserOnline(friend.last_online) || friend.in_game ? 'state-active' : 'text-muted'}>
-                      {friend.in_game
-                        ? t('friendsStats.status.inGame')
-                        : isUserOnline(friend.last_online)
-                          ? t('friendsStats.status.online')
-                          : t('friendsStats.status.offline')}
+                <Link to={`/profile/${friend.username}`} className="list-item-link" key={friend.id}>
+                  <div className="friend-stat-row">
+                    <div className="avatar">{friend.username?.substring(0, 2).toUpperCase()}</div>
+                    <span>{friend.username}</span>
+                    <span className="score">{friend.stats?.high_score?.toLocaleString() || 0}</span>
+                    <span className="text-muted">
+                      {formatTotalToHours(friend.stats?.total_time).toFixed(
+                        friend.stats?.total_time / 3600 > 10 ? 0 : 1
+                      )}h
                     </span>
-                  </span>
-                </div>
+                    <span className="game-state">
+                      <span className={`dot ${isUserOnline(friend.last_online) || friend.in_game ? 'dot-online' : 'dot-offline'}`}></span>
+                      <span className={isUserOnline(friend.last_online) || friend.in_game ? 'state-active' : 'text-muted'}>
+                        {friend.in_game
+                          ? t('friendsStats.status.inGame')
+                          : isUserOnline(friend.last_online)
+                            ? t('friendsStats.status.online')
+                            : t('friendsStats.status.offline')}
+                      </span>
+                    </span>
+                  </div>
+                </Link>
               ))
           )}
         </div>

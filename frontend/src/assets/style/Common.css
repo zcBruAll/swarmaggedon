@@ -337,6 +337,19 @@ select option {
     box-shadow: 1px 1px 0 var(--line);
 }
 
+/* ============ INTERACTIVE ROWS ============ */
+.list-item-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.1s ease;
+  border-radius: 2px;
+}
+
+.list-item-link:hover {
+  background: var(--paper2);
+}
+
 .modal {
     background: var(--paper);
     border: 2px solid var(--line);

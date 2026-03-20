@@ -25,6 +25,10 @@ const ME_QUERY = gql`
         best_wave
         total_kills
         total_time
+        avg_wave
+        total_score
+        total_boss_kills
+        total_runs_past_20
       }
     }
   }
