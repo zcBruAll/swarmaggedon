@@ -26,7 +26,8 @@ export const userTypeDefs = gql`
 
         friends: [User]
 
-        pending_requests: [User]
+        pending_incoming_requests: [User]
+        pending_outgoing_requests: [User]
 
         search(usernameSearch: String!): [User]
 
@@ -174,7 +175,7 @@ export const userResolvers = {
         
             return formattedResults
         },
-        pending_requests: async (_, __, {user: loggedin_info}) => {
+        pending_incoming_requests: async (_, __, {user: loggedin_info}) => {
             if (!loggedin_info) throw new Error("You are not logged in")
             const pending = await getDB().collection(COLLECTION_FRIENDS).aggregate([
                 {
@@ -199,6 +200,41 @@ export const userResolvers = {
                 })
                 ret.push({
                     id: f.requester_id,
+                    username: user.username,
+                    last_online: user.last_online,
+                    in_game: user.in_game,
+                    date_created: user.date_created
+                })
+            }
+
+            return ret
+        },
+
+        pending_outgoing_requests: async (_, __, {user: loggedin_info}) => {
+            if (!loggedin_info) throw new Error("You are not logged in")
+            const pending = await getDB().collection(COLLECTION_FRIENDS).aggregate([
+                {
+                    $match: {
+                        requester_id: loggedin_info.id,
+                        pending: true
+                    }
+                },
+                {
+                    $project: {
+                        _id: 0,
+                        accepter_id: 1
+                    }
+                }
+            ]).toArray()
+    
+            const ret = []
+    
+            for (const f of pending) {
+                const user = await getDB().collection(COLLECTION_USERS).findOne({
+                    _id: new ObjectId(f.accepter_id)
+                })
+                ret.push({
+                    id: f.accepter_id,
                     username: user.username,
                     last_online: user.last_online,
                     in_game: user.in_game,

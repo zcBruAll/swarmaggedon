@@ -24,7 +24,11 @@ const GET_FRIENDS = gql`
           high_score
       }
     }
-    pending_requests {
+    pending_incoming_requests {
+      id
+      username
+    }
+    pending_outgoing_requests {
       id
       username
     }
@@ -96,7 +100,8 @@ const Friends = () => {
   }
 
   const friends = friendsData?.friends || [];
-  const pending_requests = friendsData?.pending_requests || [];
+  const pending_incoming_requests = friendsData?.pending_incoming_requests || [];
+  const pending_outgoing_requests = friendsData?.pending_outgoing_requests || [];
   const searchResults = localSearch;
 
   const handleSearch = async (e) => {
@@ -196,12 +201,12 @@ const Friends = () => {
                       </>
                     : ""
                 }
-                {pending_requests.length != 0 ?
+                {pending_incoming_requests.length != 0 ?
                   <>
                     <hr className="divider" />
                     <div className="label">{t('friends.pendingLabel')}</div>
                     {
-                      pending_requests.map(f => {
+                      pending_incoming_requests.map(f => {
                         return <Link key={f.id} to={`/profile/${f.username}`} className="list-item-link">
                           <div className="flex-between pending-request-row">
                             <div className="friend-info">
@@ -214,6 +219,29 @@ const Friends = () => {
                             <div className="flex gap-8">
                               <button type="button" className="btn btn-primary btn-sm" onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleAddFriend(f.id, false); }}>{t('friends.accept')}</button>
                               <button type="button" className="btn btn-outline btn-sm" onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleRemove(f.id, false); }}>{t('friends.decline')}</button>
+                            </div>
+                          </div>
+                        </Link>
+                      })
+                    }
+                  </> : <></>
+                }
+                {pending_outgoing_requests.length != 0 ?
+                  <>
+                    <hr className="divider" />
+                    <div className="label">{t('friends.pendingSentLabel')}</div>
+                    {
+                      pending_outgoing_requests.map(f => {
+                        return <Link key={f.id} to={`/profile/${f.username}`} className="list-item-link">
+                          <div className="flex-between pending-request-row">
+                            <div className="friend-info">
+                              <div className="avatar">{f.username.slice(0, 2).toUpperCase()}</div>
+                              <div className='friend-label'>
+                                <div style={{ fontWeight: 700 }}>{f.username}</div>
+                              </div>
+                            </div>
+                            <div className="flex gap-8">
+                              <button type="button" className="btn btn-outline btn-sm btn-danger" onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleRemove(f.id, false); }}>{t('friends.removePendingButton')}</button>
                             </div>
                           </div>
                         </Link>

@@ -464,6 +464,7 @@
     "resultsLabel": "résultats",
     "noResults": "Aucun survivant trouvé.",
     "pendingLabel": "demandes en attente",
+    "pendingSentLabel": "demandes envoyées",
     "wantsToFriend": "veut être votre ami",
     "accept": "Accepter",
     "decline": "Refuser",
