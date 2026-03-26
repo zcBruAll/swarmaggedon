@@ -469,6 +469,7 @@
     "decline": "Refuser",
     "addButton": "+ Ajouter",
     "removeButton": "Retirer",
+    "removePendingButton": "Annuler demande",
     "confirmRemove": "Encore...",
     "noFriends": "Vous n'avez encore ajouté aucun ami.",
     "loading": "Chargement des détails du compte...",

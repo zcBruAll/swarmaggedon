@@ -469,6 +469,7 @@
     "decline": "Decline",
     "addButton": "+ Add",
     "removeButton": "Remove",
+    "removePendingButton": "Cancel request",
     "confirmRemove": "Again...",
     "noFriends": "You haven't added any friends yet.",
     "loading": "Loading account details...",

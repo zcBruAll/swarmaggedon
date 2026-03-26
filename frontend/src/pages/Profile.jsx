@@ -165,8 +165,8 @@ export default function Profile() {
                         
                         <div style={{ textAlign: 'center', margin: '15px 0' }}>
                             {!isOwnProfile ?
-                                displayUser?.is_friend ? 
-                                    <button className="btn-remove-friend" onClick={handleRemoveFriend}>{t('friends.removeButton')}</button>
+                                displayUser?.is_friend || displayUser?.is_friend === null ? 
+                                    <button className="btn-remove-friend" onClick={handleRemoveFriend}>{t(displayUser?.is_friend === null ? 'friends.removePendingButton' : 'friends.removeButton')}</button>
                                 :
                                     <button className="btn-add-friend" onClick={handleAddFriend}>{t('friends.addButton')}</button>
                             :
