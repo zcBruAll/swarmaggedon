@@ -9,7 +9,7 @@ import { LANGUAGES } from '../i18n/index.js';
 
 const PENDING_REQUESTS = gql`
   query PR {
-    pending_requests {
+    pending_incoming_requests {
       id
     }
   }
@@ -121,8 +121,8 @@ function NavBar() {
             </Link>
             <Link to="/friends" className={`nav-link ${location.pathname === '/friends' ? 'active' : ''}`}>
               {t('nav.friends')}
-              {!loading && !error && data.pending_requests?.length > 0
-                ? <span className="nav-badge">{data.pending_requests.length}</span>
+              {!loading && !error && data.pending_incoming_requests?.length > 0
+                ? <span className="nav-badge">{data.pending_incoming_requests.length}</span>
                 : ''}
             </Link>
           </>
