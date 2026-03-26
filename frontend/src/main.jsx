@@ -8,7 +8,13 @@ import './i18n/index.js'
 
 const client = new ApolloClient({
   link: new HttpLink({ uri: "/api/graphql" }),
-  cache: new InMemoryCache()
+  cache: new InMemoryCache({
+    typePolicies: {
+      Global: {
+        merge: true,
+      },
+    },
+  })
 })
 createRoot(document.getElementById('root')).render(
   <StrictMode>
