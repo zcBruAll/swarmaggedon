@@ -1,8 +1,6 @@
 import { gql } from 'graphql-tag'
 import { COLLECTION_USERS, COLLECTION_FRIENDS, COLLECTION_RUNS, getDB } from '../config/db.js'
 
-const db = getDB()
-
 export const statsTypeDefs = gql`
     type Stats {
         total_games: Int
