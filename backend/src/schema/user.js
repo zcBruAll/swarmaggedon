@@ -251,12 +251,15 @@ export const userResolvers = {
             return {
                 id: user_data._id,
                 username: user_data.username,
-                email: user_data.email,
                 date_created: user_data.date_created
             }
         },
     },
     User: {
+        email: (parent, _, { user }) => {
+            if (!user || parent.id?.toString() !== user.id?.toString()) return null
+            return parent.email ?? null
+        },
         rank: async (parent, _, {}) => {
             const userBest = await getDB().collection(COLLECTION_RUNS).aggregate([
                 { $match: { user_id: parent.id.toString() } },
