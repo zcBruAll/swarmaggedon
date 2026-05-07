@@ -284,7 +284,7 @@ const Friends = () => {
                               <div className='inline-status'>
                                 <div className={`dot ${friend.in_game ? 'in-game' : isUserOnline(friend.last_online) ? 'dot-online' : 'dot-offline'}`}></div>
                                 <div style={{ fontSize: '14px', color: isUserOnline(friend.last_online) || friend.in_game ? '#27ae60' : 'var(--ink-faint)' }}>
-                                  {friend.in_game ? 'in game' : isUserOnline(friend.last_online) ? 'online' : 'offline'}
+                                  {friend.in_game ? t('friendsStats.status.inGame') : isUserOnline(friend.last_online) ? t('friendsStats.status.online') : t('friendsStats.status.offline')}
                                 </div>
                               </div>
                             </div>
