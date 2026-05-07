@@ -105,7 +105,7 @@ export const userResolvers = {
         },
         friends: async (_, __, {user: loggedin_info}) => {
             if (!loggedin_info) throw new Error("You are not logged in")
-            const friends = await getDB().collection(COLLECTION_FRIENDS).aggregate([
+            return await getDB().collection(COLLECTION_FRIENDS).aggregate([
                 {
                     $match: {
                         $or: [
@@ -116,33 +116,39 @@ export const userResolvers = {
                     }
                 },
                 {
+                    $addFields: {
+                        friend_id: {
+                            $cond: [
+                                { $eq: ["$requester_id", loggedin_info.id] },
+                                "$accepter_id",
+                                "$requester_id"
+                            ]
+                        }
+                    }
+                },
+                {
+                    $lookup: {
+                        from: COLLECTION_USERS,
+                        let: { fid: "$friend_id" },
+                        pipeline: [
+                            { $match: { $expr: { $eq: [{ $toString: "$_id" }, "$$fid"] } } },
+                            { $project: { username: 1, last_online: 1, in_game: 1, date_created: 1 } }
+                        ],
+                        as: "user"
+                    }
+                },
+                { $unwind: "$user" },
+                {
                     $project: {
                         _id: 0,
-                        requester_id: 1,
-                        accepter_id: 1
+                        id: "$user._id",
+                        username: "$user.username",
+                        last_online: "$user.last_online",
+                        in_game: "$user.in_game",
+                        date_created: "$user.date_created"
                     }
                 }
             ]).toArray()
-    
-            const ret = []
-    
-            for (const f of friends) {
-                const fid = f.requester_id == loggedin_info.id ? f.accepter_id : f.requester_id
-                const friend = await getDB().collection(COLLECTION_USERS).findOne({
-                    _id: new ObjectId(fid)
-                })
-                ret.push({
-                    id: friend._id,
-                    requester_id: f.requester_id,
-                    accepter_id: f.accepter_id,
-                    username: friend.username,
-                    last_online: friend.last_online,
-                    in_game: friend.in_game,
-                    date_created: friend.date_created
-                })
-            }
-
-            return ret
         },
         search: async (_, {usernameSearch}, { user: loggedin_info }) => {
             if (!loggedin_info) throw new Error("You are not logged in")
@@ -178,72 +184,60 @@ export const userResolvers = {
         },
         pending_incoming_requests: async (_, __, {user: loggedin_info}) => {
             if (!loggedin_info) throw new Error("You are not logged in")
-            const pending = await getDB().collection(COLLECTION_FRIENDS).aggregate([
+            return await getDB().collection(COLLECTION_FRIENDS).aggregate([
+                { $match: { accepter_id: loggedin_info.id, pending: true } },
                 {
-                    $match: {
-                        accepter_id: loggedin_info.id,
-                        pending: true
+                    $lookup: {
+                        from: COLLECTION_USERS,
+                        let: { rid: "$requester_id" },
+                        pipeline: [
+                            { $match: { $expr: { $eq: [{ $toString: "$_id" }, "$$rid"] } } },
+                            { $project: { username: 1, last_online: 1, in_game: 1, date_created: 1 } }
+                        ],
+                        as: "user"
                     }
                 },
+                { $unwind: "$user" },
                 {
                     $project: {
                         _id: 0,
-                        requester_id: 1
+                        id: "$requester_id",
+                        username: "$user.username",
+                        last_online: "$user.last_online",
+                        in_game: "$user.in_game",
+                        date_created: "$user.date_created"
                     }
                 }
             ]).toArray()
-    
-            const ret = []
-    
-            for (const f of pending) {
-                const user = await getDB().collection(COLLECTION_USERS).findOne({
-                    _id: new ObjectId(f.requester_id)
-                })
-                ret.push({
-                    id: f.requester_id,
-                    username: user.username,
-                    last_online: user.last_online,
-                    in_game: user.in_game,
-                    date_created: user.date_created
-                })
-            }
-
-            return ret
         },
 
         pending_outgoing_requests: async (_, __, {user: loggedin_info}) => {
             if (!loggedin_info) throw new Error("You are not logged in")
-            const pending = await getDB().collection(COLLECTION_FRIENDS).aggregate([
+            return await getDB().collection(COLLECTION_FRIENDS).aggregate([
+                { $match: { requester_id: loggedin_info.id, pending: true } },
                 {
-                    $match: {
-                        requester_id: loggedin_info.id,
-                        pending: true
+                    $lookup: {
+                        from: COLLECTION_USERS,
+                        let: { aid: "$accepter_id" },
+                        pipeline: [
+                            { $match: { $expr: { $eq: [{ $toString: "$_id" }, "$$aid"] } } },
+                            { $project: { username: 1, last_online: 1, in_game: 1, date_created: 1 } }
+                        ],
+                        as: "user"
                     }
                 },
+                { $unwind: "$user" },
                 {
                     $project: {
                         _id: 0,
-                        accepter_id: 1
+                        id: "$accepter_id",
+                        username: "$user.username",
+                        last_online: "$user.last_online",
+                        in_game: "$user.in_game",
+                        date_created: "$user.date_created"
                     }
                 }
             ]).toArray()
-    
-            const ret = []
-    
-            for (const f of pending) {
-                const user = await getDB().collection(COLLECTION_USERS).findOne({
-                    _id: new ObjectId(f.accepter_id)
-                })
-                ret.push({
-                    id: f.accepter_id,
-                    username: user.username,
-                    last_online: user.last_online,
-                    in_game: user.in_game,
-                    date_created: user.date_created
-                })
-            }
-
-            return ret
         },
         user_by_username: async (_, {username}, __) => {
             if (!username) throw new Error("You must provide an username")
