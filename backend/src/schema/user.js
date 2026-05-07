@@ -146,7 +146,7 @@ export const userResolvers = {
         search: async (_, {usernameSearch}, { user: loggedin_info }) => {
             if (!loggedin_info) throw new Error("You are not logged in")
 
-            const escaped = usernameSearch.replace(/[.*+?^${}()|[]\]/g, '\$&')
+            const escaped = usernameSearch.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
             
             if (!usernameSearch || !escaped) throw new Error("You must give a search keyword")
 
