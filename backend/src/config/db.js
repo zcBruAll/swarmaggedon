@@ -1,6 +1,6 @@
 import { MongoClient } from 'mongodb';
 
-const url = `mongodb://${process.env.NODE_ENV === 'production' ? 'mongo' : 'localhost'}:27017`;
+const url = process.env.NODE_ENV === 'production' ? process.env.MONGODB_URI : process.env.MONGODB_DEV_URI;
 const client = new MongoClient(url);
 
 let db;
@@ -9,7 +9,7 @@ export const connectDB = async () => {
   try {
     await client.connect();
     console.log("Connected to MongoDB");
-    db = client.db('swarmaggedon');
+    db = client.db(process.env.MONGODB_DB_NAME);
     await ensureIndexes();
   } catch (e) {
     console.error("Connection error", e);
