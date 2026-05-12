@@ -14,14 +14,15 @@ export const checkProfanity = async (username) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: username + " " + username + " " + username }),
     })
-    
+
     if (!result.ok) return true
-    
+
     const data = await result.json()
     return !data.isProfanity
 }
 
 export const checkOnlyAlphanumeric = (str) => {
+    if (!str) return false
     // faster than regex
     var code, i, len;
 
@@ -31,7 +32,7 @@ export const checkOnlyAlphanumeric = (str) => {
             !(code > 64 && code < 91) && // upper alpha (A-Z)
             !(code > 96 && code < 123) && // lower alpha (a-z)
             !(code == 95) // _
-        ) { 
+        ) {
             return false;
         }
     }

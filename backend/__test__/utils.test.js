@@ -25,6 +25,12 @@ describe('Backend Utilities (utils.js)', () => {
             expect(checkOnlyAlphanumeric('hacker@domain')).toBe(false);
             expect(checkOnlyAlphanumeric('user-name')).toBe(false);
         });
+
+        it('should handle empty strings and extreme edge cases', () => {
+            expect(checkOnlyAlphanumeric('')).toBe(false);
+            expect(checkOnlyAlphanumeric(null)).toBe(false);
+            expect(checkOnlyAlphanumeric(undefined)).toBe(false);
+        });
     });
 
     describe('checkProfanity()', () => {
@@ -86,6 +92,16 @@ describe('Backend Utilities (utils.js)', () => {
             const obtainedKills = 5000;
 
             expect(checkScoreValidity(obtainedScore, endWave, obtainedKills)).toBe(false);
+        });
+
+        it('should return true if the score is EXACTLY at the theoretical maximum', () => {
+            const maxScore = 40;
+            expect(checkScoreValidity(maxScore, 2, 5)).toBe(true);
+        });
+
+        it('should handle negative numbers or zero correctly', () => {
+            expect(checkScoreValidity(0, 0, 0)).toBe(true);
+            expect(checkScoreValidity(-10, 1, 5)).toBe(false);
         });
     });
 

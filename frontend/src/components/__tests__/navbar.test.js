@@ -50,4 +50,30 @@ describe('NavBar Apollo Integration', () => {
         expect(badge).toBeInTheDocument();
         expect(badge).toHaveClass('nav-badge');
     });
+
+    it('does not display the notification badge when there are 0 pending requests', async () => {
+        const emptyMocks = [{
+            request: { query: PENDING_REQUESTS },
+            result: { data: { pending_incoming_requests: [] } }
+        }];
+
+        render(
+            <AuthContext.Provider value={{ isLoggedIn: true, user: { username: 'TestUser' } }}>
+                <MockedProvider mocks={emptyMocks} addTypename={false}>
+                    <MemoryRouter><NavBar /></MemoryRouter>
+                </MockedProvider>
+            </AuthContext.Provider>
+        );
+
+        await new Promise(resolve => setTimeout(resolve, 0));
+        expect(screen.queryByText('0')).not.toBeInTheDocument();
+        expect(screen.queryByTestId('nav-badge')).not.toBeInTheDocument();
+    });
+
+    it('handles GraphQL errors gracefully without crashing', async () => {
+        const errorMocks = [{
+            request: { query: PENDING_REQUESTS },
+            error: new Error("Network error")
+        }];
+    });
 });

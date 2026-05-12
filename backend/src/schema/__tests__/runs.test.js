@@ -83,3 +83,20 @@ describe('Runs GraphQL Resolvers', () => {
         });
     });
 });
+
+describe('Query: getRuns', () => {
+    it('should return an empty array if no runs exist', async () => {
+        mockToArray.mockResolvedValueOnce([]);
+        const result = await runResolvers.User.runs({ id: 0 }, { limit: 10 }, {});
+        expect(result).toEqual([]);
+        expect(mockFind).toHaveBeenCalled();
+    });
+
+    it('should return runs sorted by score', async () => {
+        const mockRuns = [{ score: 200 }, { score: 100 }];
+        mockToArray.mockResolvedValueOnce(mockRuns);
+
+        const result = await runResolvers.User.runs({ id: 0 }, { limit: 10 }, {});
+        expect(result).toEqual(mockRuns);
+    });
+});
