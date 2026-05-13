@@ -34,6 +34,21 @@ docker compose up --build
 
 The frontend is served via Nginx and proxies API requests to the backend.
 
+### Run tests
+#### Backend
+Simply run `npm run test` and it should be fine.
+
+#### Frontend
+On arch, you must use docker in order to use playwright.  
+First, pull the docker image with the same version as in the noe project:
+```bash
+docker pull mcr.microsoft.com/playwright:v1.60.0
+```
+Second, run the tests through the docker container:
+```bash
+docker run --network host -v $(pwd):/work/ -w /work/ -it mcr.microsoft.com/playwright:v1.60.0 npx playwright test
+```
+**Important**: Ensure the frontend is running (`npm run dev`)
 ## Features
 
 - Wave-based survival gameplay with multiple enemy types (Runner, Brute, Shooter, Boss)
