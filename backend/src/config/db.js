@@ -1,11 +1,11 @@
 import { MongoClient } from 'mongodb';
 
-const url = process.env.NODE_ENV === 'production' ? process.env.MONGODB_URI : process.env.MONGODB_DEV_URI;
-const client = new MongoClient(url);
-
+let client;
 let db;
 
 export const connectDB = async () => {
+  const url = process.env.NODE_ENV === 'production' ? process.env.MONGODB_URI : process.env.MONGODB_DEV_URI;
+  client = new MongoClient(url);
   try {
     await client.connect();
     console.log("Connected to MongoDB");
