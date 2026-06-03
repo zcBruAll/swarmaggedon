@@ -33,7 +33,6 @@ export const adminTypeDefs = gql`
     }
 
     extend type Query {
-        adminLogin(password: String!): String
         adminRuns(
             page: Int
             limit: Int
@@ -54,6 +53,7 @@ export const adminTypeDefs = gql`
     }
 
     extend type Mutation {
+        adminLogin(password: String!): String
         adminDeleteRun(runId: ID!): Boolean
         adminDeleteRunsByUser(userId: ID!): Int
         adminSetCheater(userId: ID!, cheater: Boolean!): Boolean
@@ -74,27 +74,6 @@ function verifyAdmin(context) {
 
 export const adminResolvers = {
     Query: {
-        adminLogin: async (_, { password }, { res }) => {
-            const adminSecret = process.env.ADMIN_SECRET;
-            if (!adminSecret) throw new Error('Admin not configured');
-            if (password !== adminSecret) throw new Error('Invalid admin password');
-
-            const token = jwt.sign(
-                { admin: true },
-                process.env.ADMIN_JWT_SECRET,
-                { expiresIn: '1h' }
-            );
-
-            res.cookie('admin_token', token, {
-                httpOnly: true,
-                secure: process.env.NODE_ENV === 'production',
-                sameSite: 'lax',
-                maxAge: 1 * 60 * 60 * 1000 // 1 hour
-            });
-
-            return token;
-        },
-
         adminRuns: async (_, { page = 1, limit = 50, username, cheaterOnly, minScore, maxScore, sortBy = 'date', sortDir = 'desc' }, context) => {
             verifyAdmin(context);
 
@@ -251,6 +230,27 @@ export const adminResolvers = {
     },
 
     Mutation: {
+        adminLogin: async (_, { password }, { res }) => {
+            const adminSecret = process.env.ADMIN_SECRET;
+            if (!adminSecret) throw new Error('Admin not configured');
+            if (password !== adminSecret) throw new Error('Invalid admin password');
+
+            const token = jwt.sign(
+                { admin: true },
+                process.env.ADMIN_JWT_SECRET,
+                { expiresIn: '1h' }
+            );
+
+            res.cookie('admin_token', token, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'lax',
+                maxAge: 1 * 60 * 60 * 1000 // 1 hour
+            });
+
+            return token;
+        },
+
         adminDeleteRun: async (_, { runId }, context) => {
             verifyAdmin(context);
             const result = await getDB().collection(COLLECTION_RUNS).deleteOne({ _id: new ObjectId(runId) });
