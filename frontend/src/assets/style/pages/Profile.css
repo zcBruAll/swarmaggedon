@@ -321,3 +321,70 @@
     z-index: 10;
     pointer-events: none;
 }
+
+/* ============ RESPONSIVE ============ */
+@media (max-width: 900px) {
+    /* La sidebar passe au-dessus du contenu principal */
+    .profile-container {
+        grid-template-columns: 1fr;
+        gap: 28px;
+        margin: 24px auto;
+    }
+
+    .profile-sidebar {
+        gap: 24px;
+    }
+}
+
+@media (max-width: 700px) {
+    .profile-container {
+        padding: 0 16px;
+        margin: 16px auto;
+        gap: 20px;
+    }
+
+    /* 4 KPIs -> 2 colonnes */
+    .kpi-row {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    /* combat / survie empilés */
+    .detailed-stats-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    /* Titres de catégorie (combat / survie) centrés sur mobile */
+    .stats-section-title {
+        text-align: center;
+    }
+
+    /* Table d'historique resserrée (la date peut passer sur 2 lignes) */
+    .history-row {
+        grid-template-columns: 1fr 56px 44px 64px;
+        gap: 6px;
+        padding: 10px 4px;
+        font-size: 14px;
+    }
+
+    .history-row.header {
+        font-size: 12px;
+    }
+
+    .username {
+        font-size: 28px;
+    }
+
+    .avatar-large {
+        width: 96px;
+        height: 96px;
+        font-size: 38px;
+    }
+}
+
+@media (max-width: 360px) {
+    /* Très petits écrans : KPIs sur une seule colonne */
+    .kpi-row {
+        grid-template-columns: 1fr;
+    }
+}
