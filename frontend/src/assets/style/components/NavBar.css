@@ -164,3 +164,60 @@ nav button.active,
     font-size: 16px;
   }
 }
+
+/* ============ BURGER MENU ============ */
+.burger {
+  display: none;
+  background: var(--paper);
+  border: 2px solid var(--ink);
+  box-shadow: 2px 2px 0 var(--ink);
+  font-family: 'Patrick Hand';
+  font-size: 22px;
+  line-height: 1;
+  color: var(--ink);
+  cursor: pointer;
+  padding: 4px 12px;
+  border-radius: 2px;
+}
+
+.burger:active {
+  transform: translate(2px, 2px);
+  box-shadow: none;
+}
+
+@media (max-width: 700px) {
+  .burger {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  nav {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 16px;
+    margin-top: 6px;
+    flex-direction: column;
+    align-items: stretch;
+    min-width: 190px;
+    background: var(--paper);
+    border: 2px solid var(--ink);
+    box-shadow: 3px 3px 0 var(--ink);
+    padding: 8px;
+    border-radius: 2px;
+    z-index: 200;
+  }
+
+  nav.open {
+    display: flex;
+  }
+
+  nav .nav-link {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  nav .nav-link:last-child {
+    border-bottom: none;
+  }
+}
