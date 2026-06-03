@@ -3,8 +3,9 @@
     "dashboard": "Tableau de bord",
     "profile": "Profil",
     "friends": "Amis",
-    "loginRegister": "Connexion / Inscription",
-    "connected": "● connecté"
+    "loginRegister": "Compte",
+    "connected": "● connecté",
+    "menu": "Menu"
   },
   "patchNotes": {
     "button": "Notes de mise à jour",
@@ -444,7 +445,7 @@
     "loading": "Chargement du classement...",
     "resetsIn": "réinitialisation dans {{time}}",
     "scopes": {
-      "allTime": "depuis toujours",
+      "allTime": "historique",
       "weekly": "hebdomadaire",
       "daily": "quotidien"
     },

@@ -102,6 +102,20 @@ function NavBar() {
   const { isLoggedIn, user } = useAuth();
   const { loading, error, data } = useQuery(PENDING_REQUESTS);
   const { t } = useTranslation();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const navRef = useRef(null);
+  const burgerRef = useRef(null);
+
+  useEffect(() => {
+    const handler = (e) => {
+      if (
+        navRef.current && !navRef.current.contains(e.target) &&
+        burgerRef.current && !burgerRef.current.contains(e.target)
+      ) setMenuOpen(false);
+    };
+    if (menuOpen) document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [menuOpen]);
 
   return (
     <header>
@@ -110,11 +124,16 @@ function NavBar() {
           {process.env.NODE_ENV !== 'production' ? t('appNameDev') : t('appName')}
         </span>
       </div>
-      <nav>
+      <nav
+        id="primary-nav"
+        ref={navRef}
+        className={menuOpen ? 'open' : ''}
+        onClick={() => setMenuOpen(false)}
+      >
         <Link to="/" className={`nav-link ${location.pathname === '/' ? 'active' : ''}`}>
           {t('nav.dashboard')}
         </Link>
-        {isLoggedIn && (
+        {isLoggedIn ? (
           <>
             <Link to="/profile" className={`nav-link ${location.pathname === '/profile' ? 'active' : ''}`}>
               {t('nav.profile')}
@@ -126,22 +145,27 @@ function NavBar() {
                 : ''}
             </Link>
           </>
-        )}
-      </nav>
-
-      <div className="header-right">
-        <LanguagePicker />
-
-        {isLoggedIn ? (
-          <>
-            <span className="status-badge online">{t('nav.connected')}</span>
-            <span className="status-badge">{user?.username || 'User'}</span>
-          </>
         ) : (
           <Link to="/auth" className={`nav-link ${location.pathname === '/auth' ? 'active' : ''}`}>
             {t('nav.loginRegister')}
           </Link>
         )}
+      </nav>
+
+      <div className="header-right">
+
+        <LanguagePicker />
+
+        <button
+          ref={burgerRef}
+          className="burger"
+          aria-label={t('nav.menu')}
+          aria-expanded={menuOpen}
+          aria-controls="primary-nav"
+          onClick={() => setMenuOpen(o => !o)}
+        >
+          {menuOpen ? '✕' : '☰'}
+        </button>
       </div>
     </header>
   );
