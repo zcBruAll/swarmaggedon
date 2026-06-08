@@ -10,7 +10,8 @@ delete:
 	docker compose down -v --remove-orphans
 
 dev:
-	docker compose -f docker-compose.yml -f dev-compose.yml up -d --build --remove-orphans
+	docker compose -f docker-compose.yml -f dev-compose.yml up -d --build --remove-orphans backend
+	cd frontend && npm run dev
 
 dev-db:
 	docker compose -f docker-compose.yml -f dev-compose.yml up -d --build --remove-orphans mongo

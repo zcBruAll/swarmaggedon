@@ -21,9 +21,9 @@ JWT_SECRET=your_jwt_secret
 SALT_ROUNDS=10
 ```
 
-### Run with Docker
+### Run production with Docker
 ```bash
-docker compose up --build
+make
 ```
 
 | Service  | Port  |
@@ -32,7 +32,19 @@ docker compose up --build
 | Backend  | 2877  |
 | MongoDB  | 27017 |
 
-The frontend is served via Nginx and proxies API requests to the backend.
+The frontend is served via Nginx and proxies API requests to the backend. *You must configure nginx in your server*
+
+### Run locally with Docker
+```bash
+make dev
+```
+
+This will start everything locally so that you can test everything. \
+Then you can delete everything with :
+
+```bash
+make delete
+```
 
 ### Run tests
 #### Backend
