@@ -30,10 +30,10 @@ const BASE_STATS = {
 };
 
 const WAVE_SCALE = {
-    [ENEMY_TYPE.RUNNER]: { hp: 1.07, speed: 1.04, damage: 1.06, range: 1.008 },
-    [ENEMY_TYPE.BRUTE]: { hp: 1.10, speed: 1.02, damage: 1.07, range: 1.005 },
-    [ENEMY_TYPE.SHOOTER]: { hp: 1.08, speed: 1.02, damage: 1.07, range: 1.01 },
-    [ENEMY_TYPE.BOSS]: { hp: 1.12, speed: 1.03, damage: 1.08, range: 1.01 },
+    [ENEMY_TYPE.RUNNER]:  { hp: 1.05,  speed: 1.03,  damage: 1.045, range: 1.006 },
+    [ENEMY_TYPE.BRUTE]:   { hp: 1.065, speed: 1.015, damage: 1.05,  range: 1.004 },
+    [ENEMY_TYPE.SHOOTER]: { hp: 1.055, speed: 1.015, damage: 1.045, range: 1.001 },
+    [ENEMY_TYPE.BOSS]:    { hp: 1.09,  speed: 1.02,  damage: 1.055, range: 1.005 },
 };
 
 function scaleStats(base, mult, wave) {

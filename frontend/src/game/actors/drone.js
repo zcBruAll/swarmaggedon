@@ -18,9 +18,9 @@ const ORBIT_SPEED = 2.0;
 const RECALL_SPEED = 320;
 const DEPLOY_PAUSE = 0.25;
 
-const ORBIT_DAMAGE_MULT = 0.55;
-const ORBIT_RANGE_MULT = 0.70;
-const ORBIT_COOLDOWN_MULT = 1.45;
+const ORBIT_DAMAGE_MULT = 0.70;
+const ORBIT_RANGE_MULT = 0.85;
+const ORBIT_COOLDOWN_MULT = 1.25;
 
 export const orbitPhase = { value: 0 };
 export function tickOrbitPhase(dt) {
