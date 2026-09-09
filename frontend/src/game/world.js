@@ -1,3 +1,5 @@
+import { createAoeEffect } from "./effects";
+
 export const TEAM = {
     PLAYER: 'player',
     ENEMY: 'enemy',
@@ -42,7 +44,7 @@ export function createWorld() {
     function spawnActor(actor) { toSpawn.push(actor); }
     function flushSpawns() { for (const a of toSpawn) actors.push(a); toSpawn.length = 0; }
 
-    function aoeBlast(x, y, radius, damage, targetTeam, exclude = null) {
+    function aoeBlast(x, y, radius, damage, targetTeam, exclude = null, color) {
         for (const a of actors) {
             if (a.team !== targetTeam) continue;
             if (a === exclude) continue;
@@ -53,6 +55,7 @@ export function createWorld() {
                 a.takeDamage(damage * falloff, null, world);
             }
         }
+        spawnActor(createAoeEffect(x, y, radius, color));
     }
 
     function cleanupDead() {
@@ -72,7 +75,7 @@ export function createWorld() {
                 const attacker = a._lastAttacker;
                 if (attacker?.weapon?.enchant === 'detonator') {
                     const wpn = attacker.weapon;
-                    aoeBlast(a.x, a.y, wpn.detonateRadius, wpn.detonateDamage, a.team, a);
+                    aoeBlast(a.x, a.y, wpn.detonateRadius, wpn.detonateDamage, a.team, a, '#c0392b');
                 }
             }
 

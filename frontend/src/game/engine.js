@@ -209,7 +209,7 @@ export function createEngine(canvas, onHUDUpdate) {
                 const attacker = a._lastAttacker;
                 if (attacker?.weapon?.enchant === 'detonator') {
                     const wpn = attacker.weapon;
-                    world.aoeBlast(a.x, a.y, wpn.detonateRadius, wpn.detonateDamage, a.team, a);
+                    world.aoeBlast(a.x, a.y, wpn.detonateRadius, wpn.detonateDamage, a.team, a, '#c0392b');
                 }
             }
 

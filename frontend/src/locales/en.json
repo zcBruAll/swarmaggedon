@@ -216,6 +216,14 @@
         ],
         "desc": "Double damages for a short duration."
       },
+      "shield": {
+        "name": "Shield",
+        "tags": [
+          "buff",
+          "Short duration"
+        ],
+        "desc": "Prevent any damages for a short duration."
+      },
       "grenade": {
         "name": "Grenade",
         "tags": [
@@ -223,6 +231,13 @@
           "Cooldown"
         ],
         "desc": "After 3 seconds, fire a grenade to the nearest enemy dealing area on effect damages."
+      },
+      "undying": {
+        "name": "Phoenix charm",
+        "tags": [
+          "passive"
+        ],
+        "desc": "Prevent fatal death and give back a percentage of max health (unique usage)."
       }
     },
     "weapons": {

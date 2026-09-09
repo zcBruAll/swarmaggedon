@@ -38,6 +38,7 @@ export function drawActors(ctx, camera, actors, canvasW, canvasH) {
             case 'enemy': drawEnemy(ctx, actor, canvasW, canvasH, camera); break;
             case 'bullet': drawBullet(ctx, actor); break;
             case 'pickup': drawPickup(ctx, actor); break;
+            case 'aoeEffect': drawAoeEffect(ctx, actor); break;
         }
     }
 
@@ -46,6 +47,8 @@ export function drawActors(ctx, camera, actors, canvasW, canvasH) {
 
 function drawPlayer(ctx, player) {
     _drawWeaponArc(ctx, player, false);
+
+    if (player.shielded) _drawShieldRing(ctx, player.x, player.y, player.radius);
 
     ctx.fillStyle = '#000000';
     ctx.beginPath();
@@ -77,6 +80,8 @@ function drawEngineer(ctx, eng) {
     ctx.stroke();
     ctx.setLineDash([]);
     ctx.restore();
+
+    if (eng.shielded) _drawShieldRing(ctx, eng.x, eng.y, eng.radius);
 
     ctx.save();
     ctx.translate(eng.x, eng.y);
@@ -417,11 +422,39 @@ function drawPickup(ctx, pickup) {
     ctx.font = 'bold 11px sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    const symbol = pickup.dropType === DROP_TYPE.HEAL ? '+'
-        : pickup.dropType === DROP_TYPE.DAMAGE ? '×2'
-            : '💣';
+
+    const symbolMap = {
+        [DROP_TYPE.HEAL]: '+',
+        [DROP_TYPE.DAMAGE]: '×2',
+        [DROP_TYPE.GRENADE]: '💣',
+        [DROP_TYPE.SHIELD]: '🛡️',
+        [DROP_TYPE.UNDYING]: '🐦‍🔥'
+    };
+
+    const symbol = symbolMap[pickup.dropType] ?? '?';
     ctx.fillText(symbol, 0, 0);
 
+    ctx.restore();
+}
+
+function drawAoeEffect(ctx, effect) {
+    const t = Math.min(1, effect.elapsed / effect.duration);
+    const alpha = 1 - t;
+    const radius = effect.radius * (0.35 + 0.65 * t);
+
+    ctx.save();
+    ctx.globalAlpha = alpha * 0.45;
+    ctx.beginPath();
+    ctx.arc(effect.x, effect.y, radius, 0, Math.PI * 2);
+    ctx.fillStyle = effect.color;
+    ctx.fill();
+
+    ctx.globalAlpha = alpha;
+    ctx.lineWidth = 2.5;
+    ctx.strokeStyle = effect.color;
+    ctx.beginPath();
+    ctx.arc(effect.x, effect.y, radius, 0, Math.PI * 2);
+    ctx.stroke();
     ctx.restore();
 }
 
@@ -450,6 +483,24 @@ function _drawOffscreenIndicator(ctx, sx, sy, color, alpha, canvasW, canvasH) {
     ctx.fill();
     ctx.strokeStyle = 'white';
     ctx.lineWidth = 1;
+    ctx.stroke();
+    ctx.restore();
+}
+
+function _drawShieldRing(ctx, x, y, radius) {
+    const pulse = 0.55 + 0.25 * Math.sin(Date.now() / 160);
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(x, y, radius + 8, 0, Math.PI * 2);
+    ctx.fillStyle = '#3498db';
+    ctx.globalAlpha = 0.12;
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.arc(x, y, radius + 8, 0, Math.PI * 2);
+    ctx.strokeStyle = '#3498db';
+    ctx.lineWidth = 2.5;
+    ctx.globalAlpha = pulse;
     ctx.stroke();
     ctx.restore();
 }

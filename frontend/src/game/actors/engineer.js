@@ -156,6 +156,17 @@ export function createEngineer(canvasWidth, canvasHeight) {
 
         takeDamage(amount) {
             if (this.iFramesTime > 0) return;
+            if (this.shielded) return;
+
+            if (amount >= this.hp) {
+                const undying = tryConsumeUndying(this);
+                if (undying) {
+                    this.hp = Math.max(1, Math.round(this.maxHp * undying.revivePercent));
+                    this.iFramesTime = undying.graceIframes;
+                    return;
+                }
+            }
+
             this.hp -= Math.min(amount, this.hp);
             this.iFramesTime = 0.45;
         },

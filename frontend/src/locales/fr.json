@@ -216,6 +216,14 @@
         ],
         "desc": "Double les dégâts pendant une courte durée."
       },
+      "shield": {
+        "name": "Bouclier",
+        "tags": [
+          "Bonus",
+          "Courte durée"
+        ],
+        "desc": "Empêche de prendre des dégâts pendant un court instant."
+      },
       "grenade": {
         "name": "Grenade",
         "tags": [
@@ -223,6 +231,13 @@
           "Chargement"
         ],
         "desc": "Après 3 secondes, lance une grenade vers l'ennemi le plus proche créant des dégâts de zone."
+      },
+      "undying": {
+        "name": "Charme de Phénix",
+        "tags": [
+          "Passif"
+        ],
+        "desc": "Empêche la mort fatale et rend un pourcentage des points de vie (usage unique)."
       }
     },
     "weapons": {
