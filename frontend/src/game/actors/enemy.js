@@ -30,10 +30,10 @@ const BASE_STATS = {
 };
 
 const WAVE_SCALE = {
-    [ENEMY_TYPE.RUNNER]:  { hp: 1.05,  speed: 1.03,  damage: 1.045, range: 1.006 },
-    [ENEMY_TYPE.BRUTE]:   { hp: 1.065, speed: 1.015, damage: 1.05,  range: 1.004 },
+    [ENEMY_TYPE.RUNNER]: { hp: 1.05, speed: 1.03, damage: 1.045, range: 1.006 },
+    [ENEMY_TYPE.BRUTE]: { hp: 1.065, speed: 1.015, damage: 1.05, range: 1.004 },
     [ENEMY_TYPE.SHOOTER]: { hp: 1.055, speed: 1.015, damage: 1.045, range: 1.001 },
-    [ENEMY_TYPE.BOSS]:    { hp: 1.09,  speed: 1.02,  damage: 1.055, range: 1.005 },
+    [ENEMY_TYPE.BOSS]: { hp: 1.09, speed: 1.02, damage: 1.055, range: 1.005 },
 };
 
 function scaleStats(base, mult, wave) {
@@ -121,9 +121,11 @@ export function createEnemy(type, wave) {
             }
         },
 
-        takeDamage(amount, source) {
-            this.hp -= Math.min(amount, this.hp);
+        takeDamage(amount, source, world) {
+            const applied = Math.min(amount, this.hp);
+            this.hp -= applied;
             if (source) this._lastAttacker = source;
+            if (world) world.recordDamage(this.team, applied);
         },
 
         onDeath() { },
@@ -131,21 +133,30 @@ export function createEnemy(type, wave) {
     };
 }
 
-export function createWave(wave, anchorActor) {
+export function getWaveComposition(wave) {
     const isBossWave = wave % BOSS_WAVE_INTERVAL === 0;
-    const queue = [];
 
     if (isBossWave) {
-        queue.push(createEnemy(ENEMY_TYPE.BOSS, wave));
-        const runnerCount = 1 + Math.floor(wave / 10);
-        for (let i = 0; i < runnerCount; i++) queue.push(createEnemy(ENEMY_TYPE.RUNNER, wave));
-    } else {
-        const runnerCount = Math.max(2, Math.floor(wave * 0.8) + 2);
-        const bruteCount = Math.max(0, Math.floor((wave - 3) / 3));
-        const shooterCount = Math.max(0, Math.floor((wave - 4) / 4));
-        for (let i = 0; i < runnerCount; i++) queue.push(createEnemy(ENEMY_TYPE.RUNNER, wave));
-        for (let i = 0; i < bruteCount; i++) queue.push(createEnemy(ENEMY_TYPE.BRUTE, wave));
-        for (let i = 0; i < shooterCount; i++) queue.push(createEnemy(ENEMY_TYPE.SHOOTER, wave));
+        return [
+            { type: ENEMY_TYPE.BOSS, count: 1 },
+            { type: ENEMY_TYPE.RUNNER, count: 1 + Math.floor(wave / 10) },
+        ];
+    }
+
+    const composition = [
+        { type: ENEMY_TYPE.RUNNER, count: Math.max(2, Math.floor(wave * 0.8) + 2) },
+    ];
+    const bruteCount = Math.max(0, Math.floor((wave - 3) / 3));
+    const shooterCount = Math.max(0, Math.floor((wave - 4) / 4));
+    if (bruteCount > 0) composition.push({ type: ENEMY_TYPE.BRUTE, count: bruteCount });
+    if (shooterCount > 0) composition.push({ type: ENEMY_TYPE.SHOOTER, count: shooterCount });
+    return composition;
+}
+
+export function createWave(wave, anchorActor) {
+    const queue = [];
+    for (const { type, count } of getWaveComposition(wave)) {
+        for (let i = 0; i < count; i++) queue.push(createEnemy(type, wave));
     }
 
     for (let i = queue.length - 1; i > 0; i--) {
@@ -202,4 +213,46 @@ export function separateEnemies(enemies) {
             }
         }
     }
+}
+
+export function getEnemyStatsAtWave(type, wave) {
+    const base = BASE_STATS[type];
+    const scale = WAVE_SCALE[type];
+    return {
+        hp: Math.round(scaleStats(base.hp, scale.hp, wave)),
+        damage: Math.round(scaleStats(base.damage, scale.damage, wave)),
+        speed: Math.round(scaleStats(base.speed, scale.speed, wave)),
+        range: Math.round(scaleStats(base.range, scale.range, wave)),
+        score: base.score,
+    };
+}
+
+function _pctChange(curr, prev) {
+    return prev > 0 ? Math.round(((curr - prev) / prev) * 100) : 0;
+}
+
+export function getWavePreview(wave) {
+    const composition = getWaveComposition(wave);
+    const prevCounts = wave > 1
+        ? Object.fromEntries(getWaveComposition(wave - 1).map(c => [c.type, c.count]))
+        : {};
+
+    return composition.map(({ type, count }) => {
+        const stats = getEnemyStatsAtWave(type, wave);
+        const isNew = !prevCounts[type];
+        const prevStats = getEnemyStatsAtWave(type, Math.max(1, wave - 1));
+
+        return {
+            type,
+            count,
+            color: BASE_STATS[type].color,
+            isNew,
+            stats,
+            deltas: isNew ? null : {
+                hp: _pctChange(stats.hp, prevStats.hp),
+                damage: _pctChange(stats.damage, prevStats.damage),
+                speed: _pctChange(stats.speed, prevStats.speed),
+            },
+        };
+    });
 }

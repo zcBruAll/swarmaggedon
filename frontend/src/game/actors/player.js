@@ -53,29 +53,33 @@ export function createPlayer(canvasWidth, canvasHeight) {
             }
         },
 
-        takeDamage(amount) {
+        takeDamage(amount, source, world) {
             if (this.iFramesTime > 0) return;
             if (this.shielded) return;
 
             if (amount >= this.hp) {
                 const undying = tryConsumeUndying(this);
                 if (undying) {
+                    const applied = this.hp;
                     this.hp = Math.max(1, Math.round(this.maxHp * undying.revivePercent));
                     this.iFramesTime = undying.graceIframes;
                     if (this.weapon?.enchant === WEAPON_ENCHANT.MOMENTUM) {
                         this.weapon.stacks = 0;
                         this.weapon.decayTime = 0;
                     }
+                    if (world) world.recordDamage(this.team, applied);
                     return;
                 }
             }
 
-            this.hp -= Math.min(amount, this.hp);
+            const applied = Math.min(amount, this.hp);
+            this.hp -= applied;
             this.iFramesTime = PLAYER_IFRAME_DURATION;
             if (this.weapon?.enchant === WEAPON_ENCHANT.MOMENTUM) {
                 this.weapon.stacks = 0;
                 this.weapon.decayTime = 0;
             }
+            if (world) world.recordDamage(this.team, applied);
         },
 
         heal(amount) {

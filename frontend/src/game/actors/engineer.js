@@ -154,21 +154,25 @@ export function createEngineer(canvasWidth, canvasHeight) {
             }
         },
 
-        takeDamage(amount) {
+        takeDamage(amount, source, world) {
             if (this.iFramesTime > 0) return;
             if (this.shielded) return;
 
             if (amount >= this.hp) {
                 const undying = tryConsumeUndying(this);
                 if (undying) {
+                    const applied = this.hp;
                     this.hp = Math.max(1, Math.round(this.maxHp * undying.revivePercent));
                     this.iFramesTime = undying.graceIframes;
+                    if (world) world.recordDamage(this.team, applied);
                     return;
                 }
             }
 
-            this.hp -= Math.min(amount, this.hp);
+            const applied = Math.min(amount, this.hp);
+            this.hp -= applied;
             this.iFramesTime = 0.45;
+            if (world) world.recordDamage(this.team, applied);
         },
 
         heal(amount) {

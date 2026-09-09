@@ -252,7 +252,7 @@ export function getEngineerEnchantChoices(wave, engineer, enchantWave) {
         );
         if (unenchanted.length > 0) eligibleTypes = unenchanted;
     }
-    
+
     const pool = [];
     for (const { type, label, color } of eligibleTypes) {
         const current = currentEnchants[type];

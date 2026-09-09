@@ -686,5 +686,16 @@
       "year": "a"
     },
     "comingSoon": "Prochainement..."
+  },
+  "waveStats": {
+    "cleared": "Vague {{wave}} terminée !",
+    "time": "Temps",
+    "dealt": "Dégâts infligés",
+    "taken": "Dégâts subis",
+    "kills": "Kills",
+    "incoming": "Vague à venir",
+    "new": "NOUVEAU",
+    "hp": "PV",
+    "dmg": "DGT"
   }
 }

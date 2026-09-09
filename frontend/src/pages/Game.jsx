@@ -12,6 +12,7 @@ import NavBar from '../components/NavBar';
 import { PatchNotes } from '../components/PatchNotes';
 import { useTranslation } from 'react-i18next';
 import MobileControls from '../components/MobileControls';
+import WaveStatsPanel from '../components/WaveStatsPanel';
 
 const MUTATION_ADD_RUN = gql`
   mutation AddRun($score: Int!, $duration: Int!, $wave: Int!, $kills: Int!) {
@@ -30,6 +31,8 @@ const DEFAULT_HUD = {
   isEngineer: false,
   drones: null,
   playerClass: null,
+  waveRecap: null,
+  wavePreview: [],
 };
 
 function ClassSelectOverlay({ onSelect }) {
@@ -197,9 +200,9 @@ function Game() {
     rangeDamage: '🔫 Damage',
     rangeFireRate: '🔫 Fire Rate',
     rangeRange: '🔫 Range',
-    meleeDamage: '⚔️ Damage',
-    meleeFireRate: '⚔️ Fire Rate',
-    meleeRange: '⚔️ Range',
+    meleeDamage: '⚔︝ Damage',
+    meleeFireRate: '⚔︝ Fire Rate',
+    meleeRange: '⚔︝ Range',
   };
   const tEngAttr = (attr) => ENGINEER_ATTR_LABELS[attr] ?? attr;
 
@@ -275,8 +278,9 @@ function Game() {
         {/* ── Choice screen ── */}
         {hud.gameState === GAME_STATE.CHOICE && (
           <div className="overlay choice">
+            <WaveStatsPanel recap={hud.waveRecap} preview={hud.wavePreview} />
             <span className="choice-title">
-              { t('game.chooseAugment') }
+              {t('game.chooseAugment')}
             </span>
             <div className="choice-list">
               {hud.choices.map((choice) => (
@@ -554,11 +558,15 @@ function Game() {
             <div className="items-grid">
               {slots.map((item, i) => {
                 if (!item) return <div key={i} className="item-slot empty" />;
-                const cdPct = item.cooldown ? Math.round((1 - item.cooldownTime / item.cooldown) * 100) : 100;
+                const isBuff = item.kind === 'buff';
+                const cdPct = item.cooldown
+                  ? Math.round((isBuff ? item.cooldownTime / item.cooldown : 1 - item.cooldownTime / item.cooldown) * 100)
+                  : 100;
                 const isReady = !item.cooldown || item.cooldownTime <= 0;
                 return (
                   <div key={i} className="item-slot">
                     <img src={item.icon || 'temp.png'} alt={item.name} />
+                    {item.charges > 1 && <span className="item-slot-charges">{item.charges}</span>}
                     {item.cooldown && (
                       <>
                         <span className="item-slot-cd">

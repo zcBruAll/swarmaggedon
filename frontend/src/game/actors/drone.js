@@ -166,16 +166,18 @@ export function createDrone(index, weaponType, enchant = undefined) {
             return true;
         },
 
-        takeDamage(amount) {
+        takeDamage(amount, source, world) {
             if (this.iFramesTime > 0) return;
             const mult = this.state === DRONE_STATE.ORBITING ? 0.55 : 1;
-            this.hp -= Math.min(amount * mult, this.hp);
+            const applied = Math.min(amount * mult, this.hp);
+            this.hp -= applied;
             this.iFramesTime = DRONE_IFRAME_DURATION;
             if (this.hp <= 0) {
                 this.hp = 0;
                 this.state = DRONE_STATE.WRECKED;
                 this.repairProgress = 0;
             }
+            if (world) world.recordDamage(this.team, applied);
         },
 
         resetForNextWave(player) {

@@ -686,5 +686,16 @@
       "year": "y"
     },
     "comingSoon": "Coming soon..."
+  },
+  "waveStats": {
+    "cleared": "Wave {{wave}} cleared!",
+    "time": "Time",
+    "dealt": "Damage dealt",
+    "taken": "Damage taken",
+    "kills": "Kills",
+    "incoming": "Incoming wave",
+    "new": "NEW",
+    "hp": "HP",
+    "dmg": "DMG"
   }
 }
