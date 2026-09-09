@@ -96,7 +96,7 @@ export function createBullet(x, y, width, angle, speed, damage, range, type = BU
         _aoeHit(target, world) {
             target.takeDamage(this.damage, this, world);
             const blastRadius = this.args?.aoeRadius ?? 150;
-            world.aoeBlast(this.x, this.y, blastRadius, this.damage, this.targetTeam, target);
+            world.aoeBlast(this.x, this.y, blastRadius, this.damage, this.targetTeam, target, '#e67e22');
             this.dead = true;
         },
 

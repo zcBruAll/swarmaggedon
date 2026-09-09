@@ -1,6 +1,6 @@
 import { createWeapon, tryAttack, WEAPON_TYPE, WEAPON_ENCHANT } from '../weapon.js';
 import { TEAM } from '../world.js';
-import { tickItems } from '../drop.js';
+import { tickItems, tryConsumeUndying } from '../drop.js';
 
 const PLAYER_IFRAME_DURATION = 0.45;
 
@@ -55,6 +55,21 @@ export function createPlayer(canvasWidth, canvasHeight) {
 
         takeDamage(amount) {
             if (this.iFramesTime > 0) return;
+            if (this.shielded) return;
+
+            if (amount >= this.hp) {
+                const undying = tryConsumeUndying(this);
+                if (undying) {
+                    this.hp = Math.max(1, Math.round(this.maxHp * undying.revivePercent));
+                    this.iFramesTime = undying.graceIframes;
+                    if (this.weapon?.enchant === WEAPON_ENCHANT.MOMENTUM) {
+                        this.weapon.stacks = 0;
+                        this.weapon.decayTime = 0;
+                    }
+                    return;
+                }
+            }
+
             this.hp -= Math.min(amount, this.hp);
             this.iFramesTime = PLAYER_IFRAME_DURATION;
             if (this.weapon?.enchant === WEAPON_ENCHANT.MOMENTUM) {

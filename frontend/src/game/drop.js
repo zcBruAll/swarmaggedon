@@ -4,6 +4,8 @@ export const DROP_TYPE = {
     HEAL: 'heal',
     DAMAGE: 'damage',
     GRENADE: 'grenade',
+    SHIELD: 'shield',
+    UNDYING: 'undying',
 };
 
 export const DROP_DEFS = {
@@ -34,6 +36,24 @@ export const DROP_DEFS = {
         radius: 130,     // blast radius
         damage: 70,      // blast damage
         maxCharges: 3,   // stack cap
+    },
+    [DROP_TYPE.SHIELD]: {
+        id: DROP_TYPE.SHIELD,
+        name: 'Shield Charm',
+        icon: null,
+        color: '#3498db',
+        weight: 18,
+        duration: 4,
+    },
+    [DROP_TYPE.UNDYING]: {
+        id: DROP_TYPE.UNDYING,
+        name: 'Undying Artifact',
+        icon: null,
+        color: '#d4af37',
+        weight: 2,
+        maxCharges: 2,
+        revivePercent: 0.2,
+        graceIframes: 1.2,
     },
 }
 
@@ -159,6 +179,22 @@ export function applyDropEffect(type, actor, world) {
             }
             break;
         }
+        case DROP_TYPE.SHIELD: {
+            const existing = actor.items.find(i => i.id === DROP_TYPE.SHIELD);
+            if (existing) {
+                existing.cooldownTime = existing.cooldown;
+            } else {
+                actor.items.push({
+                    id: DROP_TYPE.SHIELD,
+                    name: def.name,
+                    icon: def.icon,
+                    kind: 'buff',
+                    cooldown: def.duration,
+                    cooldownTime: def.duration,
+                });
+            }
+            break;
+        }
         case DROP_TYPE.GRENADE: {
             addOrStackItem(actor, {
                 id: DROP_TYPE.GRENADE,
@@ -174,6 +210,17 @@ export function applyDropEffect(type, actor, world) {
             });
             break;
         }
+        case DROP_TYPE.UNDYING: {
+            addOrStackItem(actor, {
+                id: DROP_TYPE.UNDYING,
+                name: def.name,
+                icon: def.icon,
+                kind: 'passive',
+                charges: 1,
+                maxCharges: def.maxCharges,
+            });
+            break;
+        }
         default: break;
     }
 }
@@ -182,7 +229,7 @@ function _triggerActiveItem(item, actor, world) {
     if (item.id === DROP_TYPE.GRENADE) {
         const target = world.nearestActor(actor.x, actor.y, TEAM.ENEMY);
         if (!target) return false;
-        world.aoeBlast(target.x, target.y, item.radius, item.damage, TEAM.ENEMY, null);
+        world.aoeBlast(target.x, target.y, item.radius, item.damage, TEAM.ENEMY, null, '#e67e22');
         return true;
     }
     return false;
@@ -192,6 +239,7 @@ function _triggerActiveItem(item, actor, world) {
 export function tickItems(actor, dt, world) {
     if (!actor.items) actor.items = [];
     let multiplier = 1;
+    let shielded = false;
 
     for (let i = actor.items.length - 1; i >= 0; i--) {
         const item = actor.items[i];
@@ -200,6 +248,7 @@ export function tickItems(actor, dt, world) {
             item.cooldownTime -= Math.min(dt, item.cooldownTime);
             if (item.cooldownTime <= 0) { actor.items.splice(i, 1); continue; }
             if (item.id === DROP_TYPE.DAMAGE) multiplier *= item.multiplier;
+            if (item.id === DROP_TYPE.SHIELD) shielded = true;
         }
 
         if (item.kind === 'active') {
@@ -214,4 +263,21 @@ export function tickItems(actor, dt, world) {
     }
 
     actor.damageMultiplier = multiplier;
+    actor.shielded = shielded;
+}
+
+/**
+ * Spends one Undying Artifact charge, if the actor has one.
+ * Returns the item def (revivePercent/graceIframes) on success, or null.
+ */
+export function tryConsumeUndying(actor) {
+    if (!actor.items) return null;
+    const item = actor.items.find(i => i.id === DROP_TYPE.UNDYING);
+    if (!item) return null;
+
+    item.charges -= 1;
+    if (item.charges <= 0) {
+        actor.items = actor.items.filter(i => i !== item);
+    }
+    return DROP_DEFS[DROP_TYPE.UNDYING];
 }
