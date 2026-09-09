@@ -1,7 +1,7 @@
 import { createWorld, TEAM } from './world.js';
 import { createPlayer } from './actors/player.js';
 import { createEngineer } from './actors/engineer.js';
-import { createEnemy, createWave, separateEnemies, BOSS_WAVE_INTERVAL } from './actors/enemy.js';
+import { createEnemy, createWave, separateEnemies, BOSS_WAVE_INTERVAL, getWaveComposition, getWavePreview, getEnemyStatsAtWave } from './actors/enemy.js';
 import { DRONE_STATE } from './actors/drone.js';
 import { initInput, destroyInput, flushInput, input } from './input.js';
 import { drawBackground, drawActors } from './renderer.js';
@@ -91,6 +91,10 @@ export function createEngine(canvas, onHUDUpdate) {
     let camera = { x: 0, y: 0, scale: 1 };
     let waveMsg = { waveNumber: 0, duration: 0 };
 
+    let waveRecap = null;
+    let wavePreview = [];
+    let waveStartElapsed = 0;
+
     let rerollsLeft = 2;
     let currentChoiceType = null;
     let engineerEnchantWave = 0;
@@ -132,6 +136,9 @@ export function createEngine(canvas, onHUDUpdate) {
         waveTimer = WAVE_INTERVAL;
         choices = [];
         rerollsLeft = 2;
+        waveRecap = null;
+        world.resetWaveStats();
+        waveStartElapsed = 0;
 
         if (_isEngineer()) {
             gameState = GAME_STATE.RUNNING;
@@ -141,6 +148,7 @@ export function createEngine(canvas, onHUDUpdate) {
 
         wave = 1;
         _spawnWave(wave);
+        wavePreview = getWavePreview(wave);
     }
 
     function loop(ts) {
@@ -204,6 +212,7 @@ export function createEngine(canvas, onHUDUpdate) {
             if (isDead && a.score) {
                 world.addScore(a.score);
                 world.addKill();
+                world.recordKill(a.type);
                 if (world.onKillCallback) world.onKillCallback(a);
                 maybeDropLoot(a, world);
                 const attacker = a._lastAttacker;
@@ -245,6 +254,14 @@ export function createEngine(canvas, onHUDUpdate) {
                     for (const drone of player.drones) drone.resetForNextWave(player);
                 }
 
+                waveRecap = {
+                    waveNumber: wave,
+                    timeTaken: world.elapsed - waveStartElapsed,
+                    damageDealt: world.waveDamageDealt,
+                    damageTaken: world.waveDamageTaken,
+                    kills: { ...world.waveKillsByType },
+                };
+
                 const completedWave = wave;
                 let choiceType;
 
@@ -271,6 +288,10 @@ export function createEngine(canvas, onHUDUpdate) {
             wave += 1;
             world.wave = wave;
             _spawnWave(wave);
+
+            wavePreview = getWavePreview(wave);
+            world.resetWaveStats();
+            waveStartElapsed = world.elapsed;
         }
     }
 
@@ -352,6 +373,8 @@ export function createEngine(canvas, onHUDUpdate) {
             isEngineer: _isEngineer(),
             drones: _isEngineer() ? player.drones : null,
             playerClass,
+            waveRecap,
+            wavePreview,
         });
     }
 

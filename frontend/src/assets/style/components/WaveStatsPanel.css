@@ -1,0 +1,129 @@
+.wave-stats-panel {
+    width: clamp(260px, 90vw, 780px);
+    margin: 0 auto clamp(10px, 2vh, 18px);
+    background: rgba(250, 247, 241, 0.95);
+    border: 2px solid #2a2318;
+    box-shadow: 3px 3px 0 rgba(42, 35, 24, 0.15);
+    padding: 10px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.wsp-recap-title,
+.wsp-preview-title {
+    font-size: clamp(14px, 2.2vw, 18px);
+    font-weight: 700;
+    color: #2a2318;
+    border-bottom: 1.5px dashed #c8bfad;
+    padding-bottom: 4px;
+    margin-bottom: 4px;
+}
+
+.wsp-recap-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+}
+
+.wsp-recap-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 70px;
+}
+
+.wsp-recap-label {
+    font-size: 11px;
+    color: #a89880;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+}
+
+.wsp-recap-value {
+    font-size: 16px;
+    color: #2a2318;
+}
+
+.wsp-recap-value.dealt {
+    color: #27ae60;
+}
+
+.wsp-recap-value.taken {
+    color: #c0392b;
+}
+
+.wsp-kill-chip {
+    display: inline-block;
+    margin-right: 6px;
+    font-size: 13px;
+}
+
+.wsp-preview-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    max-height: 130px;
+    overflow-y: auto;
+}
+
+.wsp-enemy-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    padding: 3px 0;
+    border-bottom: 1px dashed #e6e0d2;
+    flex-wrap: wrap;
+}
+
+.wsp-enemy-row:last-child {
+    border-bottom: none;
+}
+
+.wsp-enemy-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.wsp-enemy-name {
+    font-weight: 700;
+    min-width: 70px;
+}
+
+.wsp-new-tag {
+    margin-left: 6px;
+    font-size: 10px;
+    color: #2471a3;
+    border: 1px solid #2471a3;
+    padding: 0 4px;
+    border-radius: 2px;
+}
+
+.wsp-enemy-count {
+    color: #5a5040;
+}
+
+.wsp-enemy-stat {
+    color: #5a5040;
+    white-space: nowrap;
+}
+
+.wsp-delta {
+    font-size: 11px;
+    margin-left: 2px;
+}
+
+.wsp-delta.up {
+    color: #c0392b;
+}
+
+.wsp-delta.down {
+    color: #27ae60;
+}
+
+.wsp-delta.neutral {
+    color: #a89880;
+}

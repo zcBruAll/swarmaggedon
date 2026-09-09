@@ -15,6 +15,27 @@ export function createWorld() {
     let wave = 0;
     let elapsed = 0;
 
+    let waveDamageDealt = 0;
+    let waveDamageTaken = 0;
+    let waveKillsByType = {};
+
+    function recordDamage(targetTeam, amount) {
+        if (!amount || amount <= 0) return;
+        if (targetTeam === TEAM.ENEMY) waveDamageDealt += amount;
+        else waveDamageTaken += amount;
+    }
+
+    function recordKill(enemyType) {
+        if (!enemyType) return;
+        waveKillsByType[enemyType] = (waveKillsByType[enemyType] || 0) + 1;
+    }
+
+    function resetWaveStats() {
+        waveDamageDealt = 0;
+        waveDamageTaken = 0;
+        waveKillsByType = {};
+    }
+
     function actorsOnTeam(team) {
         return actors.filter(a => a.team === team && a.hp > 0 && !a.dead);
     }
@@ -100,6 +121,10 @@ export function createWorld() {
         aoeBlast,
         cleanupDead,
 
+        recordDamage,
+        recordKill,
+        resetWaveStats,
+
         emit,
         flushEvents,
 
@@ -108,6 +133,9 @@ export function createWorld() {
         get wave() { return wave; },
         set wave(v) { wave = v; },
         get elapsed() { return elapsed; },
+        get waveDamageDealt() { return waveDamageDealt; },
+        get waveDamageTaken() { return waveDamageTaken; },
+        get waveKillsByType() { return waveKillsByType; },
 
         addScore(n) { score += n; },
         addKill() { kills += 1; },

@@ -58,7 +58,7 @@ export function createBullet(x, y, width, angle, speed, damage, range, type = BU
             switch (this.explos) {
                 case BULLET_EXPLOS.CHAIN: this._chainHit(target, allTargets, world); break;
                 case BULLET_EXPLOS.AOE: this._aoeHit(target, world); break;
-                case BULLET_EXPLOS.PIERCE: this._pierceHit(target); break;
+                case BULLET_EXPLOS.PIERCE: this._pierceHit(target, world); break;
                 default:
                     target.takeDamage(this.damage, this, world);
                     this.dead = true;
@@ -100,9 +100,9 @@ export function createBullet(x, y, width, angle, speed, damage, range, type = BU
             this.dead = true;
         },
 
-        _pierceHit(target) {
+        _pierceHit(target, world) {
             if (!this.transpierced.includes(target)) {
-                target.takeDamage(this.damage, this, null);
+                target.takeDamage(this.damage, this, world);
                 this.transpierced.push(target);
                 this.args.pierce = Math.floor(this.args.pierce - 1);
             }
