@@ -262,7 +262,7 @@ export function tryAttack(weapon, attacker, world, dt, inputState = null) {
     weapon.cooldownTime -= Math.min(dt, weapon.cooldownTime);
     if (weapon.cooldownTime > 0) return;
 
-    let effectiveDamage = weapon.damage;
+    let effectiveDamage = weapon.damage * (attacker.damageMultiplier ?? 1);
     let effectiveCooldown = weapon.cooldown;
 
     if (weapon.enchant === WEAPON_ENCHANT.MOMENTUM && weapon.stacks > 0) {
@@ -375,13 +375,14 @@ function _fireRanged(weapon, attacker, angle, world) {
 function _spawnBullet(attacker, weapon, angle, overrides, world) {
     const type = overrides?.type ?? BULLET_EXPLOS.HIT;
     const args = overrides?.args ?? null;
+    const damage = weapon.damage * (attacker.damageMultiplier ?? 1);
 
     world.spawnActor(createBullet(
         attacker.x, attacker.y,
         weapon.bulletWidth ?? 3,
         angle,
         weapon.bulletSpeed ?? 500,
-        weapon.damage,
+        damage,
         weapon.range,
         type, args,
         attacker.team,
@@ -406,7 +407,7 @@ function _resolveLaser(weapon, attacker, targetTeam, world) {
         const dist = Math.hypot(localX - closestX, localY - closestY);
 
         if (dist <= target.radius) {
-            target.takeDamage(weapon.damage, attacker, world);
+            target.takeDamage(weapon.damage * (attacker.damageMultiplier ?? 1), attacker, world);
         }
     }
 }
@@ -432,6 +433,6 @@ function _resolveCharge(weapon, attacker, targetTeam, world) {
             if (diff > Math.PI / 180 * weaponRange) continue;
         }
 
-        target.takeDamage(weaponDamage, attacker, world);
+        const weaponDamage = weapon.damage * (attacker.damageMultiplier ?? 1) * (1 + weapon.chargeTime * weapon.dmgSpeed / 100);
     }
 }

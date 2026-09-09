@@ -26,6 +26,7 @@
       "controls": "🎮 Controls",
       "classes": "🧑 Classes",
       "enemies": "👾 Enemies",
+      "pickups": "💣 Pickups",
       "weapons": "⚔️ Weapons",
       "augments": "✦ Augments"
     },
@@ -196,6 +197,32 @@
           "bonus reward"
         ],
         "desc": "Giant enemy with a long-range laser beam. Appears every 10 waves alongside a pack of Runners. Killing it grants a Boss Reward choice screen."
+      }
+    },
+    "pickups": {
+      "intro": "Ennemies have a chance to drop pickup items that can be really useful!",
+      "healthPotion": {
+        "name": "Health potion",
+        "tags": [
+          "Instant"
+        ],
+        "desc": "Instantly restore 20% of max heatlh."
+      },
+      "damagePotion": {
+        "name": "Damage potion",
+        "tags": [
+          "buff",
+          "Short duration"
+        ],
+        "desc": "Double damages for a short duration."
+      },
+      "grenade": {
+        "name": "Grenade",
+        "tags": [
+          "active",
+          "Cooldown"
+        ],
+        "desc": "After 3 seconds, fire a grenade to the nearest enemy dealing area on effect damages."
       }
     },
     "weapons": {

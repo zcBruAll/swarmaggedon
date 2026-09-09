@@ -11,6 +11,7 @@ import {
     getChoices, getEnchantChoices, getWeaponChoices, getBossRewardChoices,
     getEngineerUpgradeChoices, getEngineerEnchantChoices,
 } from './choice.js';
+import { maybeDropLoot } from './drop.js';
 
 export const GAME_STATE = {
     CLASS_SELECT: 'class_select',
@@ -204,6 +205,7 @@ export function createEngine(canvas, onHUDUpdate) {
                 world.addScore(a.score);
                 world.addKill();
                 if (world.onKillCallback) world.onKillCallback(a);
+                maybeDropLoot(a, world);
                 const attacker = a._lastAttacker;
                 if (attacker?.weapon?.enchant === 'detonator') {
                     const wpn = attacker.weapon;
