@@ -225,7 +225,9 @@ function PickupsTab() {
     const pickups = [
         { key: 'healthPotion', color: '#2ecc71' },
         { key: 'damagePotion', color: '#f39c12' },
+        { key: 'shield', color: '#1774ee' },
         { key: 'grenade', color: '#210D26' },
+        { key: 'undying', color: '#b68b3b' },
     ];
 
     return (
