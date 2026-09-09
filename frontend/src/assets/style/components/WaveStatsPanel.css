@@ -54,8 +54,10 @@
 }
 
 .wsp-kill-chip {
-    display: inline-block;
-    margin-right: 6px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-right: 8px;
     font-size: 13px;
 }
 

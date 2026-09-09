@@ -2,7 +2,12 @@ import { useTranslation } from 'react-i18next';
 import { formatToRealTime } from '../utils/Utils';
 import '../assets/style/components/WaveStatsPanel.css';
 
-const ENEMY_ICONS = { runner: '🏃', brute: '🪓', shooter: '🔫', boss: '💀' };
+const ENEMY_COLORS = {
+    runner: '#e74c3c',
+    brute: '#8e44ad',
+    shooter: '#e67e22',
+    boss: '#c0392b'
+};
 
 function StatDelta({ value }) {
     if (value === null || value === undefined) return null;
@@ -37,7 +42,13 @@ export default function WaveStatsPanel({ recap, preview }) {
                             <span className="wsp-recap-label">{t('waveStats.kills')}</span>
                             <span className="wsp-recap-value">
                                 {Object.entries(recap.kills).map(([type, n]) => (
-                                    <span key={type} className="wsp-kill-chip">{ENEMY_ICONS[type] ?? '•'} {n}</span>
+                                    <span key={type} className="wsp-kill-chip">
+                                        <span
+                                            className="wsp-enemy-dot"
+                                            style={{ backgroundColor: ENEMY_COLORS[type] || '#ccc' }}
+                                        />
+                                        {n}
+                                    </span>
                                 ))}
                             </span>
                         </div>
