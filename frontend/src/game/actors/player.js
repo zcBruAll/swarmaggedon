@@ -1,5 +1,6 @@
 import { createWeapon, tryAttack, WEAPON_TYPE, WEAPON_ENCHANT } from '../weapon.js';
 import { TEAM } from '../world.js';
+import { tickItems } from '../drop.js';
 
 const PLAYER_IFRAME_DURATION = 0.45;
 
@@ -31,6 +32,7 @@ export function createPlayer(canvasWidth, canvasHeight) {
             if (this.iFramesTime > 0) this.iFramesTime -= Math.min(dt, this.iFramesTime);
             this._move(dt, inputState);
             this._faceNearestEnemy(world);
+            tickItems(this, dt, world);
             tryAttack(this.weapon, this, world, dt, inputState);
         },
 

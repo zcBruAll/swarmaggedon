@@ -203,7 +203,7 @@ function EnemiesTab() {
                         borderBottom: i < enemies.length - 1 ? '1px dashed var(--line)' : 'none',
                     }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '5px' }}>
-                            <div className='wiki-enemy' style={{ backgroundColor: e.color }} />
+                            <div className='wiki-color' style={{ backgroundColor: e.color }} />
                             <strong style={{ fontSize: '1.1rem' }}>{t(`wiki.enemies.${e.key}.name`)}</strong>
                             <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
                                 {tags.map((tag, ti) => (
@@ -212,6 +212,44 @@ function EnemiesTab() {
                             </div>
                         </div>
                         <div className='wiki-desc'>{t(`wiki.enemies.${e.key}.desc`)}</div>
+                    </div>
+                );
+            })}
+        </div>
+    );
+}
+
+function PickupsTab() {
+    const { t } = useTranslation();
+
+    const pickups = [
+        { key: 'healthPotion', color: '#2ecc71' },
+        { key: 'damagePotion', color: '#f39c12' },
+        { key: 'grenade', color: '#210D26' },
+    ];
+
+    return (
+        <div className='wiki-body'>
+            <div className='wiki-desc' style={{ marginBottom: 14 }}>
+                {t('wiki.pickups.intro')}
+            </div>
+            {pickups.map((p, i) => {
+                const tags = t(`wiki.pickups.${p.key}.tags`, { returnObjects: true });
+                return (
+                    <div key={i} className='wiki-section' style={{
+                        paddingBottom: '12px',
+                        borderBottom: i < pickups.length - 1 ? '1px dashed var(--line)' : 'none',
+                    }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '5px' }}>
+                            <div className='wiki-color' style={{ backgroundColor: p.color }} />
+                            <strong style={{ fontSize: '1.1rem' }}>{t(`wiki.pickups.${p.key}.name`)}</strong>
+                            <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
+                                {tags.map((tag, ti) => (
+                                    <span className='wiki-badge tag' key={ti}>{tag}</span>
+                                ))}
+                            </div>
+                        </div>
+                        <div className='wiki-desc'>{t(`wiki.pickups.${p.key}.desc`)}</div>
                     </div>
                 );
             })}
@@ -326,11 +364,12 @@ function AugmentsTab() {
     );
 }
 
-const TAB_IDS = ['controls', 'classes', 'enemies', 'weapons', 'augments'];
+const TAB_IDS = ['controls', 'classes', 'enemies', 'pickups', 'weapons', 'augments'];
 const TAB_COMPONENTS = {
     controls: ControlsTab,
     classes: ClassesTab,
     enemies: EnemiesTab,
+    pickups: PickupsTab,
     weapons: WeaponsTab,
     augments: AugmentsTab,
 };

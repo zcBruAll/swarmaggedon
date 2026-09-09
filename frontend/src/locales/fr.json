@@ -26,6 +26,7 @@
       "controls": "🎮 Contrôles",
       "classes": "🧑 Classes",
       "enemies": "👾 Ennemis",
+      "pickups": "💣 Objets",
       "weapons": "⚔️ Armes",
       "augments": "✦ Améliorations"
     },
@@ -196,6 +197,32 @@
           "récompense bonus"
         ],
         "desc": "Ennemi géant avec un rayon laser longue portée. Apparaît toutes les 10 vagues avec un groupe de Coureurs. Le tuer déclenche un écran de récompense de Boss."
+      }
+    },
+    "pickups": {
+      "intro": "Les ennemis ont une change de lâcher à leur mort des objets pouvant être grandement utiles !",
+      "healthPotion": {
+        "name": "Potion de vie",
+        "tags": [
+          "Instantané"
+        ],
+        "desc": "Restore instantanément 20% des points de vie maximum."
+      },
+      "damagePotion": {
+        "name": "Potion de dégâts",
+        "tags": [
+          "Bonus",
+          "Courte durée"
+        ],
+        "desc": "Double les dégâts pendant une courte durée."
+      },
+      "grenade": {
+        "name": "Grenade",
+        "tags": [
+          "Actif",
+          "Chargement"
+        ],
+        "desc": "Après 3 secondes, lance une grenade vers l'ennemi le plus proche créant des dégâts de zone."
       }
     },
     "weapons": {

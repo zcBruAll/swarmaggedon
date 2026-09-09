@@ -2,6 +2,7 @@ import { WEAPON_ENCHANT } from './weapon.js';
 import { ENEMY_TYPE } from './actors/enemy.js';
 import { DRONE_STATE, DRONE_ORBIT_RADIUS, DRONE_REPAIR_RADIUS } from './actors/drone.js';
 import { TEAM } from './world.js';
+import { DROP_TYPE } from './drop.js';
 
 export function drawBackground(ctx, width, height, camera) {
     ctx.clearRect(0, 0, width, height);
@@ -36,6 +37,7 @@ export function drawActors(ctx, camera, actors, canvasW, canvasH) {
             case 'drone': drawDrone(ctx, actor, engineer); break;
             case 'enemy': drawEnemy(ctx, actor, canvasW, canvasH, camera); break;
             case 'bullet': drawBullet(ctx, actor); break;
+            case 'pickup': drawPickup(ctx, actor); break;
         }
     }
 
@@ -387,6 +389,38 @@ function _drawWeaponArc(ctx, bearer, subtleArea = true) {
         ctx.globalAlpha = ready ? 0.35 : 0.15;
         ctx.fill();
     }
+
+    ctx.restore();
+}
+
+function drawPickup(ctx, pickup) {
+    if (pickup.dead) return;
+    const bobY = Math.sin(pickup.bobTime) * 3;
+
+    ctx.save();
+    ctx.translate(pickup.x, pickup.y + bobY);
+
+    ctx.beginPath();
+    ctx.arc(0, 0, pickup.radius + 6, 0, Math.PI * 2);
+    ctx.fillStyle = pickup.color + '33';
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.arc(0, 0, pickup.radius, 0, Math.PI * 2);
+    ctx.fillStyle = '#faf7f1';
+    ctx.fill();
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = pickup.color;
+    ctx.stroke();
+
+    ctx.fillStyle = pickup.color;
+    ctx.font = 'bold 11px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    const symbol = pickup.dropType === DROP_TYPE.HEAL ? '+'
+        : pickup.dropType === DROP_TYPE.DAMAGE ? '×2'
+            : '💣';
+    ctx.fillText(symbol, 0, 0);
 
     ctx.restore();
 }

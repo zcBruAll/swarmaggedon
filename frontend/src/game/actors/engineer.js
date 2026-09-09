@@ -1,6 +1,7 @@
 import { TEAM } from '../world.js';
 import { WEAPON_TYPE, WEAPON_ENCHANT } from '../weapon.js';
 import { createDrone, DRONE_STATE, DRONE_ORBIT_RADIUS, DRONE_REPAIR_RADIUS, tickOrbitPhase } from './drone.js';
+import { tickItems } from '../drop.js';
 
 const DRONE_LOADOUTS = [
     { type: WEAPON_TYPE.RANGE, enchant: WEAPON_ENCHANT.SINGLE },
@@ -53,6 +54,7 @@ export function createEngineer(canvasWidth, canvasHeight) {
 
             this._move(dt, inputState);
             this._faceNearestEnemy(world);
+            tickItems(this, dt, world);
             this._updateDrones(dt, world, inputState);
         },
 
@@ -85,6 +87,7 @@ export function createEngineer(canvasWidth, canvasHeight) {
 
         _updateDrones(dt, world, inputState) {
             for (const drone of this.drones) {
+                drone.damageMultiplier = this.damageMultiplier ?? 1;
                 drone.update(dt, world, this);
             }
 
